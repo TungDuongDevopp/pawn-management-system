@@ -4,10 +4,7 @@ import com.tungduong.pawnmanagementsystem.model.Account;
 import com.tungduong.pawnmanagementsystem.model.enums.Role;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class AccountRepository {
@@ -23,18 +20,47 @@ public class AccountRepository {
             )
     );
 
-    Map<Long, Account> accountCache = new HashMap<>();
 
     public List<Account> findAll() {
         return accounts;
     }
 
-    public Account findById(Long id) {
-       return accountCache.get(id);
+    public Optional<Account> findById(Long id) {
+        for(Account account : accounts){
+
+            if(account.getId().equals(id)){
+                return Optional.of(account);
+            }
+
+        }
+
+        return Optional.empty();
     }
 
-    public void save(Account account) {
+    public Account save(Account account) {
         accounts.add(account);
-        accountCache.put(account.getId(), account);
+        return account;
+    }
+
+    public boolean delete (Long id){
+        if(findById(id)==null) return false;
+        accounts.remove(findById(id));
+        return true;
+
+    }
+
+    public Account update (Account account){
+        Optional<Account> current = findById(account.getId());
+
+        if(current.isEmpty()){
+            return null;
+        }
+
+        current.get().setUsername(account.getUsername());
+        current.get().setPassword(account.getPassword());
+        current.get().setRole(account.getRole());
+
+        return current.orElse(null);
+
     }
 }
