@@ -60,7 +60,6 @@ public class AccountRepository {
         current.get().setUsername(account.getUsername());
         current.get().setPassword(account.getPassword());
         current.get().setRole(account.getRole());
-
         return current.orElse(null);
 
     }

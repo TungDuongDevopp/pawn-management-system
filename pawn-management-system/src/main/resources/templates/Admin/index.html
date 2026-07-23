@@ -22,7 +22,7 @@
             </h3>
 
             <a class="btn btn-light fw-semibold"
-               href="/accounts/create"> <i class="bi bi-plus-lg"></i> Thêm tài khoản
+               th:href="@{accounts/create}"> <i class="bi bi-plus-lg"></i> Thêm tài khoản
             </a>
 
         </div>
@@ -59,10 +59,10 @@
 
                     <td class="text-center">
 
-                        <button class="btn btn-warning btn-sm action-btn">
+                        <a th:href="@{accounts/{id} (id = ${account.id})}"     class="btn btn-warning btn-sm action-btn">
                             <i class="bi bi-pencil-square"></i>
                             Sửa
-                        </button>
+                        </a>
 
                         <button class="btn btn-danger btn-sm action-btn">
                             <i class="bi bi-trash"></i>

@@ -4,10 +4,7 @@ import com.tungduong.pawnmanagementsystem.model.Account;
 import com.tungduong.pawnmanagementsystem.service.AccountService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -41,5 +38,18 @@ public class UserAccountsController {
         service.createAccount(account);
         return "redirect:/accounts";
     }
+
+    @GetMapping("/{id}")
+    public String updateAccount(Model model, @PathVariable Long id){
+        Account currentAccount = service.getAccountById(id);
+        model.addAttribute("account",currentAccount);
+        return "Admin/update";
+    }
+    @PostMapping("/update")
+    public String postUpdatePage(@ModelAttribute Account updateAccount){
+        service.updateAccount(updateAccount);
+        return "redirect:/accounts";
+    }
+
 
 }
