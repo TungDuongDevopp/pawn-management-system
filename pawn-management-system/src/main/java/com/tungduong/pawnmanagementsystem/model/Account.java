@@ -9,7 +9,6 @@ import lombok.ToString;
 @Setter @Getter
 public class Account {
 
-
     private Long id;
     private String username;
     private String password;
@@ -21,4 +20,6 @@ public class Account {
         this.password = password;
         this.role = role;
     }
+
+    public Account(){}
 }

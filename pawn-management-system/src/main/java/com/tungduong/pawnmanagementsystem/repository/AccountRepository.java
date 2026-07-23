@@ -9,6 +9,7 @@ import java.util.*;
 @Repository
 public class AccountRepository {
 
+
     private final List<Account> accounts = new ArrayList<>(
             List.of(
                     new Account(1L, "admin", "123456", Role.ADMIN),
@@ -19,7 +20,7 @@ public class AccountRepository {
                     new Account(6L, "customer03", "123456", Role.CUSTOMER)
             )
     );
-
+    private final Long nextId = (long) (accounts.size()+1);
 
     public List<Account> findAll() {
         return accounts;
@@ -33,11 +34,11 @@ public class AccountRepository {
             }
 
         }
-
         return Optional.empty();
     }
 
     public Account save(Account account) {
+        account.setId(nextId);
         accounts.add(account);
         return account;
     }

@@ -5,6 +5,8 @@ import com.tungduong.pawnmanagementsystem.service.AccountService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -25,6 +27,19 @@ public class UserAccountsController {
         List<Account> accounts = service.getAllAccounts();
 
         model.addAttribute("accounts", accounts);
-        return "/html/AccountManagement";
+        return "Admin/index";
     }
+
+    @GetMapping("/create")
+    public String createAccount(Model model){
+        model.addAttribute("account",new Account());
+        return "Admin/create";
+    }
+
+    @PostMapping("/create")
+    public String createAccount(@ModelAttribute Account account){
+        service.createAccount(account);
+        return "redirect:/accounts";
+    }
+
 }
