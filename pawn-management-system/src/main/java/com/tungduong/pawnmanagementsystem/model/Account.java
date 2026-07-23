@@ -6,17 +6,13 @@ import lombok.Setter;
 import lombok.ToString;
 
 @ToString(exclude = "password")
+@Setter @Getter
 public class Account {
 
-    @Getter @Setter
+
     private Long id;
-
-    @Getter @Setter
     private String username;
-
-    @Setter
     private String password;
-    @Getter @Setter
     private Role role;
 
     public Account(Long id, String username, String password, Role role) {

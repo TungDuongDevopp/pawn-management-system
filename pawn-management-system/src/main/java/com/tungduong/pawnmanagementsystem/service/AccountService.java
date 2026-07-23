@@ -4,7 +4,8 @@ import com.tungduong.pawnmanagementsystem.repository.AccountRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
-   @Service
+
+@Service
     public class AccountService {
 
         private final AccountRepository repository;
@@ -17,10 +18,16 @@ import java.util.List;
             return repository.findAll();
         }
         public Account getAccountById(Long id){
-            return repository.findById(id);
+            return repository.findById(id).orElse(null);
         }
-        public void addAccount(Account account){
-            repository.save(account);
+        public Account createAccount(Account account){
+            return repository.save(account);
+        }
+        public boolean deleteAccount(Long id){
+            return repository.delete(id);
+        }
+        public Account updateAccount(Account account){
+            return repository.update(account);
         }
    }
 
