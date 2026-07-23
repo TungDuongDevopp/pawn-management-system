@@ -44,8 +44,11 @@ public class AccountRepository {
     }
 
     public boolean delete (Long id){
-        if(findById(id)==null) return false;
-        accounts.remove(findById(id));
+        Optional<Account> current = findById(id);
+        if(current.isEmpty()){
+            return false;
+        }
+        accounts.remove(current.get());
         return true;
 
     }

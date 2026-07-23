@@ -46,8 +46,14 @@ public class UserAccountsController {
         return "Admin/update";
     }
     @PostMapping("/update")
-    public String postUpdatePage(@ModelAttribute Account updateAccount){
+    public String updateAccount(@ModelAttribute Account updateAccount){
         service.updateAccount(updateAccount);
+        return "redirect:/accounts";
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public String deleteAccount(@PathVariable Long id){
+        service.deleteAccount(id);
         return "redirect:/accounts";
     }
 

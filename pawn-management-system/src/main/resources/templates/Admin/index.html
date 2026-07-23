@@ -42,7 +42,7 @@
 
                 <tbody>
 
-                <tr th:each="account : ${accounts}">
+                <tr th:unless="${#lists.isEmpty(accounts)}"  th:each="account : ${accounts}">
 
                     <td class="text-center"
                         th:text="${account.id}">
@@ -59,19 +59,28 @@
 
                     <td class="text-center">
 
-                        <a th:href="@{accounts/{id} (id = ${account.id})}"     class="btn btn-warning btn-sm action-btn">
+                        <a th:href="@{/accounts/{id} (id = ${account.id})}" class="btn btn-warning btn-sm action-btn">
                             <i class="bi bi-pencil-square"></i>
                             Sửa
                         </a>
+                        <form th:method="delete" th:action="@{/accounts/delete/{id} (id =${account.id})}" >
+                            <button class="btn btn-danger btn-sm action-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa ?')">
+                                <i class="bi bi-trash"></i>
+                                Xóa
+                            </button>
+                        </form>
 
-                        <button class="btn btn-danger btn-sm action-btn">
-                            <i class="bi bi-trash"></i>
-                            Xóa
-                        </button>
 
                     </td>
 
                 </tr>
+                <tr th:if="${#lists.isEmpty(accounts)}">
+                    <td colspan="5" class="text-muted py-4">
+                        <i class="bi bi-inbox fs-4 d-block mb-2"></i> <!-- Icon hộp trống nếu dùng Bootstrap Icon -->
+                        Không có dữ liệu hiển thị.
+                    </td>
+                </tr>
+
 
                 </tbody>
 
