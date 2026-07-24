@@ -1,0 +1,9 @@
+<aside th:fragment="sidebar(activePage)" class="sidebar">
+    <h3 class="logo">Admin</h3>
+    <a th:href="@{/accounts}" class="menu-item" th:classappend="${activePage == 'accounts' ? 'active' : ''}">
+        👤 Quản lý tài khoản
+    </a>
+    <a th:href="@{/customers}" class="menu-item" th:classappend="${activePage == 'customers' ? 'active' : ''}">
+        👥 Quản lý khách hàng
+    </a>
+</aside>
