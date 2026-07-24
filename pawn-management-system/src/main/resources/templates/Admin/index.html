@@ -36,6 +36,7 @@
                     <th class="text-center">ID</th>
                     <th>Username</th>
                     <th class="text-center">Role</th>
+                    <th class="text-center">Status</th>
                     <th width="180" class="text-center">Action</th>
                 </tr>
                 </thead>
@@ -56,6 +57,12 @@
                               th:text="${account.role}">
                         </span>
                     </td>
+                    <td class="text-center">
+                        <span class="badge fs-6 px-3 py-2"
+                              th:classappend="' text-bg-' + ${account.status.color}"
+                              th:text="${account.status}">
+                        </span>
+                    </td>
 
                     <td class="text-center">
 
@@ -74,13 +81,13 @@
                     </td>
 
                 </tr>
+
                 <tr th:if="${#lists.isEmpty(accounts)}">
                     <td colspan="5" class="text-muted py-4">
                         <i class="bi bi-inbox fs-4 d-block mb-2"></i> <!-- Icon hộp trống nếu dùng Bootstrap Icon -->
                         Không có dữ liệu hiển thị.
                     </td>
                 </tr>
-
 
                 </tbody>
 
