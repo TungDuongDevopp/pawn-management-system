@@ -24,13 +24,13 @@ public class UserAccountsController {
         List<Account> accounts = service.getAllAccounts();
 
         model.addAttribute("accounts", accounts);
-        return "Admin/index";
+        return "Admin/Account/index";
     }
 
     @GetMapping("/create")
     public String createAccount(Model model){
         model.addAttribute("account",new Account());
-        return "Admin/create";
+        return "Admin/Account/create";
     }
 
     @PostMapping("/create")
@@ -43,7 +43,7 @@ public class UserAccountsController {
     public String updateAccount(Model model, @PathVariable Long id){
         Account currentAccount = service.getAccountById(id);
         model.addAttribute("account",currentAccount);
-        return "Admin/update";
+        return "Admin/Account/update";
     }
     @PostMapping("/update")
     public String updateAccount(@ModelAttribute Account updateAccount){
