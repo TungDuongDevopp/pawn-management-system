@@ -30,15 +30,15 @@
                     <input type="text"
                            class="form-control"
                            placeholder="Enter username"
-                           th:field="*{username}" >
+                           th:field="*{username}" readonly style="pointer-events: none">
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Password</label>
+                    <label class="form-label fw-semibold" >Password</label>
                     <input type="password"
                            class="form-control"
                            placeholder="Enter password"
-                           th:field="*{password}" >
+                           th:field="*{password}" readonly style="pointer-events: none" >
                 </div>
 
                 <div class="mb-4">
@@ -49,6 +49,21 @@
                         <option value="">-- Select Role --</option>
 
                         <option th:each="r : ${T(com.tungduong.pawnmanagementsystem.model.enums.Role).values()}"
+                                th:value="${r}"
+                                th:text="${r}">
+                        </option>
+
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Status</label>
+
+                    <select class="form-select"
+                            th:field="*{status}">
+                        <option value="">-- Select Status --</option>
+
+                        <option th:each="r : ${T(com.tungduong.pawnmanagementsystem.model.enums.AccountStatus).values()}"
                                 th:value="${r}"
                                 th:text="${r}">
                         </option>
