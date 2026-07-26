@@ -45,7 +45,8 @@
                     <label class="form-label fw-semibold">Role</label>
 
                     <select class="form-select"
-                            th:field="*{role}">
+                            th:field="*{role}"
+                            th:classappend="${#fields.hasErrors('role')} ? 'is-invalid'">
                         <option value="">-- Select Role --</option>
 
                         <option th:each="r : ${T(com.tungduong.pawnmanagementsystem.model.enums.Role).values()}"
@@ -54,13 +55,15 @@
                         </option>
 
                     </select>
+                    <span th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="invalid-feedback"/>
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label fw-semibold">Status</label>
 
                     <select class="form-select"
-                            th:field="*{status}">
+                            th:field="*{status}"
+                            th:classappend="${#fields.hasErrors('status')} ? 'is-invalid'">
                         <option value="">-- Select Status --</option>
 
                         <option th:each="r : ${T(com.tungduong.pawnmanagementsystem.model.enums.AccountStatus).values()}"
@@ -69,6 +72,7 @@
                         </option>
 
                     </select>
+                    <span th:if="${#fields.hasErrors('status')}" th:errors="*{status}" class="invalid-feedback"/>
                 </div>
 
                 <div class="d-grid">

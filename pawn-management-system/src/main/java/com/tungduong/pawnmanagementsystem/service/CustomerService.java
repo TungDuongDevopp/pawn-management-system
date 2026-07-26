@@ -41,9 +41,10 @@ public class CustomerService {
 
         Customer currentCustomer = optional.get();
         currentCustomer.setName(customer.getName());
+        currentCustomer.setCitizenId(customer.getCitizenId());
         currentCustomer.setEmail(customer.getEmail());
         currentCustomer.setPhone(customer.getPhone());
-        customer.setAddress(customer.getAddress());
+        currentCustomer.setAddress(customer.getAddress());
         repository.save(currentCustomer);
         return currentCustomer;
     }

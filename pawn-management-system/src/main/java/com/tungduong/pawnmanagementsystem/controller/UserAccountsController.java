@@ -2,8 +2,10 @@ package com.tungduong.pawnmanagementsystem.controller;
 
 import com.tungduong.pawnmanagementsystem.model.Account;
 import com.tungduong.pawnmanagementsystem.service.AccountService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,7 +36,10 @@ public class UserAccountsController {
     }
 
     @PostMapping("/create")
-    public String createAccount(@ModelAttribute Account account){
+    public String createAccount(@Valid @ModelAttribute Account account, BindingResult result){
+        if(result.hasErrors()){
+            return "Admin/Account/create";
+        }
         service.saveAccount(account);
         return "redirect:/accounts";
     }
@@ -46,7 +51,10 @@ public class UserAccountsController {
         return "Admin/Account/update";
     }
     @PostMapping("/update")
-    public String updateAccount(@ModelAttribute Account updateAccount){
+    public String updateAccount( @Valid @ModelAttribute Account updateAccount,BindingResult result){
+        if(result.hasErrors()){
+            return "Admin/Account/update";
+        }
         service.updateAccount(updateAccount);
         return "redirect:/accounts";
     }

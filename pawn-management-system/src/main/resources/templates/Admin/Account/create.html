@@ -30,7 +30,9 @@
                     <input type="text"
                            class="form-control"
                            placeholder="Enter username"
-                           th:field="*{username}">
+                           th:field="*{username}"
+                           th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'" required>
+                    <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="invalid-feedback"/>
                 </div>
 
                 <div class="mb-3">
@@ -38,37 +40,45 @@
                     <input type="password"
                            class="form-control"
                            placeholder="Enter password"
-                           th:field="*{password}">
+                           th:field="*{password}"
+                           th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"required>
+                    <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="invalid-feedback"/>
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label fw-semibold">Role</label>
 
                     <select class="form-select"
-                            th:field="*{role}">
+                            th:field="*{role}"
+                            th:classappend="${#fields.hasErrors('role')} ? 'is-invalid'">
                         <option value="">-- Select Role --</option>
 
                         <option th:each="r : ${T(com.tungduong.pawnmanagementsystem.model.enums.Role).values()}"
                                 th:value="${r}"
-                                th:text="${r}">
+                                th:text="${r}"
+                                >
                         </option>
 
                     </select>
+                    <span th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="invalid-feedback"/>
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label fw-semibold">Status</label>
 
                     <select class="form-select"
-                            th:field="*{status}">
+                            th:field="*{status}"
+                            th:classappend="${#fields.hasErrors('status')} ? 'is-invalid'" >
                         <option value="">-- Select Status --</option>
 
                         <option th:each="r : ${T(com.tungduong.pawnmanagementsystem.model.enums.AccountStatus).values()}"
                                 th:value="${r}"
-                                th:text="${r}">
+                                th:text="${r}"
+                               >
                         </option>
 
                     </select>
+                    <span th:if="${#fields.hasErrors('status')}" th:errors="*{status}" class="invalid-feedback"/>
                 </div>
 
                 <div class="d-grid">

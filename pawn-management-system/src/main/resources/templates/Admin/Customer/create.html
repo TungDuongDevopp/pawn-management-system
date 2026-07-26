@@ -1,75 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Thêm khách hàng</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
+
 <body class="bg-light">
 
-<div class="container-fluid p-4">
-    <a th:href="@{/customers}" class="btn btn-primary mb-3">Quay lại</a>
-    <div class="card shadow-lg border-0 mx-auto" style="max-width: 550px; border-radius: 15px;">
+    <div class="container-fluid p-4">
+        <a th:href="@{/customers}" class="btn btn-primary mb-3">Quay lại</a>
+        <div class="card shadow-lg border-0 mx-auto" style="max-width: 550px; border-radius: 15px;">
 
-        <div class="card-header bg-primary text-white text-center py-3">
-            <h3 class="mb-0">Create New Customer</h3>
-        </div>
+            <div class="card-header bg-primary text-white text-center py-3">
+                <h3 class="mb-0">Create New Customer</h3>
+            </div>
 
-        <div class="card-body p-4">
+            <div class="card-body p-4">
 
-            <form method="post"
-                  th:action="@{/customers/create}"
-                  th:object="${customer}">
+                <form method="post" th:action="@{/customers/create}" th:object="${customer}">
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Name</label>
-                    <input type="text"
-                           class="form-control"
-                           placeholder="Enter name"
-                           th:field="*{name}" required>
-                </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Name</label>
+                        <input type="text" class="form-control" placeholder="Enter name" th:field="*{name}"
+                            th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'" required>
+                        <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback" />
+                    </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Email</label>
-                    <input type="email"
-                           class="form-control"
-                           placeholder="Enter email"
-                           th:field="*{email}">
-                </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">CitizenId</label>
+                        <input type="text" class="form-control" placeholder="Enter CitizenId" th:field="*{citizenId}"
+                            th:classappend="${#fields.hasErrors('citizenId')} ? 'is-invalid'" required>
+                        <span th:if="${#fields.hasErrors('citizenId')}" th:errors="*{citizenId}"
+                            class="invalid-feedback" />
+                    </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Phone</label>
-                    <input type="text"
-                           class="form-control"
-                           placeholder="Enter phone number"
-                           th:field="*{phone}">
-                </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email</label>
+                        <input type="email" class="form-control" placeholder="Enter email" th:field="*{email}"
+                            th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'" required>
+                        <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="invalid-feedback" />
+                    </div>
 
-                <div class="mb-4">
-                    <label class="form-label fw-semibold">Address</label>
-                    <input type="text"
-                           class="form-control"
-                           placeholder="Enter address"
-                           th:field="*{address}">
-                </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Phone</label>
+                        <input type="text" class="form-control" placeholder="Enter phone number" th:field="*{phone}"
+                            th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'" required>
+                        <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="invalid-feedback" />
+                    </div>
 
-                <div class="d-grid">
-                    <button class="btn btn-primary btn-lg">
-                        Save Customer
-                    </button>
-                </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Address</label>
+                        <input type="text" class="form-control" placeholder="Enter address" th:field="*{address}"
+                            th:classappend="${#fields.hasErrors('address')} ? 'is-invalid'" required>
+                        <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="invalid-feedback" />
+                    </div>
 
-            </form>
+                    <div class="d-grid">
+                        <button class="btn btn-primary btn-lg">
+                            Save Customer
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
 
         </div>
 
     </div>
 
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
+
 </html>

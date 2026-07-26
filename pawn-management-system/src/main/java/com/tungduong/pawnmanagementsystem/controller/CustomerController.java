@@ -3,10 +3,13 @@ package com.tungduong.pawnmanagementsystem.controller;
 import com.tungduong.pawnmanagementsystem.model.Account;
 import com.tungduong.pawnmanagementsystem.model.Customer;
 import com.tungduong.pawnmanagementsystem.service.CustomerService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.script.Bindings;
 import java.util.List;
 
 @Controller
@@ -34,7 +37,10 @@ public class CustomerController {
     }
 
     @PostMapping("/create")
-    public String createCustomer(@ModelAttribute Customer customer){
+    public String createCustomer(@Valid @ModelAttribute Customer customer, BindingResult result){
+        if(result.hasErrors()){
+            return "Admin/Customer/create";
+        }
         service.saveCustomer(customer);
         return "redirect:/customers";
     }
@@ -46,7 +52,10 @@ public class CustomerController {
         return "Admin/Customer/update";
     }
     @PostMapping("/update")
-    public String updateCustomer(@ModelAttribute Customer updateCustomer){
+    public String updateCustomer(@Valid @ModelAttribute Customer updateCustomer, BindingResult result){
+        if(result.hasErrors()){
+            return "Admin/Customer/update";
+        }
         service.updateCustomer(updateCustomer);
         return "redirect:/customers";
     }
