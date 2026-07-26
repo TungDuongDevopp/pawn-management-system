@@ -35,13 +35,13 @@ public class CustomerController {
 
     @PostMapping("/create")
     public String createCustomer(@ModelAttribute Customer customer){
-        service.createCustomer(customer);
+        service.saveCustomer(customer);
         return "redirect:/customers";
     }
 
     @GetMapping("/{id}")
     public String updateCustomer(Model model, @PathVariable Long id){
-        Customer currentCustomer = service.getCustomerById(id);
+        Customer currentCustomer = service.getCustomerById(id).orElse(null);
         model.addAttribute("customer",currentCustomer);
         return "Admin/Customer/update";
     }

@@ -19,7 +19,9 @@ public class Account {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
-    AccountStatus status;
+
+    @Enumerated(EnumType.STRING)
+    private AccountStatus status;
 
     public Account(Long id, String username, String password, Role role,AccountStatus status) {
         this.id = id;

@@ -2,7 +2,9 @@ package com.tungduong.pawnmanagementsystem.service;
 import com.tungduong.pawnmanagementsystem.model.Account;
 import com.tungduong.pawnmanagementsystem.repository.AccountRepository;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -17,17 +19,33 @@ import java.util.List;
         public List<Account> getAllAccounts() {
             return repository.findAll();
         }
-        public Account getAccountById(Long id){
-            return repository.findById(id).orElse(null);
+        public Optional<Account> getAccountById(Long id){
+            return repository.findById(id);
         }
-        public Account createAccount(Account account){
+        public Account saveAccount(Account account){
             return repository.save(account);
         }
+
         public boolean deleteAccount(Long id){
-            return repository.delete(id);
+            if(!repository.existsById(id)){
+                return false;
+            }
+
+            repository.deleteById(id);
+            return true;
         }
         public Account updateAccount(Account account){
-            return repository.update(account);
+            Optional<Account> optional = getAccountById(account.getId());
+
+            if(optional.isEmpty()){
+                return null;
+            }
+
+            Account currentAccount = optional.get();
+                currentAccount.setStatus(account.getStatus());
+                currentAccount.setRole(account.getRole());
+                repository.save(currentAccount);
+                return currentAccount;
         }
    }
 

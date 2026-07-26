@@ -24,6 +24,7 @@
                   th:action="@{/accounts/create}"
                   th:object="${account}">
 
+               <input type="hidden" th:field="*{id}">
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Username</label>
                     <input type="text"
