@@ -1,8 +1,8 @@
 package com.tungduong.pawnmanagementsystem.model.enums;
 
 public enum AccountStatus {
-    ACTIVE("primary"),
-    INACTIVE("warning"),
+    ACTIVE("success"),
+    INACTIVE("secondary"),
     LOCKED("danger");
 
     private final String color;

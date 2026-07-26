@@ -35,13 +35,13 @@ public class UserAccountsController {
 
     @PostMapping("/create")
     public String createAccount(@ModelAttribute Account account){
-        service.createAccount(account);
+        service.saveAccount(account);
         return "redirect:/accounts";
     }
 
     @GetMapping("/{id}")
     public String updateAccount(Model model, @PathVariable Long id){
-        Account currentAccount = service.getAccountById(id);
+        Account currentAccount = service.getAccountById(id).orElse(null);
         model.addAttribute("account",currentAccount);
         return "Admin/Account/update";
     }

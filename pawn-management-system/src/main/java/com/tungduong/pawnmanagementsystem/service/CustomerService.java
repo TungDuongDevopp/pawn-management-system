@@ -1,10 +1,12 @@
 package com.tungduong.pawnmanagementsystem.service;
 
+import com.tungduong.pawnmanagementsystem.model.Account;
 import com.tungduong.pawnmanagementsystem.model.Customer;
 import com.tungduong.pawnmanagementsystem.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomerService {
@@ -18,16 +20,31 @@ public class CustomerService {
     public List<Customer> getAllCustomer() {
         return repository.findAll();
     }
-    public Customer getCustomerById(Long id){
-        return repository.findById(id).orElse(null);
+    public Optional<Customer> getCustomerById(Long id){
+        return repository.findById(id);
     }
-    public Customer createCustomer(Customer customer){
+    public Customer saveCustomer(Customer customer){
         return repository.save(customer);
     }
     public boolean deleteCustomer(Long id){
-        return repository.delete(id);
+        if(!repository.existsById(id)) return false;
+        repository.deleteById(id);
+
+        return true;
     }
     public Customer updateCustomer(Customer customer){
-        return repository.update(customer);
+        Optional<Customer> optional = getCustomerById(customer.getId());
+
+        if(optional.isEmpty()){
+            return null;
+        }
+
+        Customer currentCustomer = optional.get();
+        currentCustomer.setName(customer.getName());
+        currentCustomer.setEmail(customer.getEmail());
+        currentCustomer.setPhone(customer.getPhone());
+        customer.setAddress(customer.getAddress());
+        repository.save(currentCustomer);
+        return currentCustomer;
     }
 }
