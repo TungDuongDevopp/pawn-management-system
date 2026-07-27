@@ -45,10 +45,9 @@ public class Staff {
     private String position;
 
     @Past(message = "Ngày tuyển phải trong quá khứ")
-    @NotBlank( message = "Ngày tuyển không được trống")
+    @NotNull(message = "Ngày tuyển không được trống")
     private Date hireDate;
 
-    @NotBlank(message = "Lương không được trong")
     @Min(value = 1000000,message = "Lương không được dưới 1tr")
     private double salary;
 
