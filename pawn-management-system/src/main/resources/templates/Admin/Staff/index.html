@@ -2,9 +2,101 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Quản lý Nhân viên</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
-<body>
+<body class="bg-light">
+
+<div class="layout">
+    <aside th:replace="~{fragments/sidebar :: sidebar(activePage='staffs')}"></aside>
+
+    <main class="content">
+        <div class="container-fluid">
+
+            <div class="card shadow-lg border-0">
+
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
+                    <h3 class="mb-0">Quản lý Nhân viên</h3>
+                    <a class="btn btn-light fw-semibold" th:href="@{/staffs/create}">
+                        <i class="bi bi-plus-lg"></i> Thêm nhân viên
+                    </a>
+                </div>
+
+                <div class="card-body" style="overflow-x: auto;">
+
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                        <tr>
+                            <th class="text-center">ID</th>
+                            <th>Họ và tên</th>
+                            <th>Tài khoản</th>
+                            <th>Email</th>
+                            <th>Số điện thoại</th>
+                            <th>Địa chỉ</th>
+                            <th>Phòng ban</th>
+                            <th>Chức vụ</th>
+                            <th>Ngày tuyển</th>
+                            <th>Lương (VNĐ)</th>
+                            <th>Trạng thái</th>
+                            <th width="180" class="text-center">Hành động</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr th:unless="${#lists.isEmpty(staffs)}" th:each="st : ${staffs}">
+                            <td class="text-center" th:text="${st.id}"></td>
+                            <td th:text="${st.fullname}" class="fw-semibold"></td>
+                            <td th:text="${st.account != null ? st.account.username : 'N/A'}"></td>
+                            <td th:text="${st.email}"></td>
+                            <td th:text="${st.phone}"></td>
+                            <td th:text="${st.address}"></td>
+                            <td>
+                                <span class="badge px-3 py-2 fs-7" 
+                                      th:classappend="'text-bg-' + ${st.deparment.color}" 
+                                      th:text="${st.deparment}"></span>
+                            </td>
+                            <td th:text="${st.position}"></td>
+                            <td th:text="${st.hireDate != null ? #dates.format(st.hireDate, 'dd-MM-yyyy') : ''}"></td>
+                            <td th:text="${#numbers.formatDecimal(st.salary, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td>
+                                <span class="badge px-3 py-2 fs-7" 
+                                      th:classappend="'text-bg-' + ${st.satus.color}" 
+                                      th:text="${st.satus}"></span>
+                            </td>
+                            <td class="text-center">
+                                <a th:href="@{/staffs/{id} (id = ${st.id})}" class="btn btn-warning btn-sm action-btn">
+                                    <i class="bi bi-pencil-square"></i> Sửa
+                                </a>
+                                <form th:method="delete" th:action="@{/staffs/delete/{id} (id = ${st.id})}" style="display: inline-block;">
+                                    <button class="btn btn-danger btn-sm action-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?')">
+                                        <i class="bi bi-trash"></i> Xóa
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(staffs)}">
+                            <td colspan="12" class="text-muted py-4 text-center">
+                                <i class="bi bi-inbox fs-4 d-block mb-2"></i>
+                                Không có dữ liệu hiển thị.
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
