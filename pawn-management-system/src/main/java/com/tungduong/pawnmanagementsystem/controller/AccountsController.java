@@ -12,11 +12,11 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/accounts")
-public class UserAccountsController {
+public class AccountsController {
 
     private final AccountService service;
 
-    public UserAccountsController (AccountService service) {
+    public AccountsController(AccountService service) {
 
         this.service = service;
     }
@@ -61,7 +61,7 @@ public class UserAccountsController {
 
     @DeleteMapping("/delete/{id}")
     public String deleteAccount(@PathVariable Long id){
-        service.deleteAccount(id);
+        service.deleteAccountById(id);
         return "redirect:/accounts";
     }
 

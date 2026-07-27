@@ -62,7 +62,7 @@ public class CustomerController {
 
     @DeleteMapping("/delete/{id}")
     public String deleteCustomer(@PathVariable Long id){
-        service.deleteCustomer(id);
+        service.deleteCustomerById(id);
         return "redirect:/customers";
     }
 

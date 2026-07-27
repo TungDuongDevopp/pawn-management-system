@@ -26,7 +26,7 @@ public class CustomerService {
     public Customer saveCustomer(Customer customer){
         return repository.save(customer);
     }
-    public boolean deleteCustomer(Long id){
+    public boolean deleteCustomerById(Long id){
         if(!repository.existsById(id)) return false;
         repository.deleteById(id);
 
