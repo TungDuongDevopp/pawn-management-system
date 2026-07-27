@@ -26,7 +26,7 @@ import java.util.Optional;
             return repository.save(account);
         }
 
-        public boolean deleteAccount(Long id){
+        public boolean deleteAccountById(Long id){
             if(!repository.existsById(id)){
                 return false;
             }

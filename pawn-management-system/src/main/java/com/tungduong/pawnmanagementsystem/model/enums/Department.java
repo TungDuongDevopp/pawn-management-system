@@ -1,14 +1,12 @@
 package com.tungduong.pawnmanagementsystem.model.enums;
 
-public enum Role {
-    ADMIN("danger"),
-    STAFF("secondary"),
-    CUSTOMER("primary"),
-    MANERGER("warning");
+public enum Department {
+    REVIEW("primary"),
+    CONTRACT("success");
 
     private final String color;
 
-    Role(String color) {
+    Department(String color) {
         this.color = color;
     }
 
