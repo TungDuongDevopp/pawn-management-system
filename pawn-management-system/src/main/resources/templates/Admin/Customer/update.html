@@ -23,6 +23,14 @@
                 <form method="post" th:action="@{/customers/update}" th:object="${customer}">
 
                     <input type="hidden" th:field="*{id}">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tài khoản</label>
+                        <select class="form-select" th:field="*{account}" readonly style="pointer-events: none; background-color: #e9ecef;">
+                            <option th:each="acc : ${@accountService.getAllAccounts()}"
+                                    th:value="${acc.id}"
+                                    th:text="${acc.username}"></option>
+                        </select>
+                    </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Name</label>

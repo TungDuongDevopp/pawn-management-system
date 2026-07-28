@@ -23,6 +23,18 @@
                 <form method="post" th:action="@{/customers/create}" th:object="${customer}">
 
                     <div class="mb-3">
+                        <label class="form-label fw-semibold">Tài khoản</label>
+                        <select class="form-select" th:field="*{account}"
+                                th:classappend="${#fields.hasErrors('account')} ? 'is-invalid' : ''">
+                            <option value="">-- Chọn tài khoản --</option>
+                            <option th:each="acc : ${@accountService.getAllAccounts()}"
+                                    th:value="${acc.id}"
+                                    th:text="${acc.username}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:errors="*{account}"></div>
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label fw-semibold">Name</label>
                         <input type="text" class="form-control" placeholder="Enter name" th:field="*{name}"
                             th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'" required>

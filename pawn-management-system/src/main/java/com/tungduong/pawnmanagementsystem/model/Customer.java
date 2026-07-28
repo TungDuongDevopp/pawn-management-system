@@ -1,10 +1,7 @@
 package com.tungduong.pawnmanagementsystem.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,14 +33,12 @@ public class Customer {
     @Size(min = 5, max = 255, message = "Địa chỉ phải từ 5 đến 255 ký tự")
     private String address;
 
-    public Customer(Long id, String name,String citizenId,String email,  String phone, String address) {
-        this.address = address;
-        this.email = email;
-        this.id = id;
-        this.name = name;
-        this.phone = phone;
-        this.citizenId = citizenId;
-    }
+    @NotNull(message = "Vui lòng chọn tài khoản")
+    @OneToOne
+    @JoinColumn(name = "account_id",unique = true)
+    private Account account;
+
+
     public Customer(){}
 }
 
