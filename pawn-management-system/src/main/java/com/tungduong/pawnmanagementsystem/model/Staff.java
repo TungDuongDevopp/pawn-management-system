@@ -7,7 +7,8 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
+
 
 @Getter @Setter
 @Entity
@@ -18,6 +19,8 @@ public class Staff {
     private Long id;
 
     @NotNull(message = "Vui lòng chọn tài khoản")
+    @OneToOne
+    @JoinColumn(name = "account_id",unique = true)
     private Account account;
 
     @NotBlank(message = "Name không được để trống")
@@ -46,7 +49,7 @@ public class Staff {
 
     @Past(message = "Ngày tuyển phải trong quá khứ")
     @NotNull(message = "Ngày tuyển không được trống")
-    private Date hireDate;
+    private LocalDate hireDate;
 
     @Min(value = 1000000,message = "Lương không được dưới 1tr")
     private double salary;
@@ -55,5 +58,8 @@ public class Staff {
     @NotNull(message = "Vui lòng chọn status")
     private StaffStatus satus;
 
+    public Staff(){}
 
 }
+
+

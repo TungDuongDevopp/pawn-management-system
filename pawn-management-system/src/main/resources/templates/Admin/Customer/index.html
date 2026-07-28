@@ -38,6 +38,7 @@
                         <thead>
                         <tr>
                             <th class="text-center">ID</th>
+                            <th class="text-center">Account</th>
                             <th>Name</th>
                             <th>CitizenId</th>
                             <th class="text-center">Email</th>
@@ -54,6 +55,7 @@
                             <td class="text-center"
                                 th:text="${customer.id}">
                             </td>
+                            <td class="text-center" th:text="${customer.account != null ? customer.account.username : 'N/A'}"></td>
 
                             <td th:text="${customer.name}"></td>
                             <td th:text="${customer.citizenId}"></td>

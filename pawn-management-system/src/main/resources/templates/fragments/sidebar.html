@@ -1,12 +1,51 @@
 <aside th:fragment="sidebar(activePage)" class="sidebar">
-    <h3 class="logo">Admin</h3>
-    <a th:href="@{/accounts}" class="menu-item" th:classappend="${activePage == 'accounts' ? 'active' : ''}">
-        👤 Quản lý tài khoản
-    </a>
-    <a th:href="@{/customers}" class="menu-item" th:classappend="${activePage == 'customers' ? 'active' : ''}">
-        👥 Quản lý khách hàng
-    </a>
-    <a th:href="@{/staffs}" class="menu-item" th:classappend="${activePage == 'staffs' ? 'active' : ''}">
-        👔 Quản lý nhân viên
-    </a>
+
+    <!-- Phần phía trên: Logo, User và Menu Navigation -->
+    <div class="sidebar-top">
+
+        <!-- Logo thương hiệu -->
+        <h3 class="logo">
+            <i class="bi bi-speedometer2 logo-icon"></i> Admin Panel
+        </h3>
+
+        <!-- Khối thông tin người dùng -->
+        <div class="user-info">
+            <div class="avatar">
+                <i class="bi bi-person-badge-fill"></i>
+            </div>
+            <div class="user-detail">
+                <h4>Admin</h4>
+                <span class="role">Hệ thống</span>
+            </div>
+        </div>
+
+        <!-- Danh sách Menu Điều hướng -->
+        <nav class="sidebar-nav">
+            <a th:href="@{/accounts}"
+               class="menu-item"
+               th:classappend="${activePage == 'accounts' ? 'active' : ''}">
+                <i class="bi bi-shield-lock menu-icon"></i> Quản lý tài khoản
+            </a>
+
+            <a th:href="@{/customers}"
+               class="menu-item"
+               th:classappend="${activePage == 'customers' ? 'active' : ''}">
+                <i class="bi bi-people menu-icon"></i> Quản lý khách hàng
+            </a>
+
+            <a th:href="@{/staffs}"
+               class="menu-item"
+               th:classappend="${activePage == 'staffs' ? 'active' : ''}">
+                <i class="bi bi-person-workspace menu-icon"></i> Quản lý nhân viên
+            </a>
+        </nav>
+    </div>
+
+    <!-- Phần phía dưới: Chân trang & Đăng xuất -->
+    <div class="sidebar-bottom">
+        <a th:href="@{/logout}" class="logout-btn">
+            <i class="bi bi-box-arrow-left menu-icon"></i> Đăng xuất
+        </a>
+    </div>
+
 </aside>

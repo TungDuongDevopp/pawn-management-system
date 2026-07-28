@@ -2,10 +2,11 @@ package com.tungduong.pawnmanagementsystem.service;
 
 import com.tungduong.pawnmanagementsystem.model.Staff;
 import com.tungduong.pawnmanagementsystem.repository.StaffRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class StaffService {
     private final StaffRepository repository;
 
