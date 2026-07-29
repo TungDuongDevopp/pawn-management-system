@@ -1,8 +1,11 @@
 package com.tungduong.pawnmanagementsystem.config;
 
+import com.tungduong.pawnmanagementsystem.service.AccountService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -13,13 +16,18 @@ public class SecurityConfig {
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable()) // Tắt CSRF nếu bạn làm API (Postman/Frontend gọi vào)
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // Cho phép tất cả các request đi qua không cần đăng nhập
-                );
-        return http.build();
+    UserDetailsService userDetailsService(AccountService service){
+        return  new CustomerUserDetailService(service);
     }
+
+    @Bean
+    DaoAuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService){
+        DaoAuthenticationProvider dao = new DaoAuthenticationProvider(userDetailsService);
+        dao.setPasswordEncoder(passwordEncoder());
+        return dao;
+
+    }
+
 }
