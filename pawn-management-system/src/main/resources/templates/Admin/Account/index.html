@@ -69,19 +69,18 @@
                             </td>
 
                             <td class="text-center">
-
-                                <a th:href="@{/accounts/{id} (id = ${account.id})}" class="btn btn-warning btn-sm action-btn">
-                                    <i class="bi bi-pencil-square"></i>
-                                    Sửa
-                                </a>
-                                <form th:method="delete" th:action="@{/accounts/delete/{id} (id =${account.id})}" style="display: inline-block;">
-                                    <button class="btn btn-danger btn-sm action-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa ?')">
-                                        <i class="bi bi-trash"></i>
-                                        Xóa
-                                    </button>
-                                </form>
-
-
+                                <div class="action">
+                                    <a th:href="@{/accounts/{id} (id = ${account.id})}" class="btn btn-warning btn-sm action-btn">
+                                        <i class="bi bi-pencil-square"></i>
+                                        Sửa
+                                    </a>
+                                    <form th:method="delete" th:action="@{/accounts/delete/{id} (id =${account.id})}" style="display: inline-block;">
+                                        <button class="btn btn-danger btn-sm action-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa ?')">
+                                            <i class="bi bi-trash"></i>
+                                            Xóa
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
 
                         </tr>

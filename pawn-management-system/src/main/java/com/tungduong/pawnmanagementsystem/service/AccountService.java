@@ -1,6 +1,7 @@
 package com.tungduong.pawnmanagementsystem.service;
 import com.tungduong.pawnmanagementsystem.model.Account;
 import com.tungduong.pawnmanagementsystem.repository.AccountRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,9 +12,11 @@ import java.util.Optional;
     public class AccountService {
 
         private final AccountRepository repository;
+        private final PasswordEncoder passwordEncoder;
 
-        public AccountService(AccountRepository repository) {
+        public AccountService(AccountRepository repository,PasswordEncoder passwordEncoder) {
             this.repository = repository;
+            this.passwordEncoder =passwordEncoder;
         }
 
         public List<Account> getAllAccounts() {
@@ -23,6 +26,9 @@ import java.util.Optional;
             return repository.findById(id);
         }
         public Account saveAccount(Account account){
+
+            String hashPassword = passwordEncoder.encode(account.getPassword());
+            account.setPassword(hashPassword);
             return repository.save(account);
         }
 
