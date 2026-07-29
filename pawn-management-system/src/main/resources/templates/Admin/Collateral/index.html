@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý tài sản thế chấp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="bg-light">
+
+<div class="layout">
+    <aside th:replace="~{fragments/sidebar :: sidebar(activePage='collaterals')}"></aside>
+
+    <main class="content">
+        <div class="container-fluid p-4">
+
+            <div class="card shadow-lg border-0">
+
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
+
+                    <h3 class="mb-0">
+                        <i class="bi bi-box-seam-fill me-2"></i>Quản lý tài sản thế chấp
+                    </h3>
+
+                    <a class="btn btn-light fw-semibold"
+                       th:href="@{/collaterals/create}">
+                        <i class="bi bi-plus-lg"></i> Thêm tài sản
+                    </a>
+
+                </div>
+
+                <div class="card-body p-0">
+
+                    <table class="table table-hover align-middle mb-0">
+
+                        <thead class="table-light">
+                        <tr>
+                            <th class="text-center ps-3" style="width: 60px;">ID</th>
+                            <th style="width: 80px;">Ảnh</th>
+                            <th>Tên tài sản</th>
+                            <th>Danh mục</th>
+                            <th class="text-end">Định giá (VNĐ)</th>
+                            <th class="text-center">Trạng thái</th>
+                            <th>Mô tả</th>
+                            <th width="160" class="text-center">Thao tác</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:unless="${#lists.isEmpty(collaterals)}" th:each="collateral : ${collaterals}">
+
+                            <td class="text-center fw-semibold ps-3"
+                                th:text="${collateral.id}">
+                            </td>
+
+                            <td>
+                                <img th:src="${collateral.imageUrl}"
+                                     alt="Ảnh tài sản"
+                                     class="rounded"
+                                     style="width: 56px; height: 56px; object-fit: cover; border: 1px solid #dee2e6;"
+                                     onerror="this.src='https://via.placeholder.com/56?text=No+Image'">
+                            </td>
+
+                            <td>
+                                <span class="fw-semibold" th:text="${collateral.name}"></span>
+                            </td>
+
+                            <td>
+                                <span class="badge bg-secondary bg-opacity-10 text-dark border"
+                                      th:text="${collateral.category != null ? collateral.category.name : '—'}">
+                                </span>
+                            </td>
+
+                            <td class="text-end fw-semibold text-primary">
+                                <span th:text="${#numbers.formatDecimal(collateral.valuation, 0, 'COMMA', 0, 'POINT')}"></span>
+                            </td>
+
+                            <td class="text-center">
+                                <span th:with="status=${collateral.status}"
+                                      th:classappend="'badge bg-' + ${status.color}"
+                                      class="badge"
+                                      th:text="${status.name()}">
+                                </span>
+                            </td>
+
+                            <td class="text-muted small"
+                                th:text="${collateral.description != null && !collateral.description.isEmpty() ? collateral.description : '—'}">
+                            </td>
+
+                            <td class="text-center">
+                                <div class="action">
+                                    <a th:href="@{/collaterals/{id} (id = ${collateral.id})}" class="btn btn-warning btn-sm action-btn">
+                                        <i class="bi bi-pencil-square"></i>
+                                        Sửa
+                                    </a>
+                                    <form th:method="delete" th:action="@{/collaterals/delete/{id} (id =${collateral.id})}" style="display: inline-block;">
+                                        <button class="btn btn-danger btn-sm action-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa tài sản này?')">
+                                            <i class="bi bi-trash"></i>
+                                            Xóa
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(collaterals)}">
+                            <td colspan="8" class="text-center text-muted py-5">
+                                <i class="bi bi-box-seam fs-2 d-block mb-2"></i>
+                                Chưa có tài sản thế chấp nào. Hãy thêm tài sản mới!
+                            </td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

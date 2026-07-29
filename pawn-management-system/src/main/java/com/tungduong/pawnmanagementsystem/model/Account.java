@@ -32,13 +32,5 @@ public class Account {
     @NotNull(message = "Vui lòng chọn status")
     private AccountStatus status;
 
-    public Account(Long id, String username, String password, Role role,AccountStatus status) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.role = role;
-        this.status = status;
-    }
-
     public Account(){}
 }

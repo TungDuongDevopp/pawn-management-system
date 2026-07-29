@@ -44,6 +44,12 @@
                th:classappend="${activePage == 'categories' ? 'active' : ''}">
                 <i class="bi bi-tags menu-icon"></i> Quản lý danh mục
             </a>
+
+            <a th:href="@{/collaterals}"
+               class="menu-item"
+               th:classappend="${activePage == 'collaterals' ? 'active' : ''}">
+                <i class="bi bi-box-seam menu-icon"></i> Quản lý tài sản TC
+            </a>
         </nav>
     </div>
 

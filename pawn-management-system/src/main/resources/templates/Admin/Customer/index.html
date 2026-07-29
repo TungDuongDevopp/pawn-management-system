@@ -52,12 +52,12 @@
 
                         <tr th:unless="${#lists.isEmpty(customers)}"  th:each="customer : ${customers}">
 
-                            <td class="text-center"
+                            <td class="text-center fw-semibold"
                                 th:text="${customer.id}">
                             </td>
-                            <td class="text-center" th:text="${customer.account != null ? customer.account.username : 'N/A'}"></td>
+                            <td class="text-center fw-semibold" th:text="${customer.account != null ? customer.account.username : 'N/A'}"></td>
 
-                            <td th:text="${customer.name}"></td>
+                            <td  th:text="${customer.name}"></td>
                             <td th:text="${customer.citizenId}"></td>
                             <td th:text="${customer.email}"></td>
                             <td th:text="${customer.phone}"></td>
