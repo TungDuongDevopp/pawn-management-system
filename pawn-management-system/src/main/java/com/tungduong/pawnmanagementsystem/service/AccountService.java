@@ -25,6 +25,9 @@ import java.util.Optional;
         public Optional<Account> getAccountById(Long id){
             return repository.findById(id);
         }
+        public Optional<Account> getAccountByUsername(String username){
+        return repository.findByUsername(username);
+    }
         public Account saveAccount(Account account){
 
             String hashPassword = passwordEncoder.encode(account.getPassword());
