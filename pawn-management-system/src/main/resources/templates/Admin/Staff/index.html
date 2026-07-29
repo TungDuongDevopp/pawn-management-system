@@ -54,14 +54,14 @@
 
                             <td th:text="${st.email}"></td>
                             <td th:text="${st.phone}"></td>
-                            <td th:text="${st.address}"></td>
-                            <td>
-                                <span class="badge px-3 py-2 fs-7" 
+                            <td style="min-width: 100px;" th:text="${st.address}"></td>
+                            <td class="text-center">
+                                <span class="badge px-3 py-2 fs-7 "
                                       th:classappend="'text-bg-' + ${st.deparment.color}" 
                                       th:text="${st.deparment}"></span>
                             </td>
                             <td th:text="${st.position}"></td>
-                            <td th:text="${st.hireDate != null ? #temporals.format(st.hireDate, 'dd-MM-yyyy') : ''}"></td>
+                            <td style="min-width: 100px;" th:text="${st.hireDate != null ? #temporals.format(st.hireDate, 'dd-MM-yyyy') : ''}"></td>
                             <td th:text="${#numbers.formatDecimal(st.salary, 0, 'COMMA', 0, 'POINT')}"></td>
                             <td>
                                 <span class="badge px-3 py-2 fs-7" 
@@ -69,14 +69,17 @@
                                       th:text="${st.satus}"></span>
                             </td>
                             <td class="text-center">
-                                <a th:href="@{/staffs/{id} (id = ${st.id})}" class="btn btn-warning btn-sm action-btn">
+                                <div class="action">
+                                    <a th:href="@{/staffs/{id} (id = ${st.id})}" class="btn btn-warning btn-sm action-btn">
                                     <i class="bi bi-pencil-square"></i> Sửa
-                                </a>
-                                <form th:method="delete" th:action="@{/staffs/delete/{id} (id = ${st.id})}" style="display: inline-block;">
-                                    <button class="btn btn-danger btn-sm action-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?')">
-                                        <i class="bi bi-trash"></i> Xóa
-                                    </button>
-                                </form>
+                                     </a>
+                                    <form th:method="delete" th:action="@{/staffs/delete/{id} (id = ${st.id})}" style="display: inline-block;">
+                                        <button class="btn btn-danger btn-sm action-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?')">
+                                            <i class="bi bi-trash"></i> Xóa
+                                        </button>
+                                    </form>
+                                </div>
+
                             </td>
                         </tr>
 

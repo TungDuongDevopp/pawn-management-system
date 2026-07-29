@@ -24,8 +24,7 @@ public class Account {
     @Size(min = 4, max = 20, message = "Username phải từ 4 đến 20 ký tự")
     private String username;
 
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&!_])[A-Za-z\\d@#$%^&!_]{6,20}$",
-            message = "Password phải có 6-20 ký tự, gồm chữ hoa, chữ thường và số")
+    @Column(length = 60)
     private String password;
 
     @Enumerated(EnumType.STRING)

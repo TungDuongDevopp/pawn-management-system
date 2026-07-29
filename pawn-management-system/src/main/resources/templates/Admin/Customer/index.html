@@ -64,18 +64,19 @@
                             <td th:text="${customer.address}"></td>
 
                             <td class="text-center">
+                                <div class="action">
+                                    <a th:href="@{/customers/{id} (id = ${customer.id})}" class="btn btn-warning btn-sm action-btn">
+                                        <i class="bi bi-pencil-square"></i>
+                                        Sửa
+                                    </a>
+                                    <form th:method="delete" th:action="@{/customers/delete/{id} (id =${customer.id})}" style="display: inline-block;">
+                                        <button class="btn btn-danger btn-sm action-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa ?')">
+                                            <i class="bi bi-trash"></i>
+                                            Xóa
+                                        </button>
+                                    </form>
 
-                                <a th:href="@{/customers/{id} (id = ${customer.id})}" class="btn btn-warning btn-sm action-btn">
-                                    <i class="bi bi-pencil-square"></i>
-                                    Sửa
-                                </a>
-                                <form th:method="delete" th:action="@{/customers/delete/{id} (id =${customer.id})}" style="display: inline-block;">
-                                    <button class="btn btn-danger btn-sm action-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa ?')">
-                                        <i class="bi bi-trash"></i>
-                                        Xóa
-                                    </button>
-                                </form>
-
+                                </div>
 
                             </td>
 

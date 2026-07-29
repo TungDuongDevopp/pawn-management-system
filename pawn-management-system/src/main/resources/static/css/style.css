@@ -303,7 +303,10 @@ body{
 /* =========================================
    BUTTON
 ========================================= */
-
+.action{
+    display: flex;
+    gap: 10px;
+}
 .btn{
     border-radius:10px;
     font-weight:600;
