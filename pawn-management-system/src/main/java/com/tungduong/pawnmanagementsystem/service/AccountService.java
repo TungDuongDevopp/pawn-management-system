@@ -16,7 +16,7 @@ import java.util.Optional;
 
         public AccountService(AccountRepository repository,PasswordEncoder passwordEncoder) {
             this.repository = repository;
-            this.passwordEncoder =passwordEncoder;
+            this.passwordEncoder = passwordEncoder;
         }
 
         public List<Account> getAllAccounts() {
