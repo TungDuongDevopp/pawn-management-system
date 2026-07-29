@@ -48,8 +48,8 @@
 
                         <tbody>
                         <tr th:unless="${#lists.isEmpty(staffs)}" th:each="st : ${staffs}">
-                            <td class="text-center" th:text="${st.id}"></td>
-                            <td th:text="${st.account != null ? st.account.username : 'N/A'}"></td>
+                            <td class="text-center fw-semibold" th:text="${st.id}"></td>
+                            <td class="fw-semibold" th:text="${st.account != null ? st.account.username : 'N/A'}"></td>
                             <td th:text="${st.fullname}"></td>
 
                             <td th:text="${st.email}"></td>

@@ -49,11 +49,11 @@
 
                         <tr th:unless="${#lists.isEmpty(accounts)}"  th:each="account : ${accounts}">
 
-                            <td class="text-center"
+                            <td class="text-center fw-semibold"
                                 th:text="${account.id}">
                             </td>
 
-                            <td th:text="${account.username}"></td>
+                            <td  class="fw-semibold" th:text="${account.username}"></td>
 
                             <td class="text-center">
                                 <span class="badge fs-6 px-3 py-2"
