@@ -99,8 +99,9 @@
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Ngày tuyển dụng</label>
                     <input type="date"
+                           readonly style="pointer-events: none; background-color: #e9ecef;"
                            class="form-control"
-                           th:field="*{hireDate}"
+                           th:value="${#temporals.format(staff.hireDate, 'yyyy-MM-dd')}"
                            th:classappend="${#fields.hasErrors('hireDate')} ? 'is-invalid' : ''">
                     <div class="invalid-feedback" th:errors="*{hireDate}"></div>
                 </div>

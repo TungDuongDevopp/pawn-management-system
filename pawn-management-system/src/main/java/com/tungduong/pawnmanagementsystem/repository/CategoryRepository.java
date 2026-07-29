@@ -1,10 +1,9 @@
 package com.tungduong.pawnmanagementsystem.repository;
-
-import com.tungduong.pawnmanagementsystem.model.Staff;
+import com.tungduong.pawnmanagementsystem.model.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface StaffRepository  extends JpaRepository<Staff,Long> {
+public interface CategoryRepository extends JpaRepository<Category,Long> {
 
 }
