@@ -1,6 +1,8 @@
 package com.tungduong.pawnmanagementsystem.controller;
 
 import com.tungduong.pawnmanagementsystem.model.Account;
+import com.tungduong.pawnmanagementsystem.model.enums.AccountStatus;
+import com.tungduong.pawnmanagementsystem.model.enums.Role;
 import com.tungduong.pawnmanagementsystem.service.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -32,6 +34,8 @@ public class AccountController {
     @GetMapping("/create")
     public String createAccount(Model model){
         model.addAttribute("account",new Account());
+        model.addAttribute("roles", Role.values());
+        model.addAttribute("statuses", AccountStatus.values());
         return "Admin/Account/create";
     }
 
@@ -48,6 +52,8 @@ public class AccountController {
     public String updateAccount(Model model, @PathVariable Long id){
         Account currentAccount = service.getAccountById(id).orElse(null);
         model.addAttribute("account",currentAccount);
+        model.addAttribute("roles", Role.values());
+        model.addAttribute("statuses", AccountStatus.values());
         return "Admin/Account/update";
     }
     @PostMapping("/update")

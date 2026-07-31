@@ -62,11 +62,11 @@
                             </td>
                             <td th:text="${st.position}"></td>
                             <td style="min-width: 100px;" th:text="${st.hireDate != null ? #temporals.format(st.hireDate, 'dd-MM-yyyy') : ''}"></td>
-                            <td th:text="${#numbers.formatDecimal(st.salary, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatInteger(st.salary, 0, 'COMMA')}"></td>
                             <td>
                                 <span class="badge px-3 py-2 fs-7" 
-                                      th:classappend="'text-bg-' + ${st.satus.color}" 
-                                      th:text="${st.satus}"></span>
+                                      th:classappend="'text-bg-' + ${st.status.color}"
+                                      th:text="${st.status}"></span>
                             </td>
                             <td class="text-center">
                                 <div class="action">
