@@ -47,7 +47,7 @@ public class StaffService {
         currentStaff.setDeparment(staff.getDeparment());
         currentStaff.setPosition(staff.getPosition());
         currentStaff.setSalary(staff.getSalary());
-        currentStaff.setSatus(staff.getSatus());
+        currentStaff.setStatus(staff.getStatus());
 
         repository.save(currentStaff);
         return currentStaff;

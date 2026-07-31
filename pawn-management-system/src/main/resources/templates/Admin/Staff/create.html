@@ -80,7 +80,7 @@
                     <select class="form-select" th:field="*{deparment}"
                             th:classappend="${#fields.hasErrors('deparment')} ? 'is-invalid' : ''">
                         <option value="">-- Chọn phòng ban --</option>
-                        <option th:each="dept : ${T(com.tungduong.pawnmanagementsystem.model.enums.Department).values()}"
+                        <option th:each="dept : ${departments}"
                                 th:value="${dept}"
                                 th:text="${dept}"></option>
                     </select>
@@ -118,14 +118,14 @@
 
                 <div class="mb-4">
                     <label class="form-label fw-semibold">Trạng thái</label>
-                    <select class="form-select" th:field="*{satus}"
-                            th:classappend="${#fields.hasErrors('satus')} ? 'is-invalid' : ''">
+                    <select class="form-select" th:field="*{status}"
+                            th:classappend="${#fields.hasErrors('status')} ? 'is-invalid' : ''">
                         <option value="">-- Chọn trạng thái --</option>
-                        <option th:each="st : ${T(com.tungduong.pawnmanagementsystem.model.enums.StaffStatus).values()}"
+                        <option th:each="st : ${statuses}"
                                 th:value="${st}"
                                 th:text="${st}"></option>
                     </select>
-                    <div class="invalid-feedback" th:errors="*{satus}"></div>
+                    <div class="invalid-feedback" th:errors="*{status}"></div>
                 </div>
 
                 <div class="d-grid">

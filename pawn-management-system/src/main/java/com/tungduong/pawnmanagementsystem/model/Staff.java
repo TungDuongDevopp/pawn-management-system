@@ -7,6 +7,7 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 
@@ -51,12 +52,12 @@ public class Staff {
 
     private LocalDate hireDate;
 
-    @Min(value = 1000000,message = "Lương không được dưới 1tr")
-    private double salary;
+    @Column(nullable = false, precision = 15, scale = 0)
+    private BigDecimal salary;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Vui lòng chọn status")
-    private StaffStatus satus;
+    private StaffStatus status;
 
     public Staff(){}
 

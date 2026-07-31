@@ -1,7 +1,8 @@
 package com.tungduong.pawnmanagementsystem.controller;
 
-import com.tungduong.pawnmanagementsystem.model.Customer;
 import com.tungduong.pawnmanagementsystem.model.Staff;
+import com.tungduong.pawnmanagementsystem.model.enums.Department;
+import com.tungduong.pawnmanagementsystem.model.enums.StaffStatus;
 import com.tungduong.pawnmanagementsystem.service.StaffService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,8 @@ public class StaffController {
     @GetMapping("/create")
     public String createStaff(Model model){
         model.addAttribute("staff",new Staff());
+        model.addAttribute("departments", Department.values());
+        model.addAttribute("statuses", StaffStatus.values());
         return "Admin/Staff/create";
     }
 
@@ -47,12 +50,15 @@ public class StaffController {
     public String updateStaff(Model model, @PathVariable Long id){
         Staff currentStaff = service.getStaffById(id).orElse(null);
         model.addAttribute("staff",currentStaff);
+        model.addAttribute("departments", Department.values());
+        model.addAttribute("statuses", StaffStatus.values());
         return "Admin/Staff/update";
     }
     @PostMapping("/update")
     public String updateStaff(@Valid @ModelAttribute Staff updateStaff, BindingResult result){
         if(result.hasErrors()){
             return "Admin/Staff/update";
+
         }
         service.updateStaff(updateStaff);
         return "redirect:/staffs";

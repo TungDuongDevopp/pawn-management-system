@@ -1,6 +1,5 @@
 package com.tungduong.pawnmanagementsystem.controller;
 
-import com.tungduong.pawnmanagementsystem.model.Account;
 import com.tungduong.pawnmanagementsystem.model.Customer;
 import com.tungduong.pawnmanagementsystem.service.CustomerService;
 import jakarta.validation.Valid;
@@ -18,14 +17,12 @@ public class CustomerController {
     private final CustomerService service;
 
     public CustomerController (CustomerService service) {
-
         this.service = service;
     }
 
     @GetMapping
     public String getCustomer(Model model){
         List<Customer> customers = service.getAllCustomer();
-
         model.addAttribute("customers", customers);
         return "Admin/Customer/index";
     }
