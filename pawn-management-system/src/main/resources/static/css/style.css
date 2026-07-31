@@ -81,7 +81,12 @@ body{
     flex-direction: column;
     width: 100%;
 }
-
+.sidebar-bottom{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
 /* Tối ưu Logo nằm trên cùng */
 .logo {
     margin: 0 0 24px 0;
@@ -351,4 +356,27 @@ body{
 ::-webkit-scrollbar-thumb{
     background:#cbd5e1;
     border-radius:10px;
+}
+
+
+/* =========================================
+   DASHBOARD STAT CARDS
+========================================= */
+.stat-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 12px !important;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+}
+
+.stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
