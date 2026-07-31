@@ -10,6 +10,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 public class SecurityConfig {
     @Bean
@@ -28,6 +30,13 @@ public class SecurityConfig {
         dao.setPasswordEncoder(passwordEncoder());
         return dao;
 
+    }
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http){
+        http.authorizeHttpRequests((requests) ->
+                requests.requestMatchers("/auth","/auth/register","/").permitAll().anyRequest().authenticated());
+        http.formLogin(login-> login.loginPage("/auth"));
+        return http.build();
     }
 
 }
