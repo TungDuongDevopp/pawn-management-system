@@ -1,5 +1,8 @@
 package com.tungduong.pawnmanagementsystem.service;
+import com.tungduong.pawnmanagementsystem.dto.request.RegisterRequest;
 import com.tungduong.pawnmanagementsystem.model.Account;
+import com.tungduong.pawnmanagementsystem.model.enums.AccountStatus;
+import com.tungduong.pawnmanagementsystem.model.enums.Role;
 import com.tungduong.pawnmanagementsystem.repository.AccountRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -55,6 +58,20 @@ import java.util.Optional;
                 currentAccount.setRole(account.getRole());
                 repository.save(currentAccount);
                 return currentAccount;
+        }
+        public boolean isExistAccount(String username){
+            return repository.existsByUsername(username);
+        }
+
+        public Account register(RegisterRequest request){
+            Account account = new Account();
+            String hashPassword = passwordEncoder.encode(request.getPassword());
+            account.setUsername(request.getUsername());
+            account.setPassword(hashPassword);
+            account.setRole(Role.CUSTOMER);
+            account.setStatus(AccountStatus.ACTIVE);
+            repository.save(account);
+            return account;
         }
    }
 

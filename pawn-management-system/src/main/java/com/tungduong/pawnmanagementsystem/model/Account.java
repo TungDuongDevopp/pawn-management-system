@@ -24,12 +24,13 @@ public class Account {
     @Column(length = 60)
     private String password;
 
+    @NotNull(message = "Role không được null")
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "Vui lòng chọn role")
     private Role role;
 
+
+    @NotNull(message = "Status không được null")
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "Vui lòng chọn status")
     private AccountStatus status;
 
     public Account(){}
