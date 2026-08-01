@@ -42,12 +42,13 @@ public class SecurityConfig {
                 requests.requestMatchers("/login","/register","/").permitAll()
                         .requestMatchers("/accounts/**","/dashboards/**","/customers/**","/staffs/**","/categories/**","/collaterals/**").hasRole("ADMIN")
                         .anyRequest().authenticated());
-        http.formLogin(login-> login.loginPage("/login")
+        http.formLogin(login-> login.loginPage("/login").failureUrl("/login?error")
                 .successHandler(customSuccessHandler)
         );
         http.exceptionHandling(exception -> exception
                 .accessDeniedPage("/403")
         );
+        http.sessionManagement(s->s.maximumSessions(1).maxSessionsPreventsLogin(false).expiredUrl("/login?expire"));
         return http.build();
     }
 
