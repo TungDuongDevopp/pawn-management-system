@@ -30,8 +30,13 @@ public class HomeController {
         this.collateralService = collateralService;
     }
 
-    @GetMapping({"/", "/dashboards", "/admin/dashboard"})
-    public String home(Model model) {
+    @GetMapping()
+    public String home(){
+        return "auth/home";
+    }
+
+    @GetMapping("/dashboards")
+    public String dashboardAdmin(Model model) {
         model.addAttribute("accountCount", accountService.getAllAccounts().size());
         model.addAttribute("customerCount", customerService.getAllCustomer().size());
         model.addAttribute("staffCount", staffService.getAllStaffs().size());

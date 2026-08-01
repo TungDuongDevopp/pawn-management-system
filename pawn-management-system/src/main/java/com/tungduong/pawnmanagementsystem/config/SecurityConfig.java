@@ -10,7 +10,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 public class SecurityConfig {
@@ -34,8 +33,13 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http){
         http.authorizeHttpRequests((requests) ->
-                requests.requestMatchers("/auth","/auth/register","/").permitAll().anyRequest().authenticated());
+                requests.requestMatchers("/auth","/auth/register","/").permitAll()
+                        .requestMatchers("/accounts/**","/dashboards/**","/customers/**","/staffs/**","/categories/**","/collaterals/**").hasRole("ADMIN")
+                        .anyRequest().authenticated());
         http.formLogin(login-> login.loginPage("/auth"));
+        http.exceptionHandling(exception -> exception
+                .accessDeniedPage("/403")
+        );
         return http.build();
     }
 
