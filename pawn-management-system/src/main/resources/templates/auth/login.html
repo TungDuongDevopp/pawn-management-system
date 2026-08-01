@@ -28,6 +28,9 @@
                                         <div th:if="${param.logout}" class="alert alert-success">
                                             Bạn đã đăng xuất thành công.
                                         </div>
+                                        <div th:if="${param.expire}" class="alert alert-danger">
+                                            Phiên đăng nhập đã hết hạn.
+                                        </div>
                                         <div class="form-floating mb-3">
                                             <input class="form-control" placeholder=""
                                             name ="username"/>
