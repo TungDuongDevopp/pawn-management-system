@@ -28,7 +28,7 @@
                                         <div th:if="${param.logout}" class="alert alert-success">
                                             Bạn đã đăng xuất thành công.
                                         </div>
-                                        <div th:if="${param.expire}" class="alert alert-danger">
+                                        <div th:if="${param.expire}" class="alert alert-warning">
                                             Phiên đăng nhập đã hết hạn.
                                         </div>
                                         <div class="form-floating mb-3">
@@ -41,7 +41,12 @@
                                             name="password"/>
                                             <label>Password</label>
                                         </div>
-
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="checkChecked" name="remember-me">
+                                            <label class="form-check-label" for="checkChecked">
+                                                Remember me
+                                            </label>
+                                        </div>
                                         <div class="mt-4 mb-0">
                                             <div class="d-grid">
                                                 <button class="btn btn-primary btn-block">

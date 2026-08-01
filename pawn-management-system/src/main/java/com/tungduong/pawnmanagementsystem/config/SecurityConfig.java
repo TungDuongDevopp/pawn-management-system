@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
 
 
 @Configuration
@@ -49,7 +50,15 @@ public class SecurityConfig {
                 .accessDeniedPage("/403")
         );
         http.sessionManagement(s->s.maximumSessions(1).maxSessionsPreventsLogin(false).expiredUrl("/login?expire"));
+        http.rememberMe(r->r.rememberMeServices(rememberMeServices()));
         return http.build();
+    }
+    @Bean
+    SpringSessionRememberMeServices rememberMeServices(){
+        SpringSessionRememberMeServices rememberMeServices = new SpringSessionRememberMeServices();
+        rememberMeServices.setAlwaysRemember(false);
+        rememberMeServices.setValiditySeconds(7*24*60*60);
+        return rememberMeServices;
     }
 
 }
