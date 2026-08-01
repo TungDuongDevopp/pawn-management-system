@@ -1,4 +1,4 @@
-package com.tungduong.pawnmanagementsystem.controller;
+package com.tungduong.pawnmanagementsystem.controller.Admin;
 
 import com.tungduong.pawnmanagementsystem.model.Collateral;
 import com.tungduong.pawnmanagementsystem.model.enums.CollateralSatus;
@@ -14,11 +14,11 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/collaterals")
-public class CollateralController {
+public class AdminCollateralController {
     private final CollateralService service;
     private final CategoryService categoryService;
 
-    public CollateralController(CollateralService service, CategoryService categoryService) {
+    public AdminCollateralController(CollateralService service, CategoryService categoryService) {
         this.service = service;
         this.categoryService = categoryService;
     }
@@ -26,7 +26,7 @@ public class CollateralController {
     public String getCollateral(Model model){
         List<Collateral> collaterals= service.getAllCollateral();
         model.addAttribute("collaterals", collaterals);
-        return "Admin/Collateral/index";
+        return "admin/Collateral/index";
     }
 
     @GetMapping("/create")
@@ -34,7 +34,7 @@ public class CollateralController {
         model.addAttribute("collateral",new Collateral());
         model.addAttribute("categories", categoryService.getAllCategory());
         model.addAttribute("statuses", CollateralSatus.values());
-        return "Admin/Collateral/create";
+        return "admin/Collateral/create";
     }
 
     @PostMapping("/create")
@@ -42,7 +42,7 @@ public class CollateralController {
         if(result.hasErrors()){
             model.addAttribute("categories", categoryService.getAllCategory());
             model.addAttribute("statuses", CollateralSatus.values());
-            return "Admin/Collateral/create";
+            return "admin/Collateral/create";
         }
         service.saveCollateral(collateral);
         return "redirect:/collaterals";
@@ -54,14 +54,14 @@ public class CollateralController {
         model.addAttribute("collateral",currentCollateral);
         model.addAttribute("categories", categoryService.getAllCategory());
         model.addAttribute("statuses", CollateralSatus.values());
-        return "Admin/Collateral/update";
+        return "admin/Collateral/update";
     }
     @PostMapping("/update")
     public String updateCollateral(@Valid @ModelAttribute Collateral updateCollateral, BindingResult result, Model model){
         if(result.hasErrors()){
             model.addAttribute("categories", categoryService.getAllCategory());
             model.addAttribute("statuses", CollateralSatus.values());
-            return "Admin/Collateral/update";
+            return "admin/Collateral/update";
         }
         service.updateCollateral(updateCollateral);
         return "redirect:/collaterals";

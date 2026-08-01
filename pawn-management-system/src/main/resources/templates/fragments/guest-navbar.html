@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<!-- GUEST NAVBAR FRAGMENT -->
+<nav th:fragment="guestNavbar(activePage)" class="navbar navbar-expand-xl navbar-light bg-white shadow-sm border-bottom sticky-top py-2 px-3 app-navbar navbar-public-theme">
+    <div class="container-fluid container-xl">
+        <!-- Brand Logo -->
+        <a class="navbar-brand d-flex align-items-center me-4 text-decoration-none" href="#" th:href="@{/}">
+            <div class="brand-icon bg-primary text-white rounded-circle p-2 me-2 d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px;">
+                <i class="bi bi-shield-check fs-5"></i>
+            </div>
+            <div>
+                <span class="fw-bold text-dark fs-5">PAWN</span><span class="fw-bold text-primary fs-5">MASTER</span>
+                <span class="d-block text-muted fs-8">Hệ Thống Cầm Đồ Uy Tín</span>
+            </div>
+        </a>
+
+        <!-- Mobile Toggle Button -->
+        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#guestNavbarContent" aria-controls="guestNavbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Menu Content -->
+        <div class="collapse navbar-collapse" id="guestNavbarContent">
+            <!-- Center Menu Links -->
+            <ul class="navbar-nav me-auto mb-2 mb-xl-0 gap-1">
+                <!-- Trang chủ -->
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2 rounded-pill fw-medium" 
+                       th:classappend="${activePage == 'home' ? 'active bg-primary text-white shadow-sm' : 'text-dark hover-bg-light'}" 
+                       href="#" th:href="@{/}">
+                        <i class="bi bi-house me-1"></i> Trang chủ
+                    </a>
+                </li>
+                <!-- About Us -->
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2 rounded-pill fw-medium" 
+                       th:classappend="${activePage == 'about' ? 'active bg-primary text-white shadow-sm' : 'text-dark hover-bg-light'}" 
+                       href="#" th:href="@{/about}">
+                        <i class="bi bi-info-circle me-1"></i> About Us
+                    </a>
+                </li>
+                <!-- Contact Us -->
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2 rounded-pill fw-medium" 
+                       th:classappend="${activePage == 'contact' ? 'active bg-primary text-white shadow-sm' : 'text-dark hover-bg-light'}" 
+                       href="#" th:href="@{/contact}">
+                        <i class="bi bi-telephone me-1"></i> Contact Us
+                    </a>
+                </li>
+                <!-- Danh sách vật phẩm được cầm cố -->
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2 rounded-pill fw-medium" 
+                       th:classappend="${activePage == 'items' ? 'active bg-primary text-white shadow-sm' : 'text-dark hover-bg-light'}" 
+                       href="#" th:href="@{/items}">
+                        <i class="bi bi-grid me-1"></i> Vật phẩm cầm cố
+                    </a>
+                </li>
+                <!-- Quy định cầm cố và vay thế chấp -->
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2 rounded-pill fw-medium" 
+                       th:classappend="${activePage == 'regulations' ? 'active bg-primary text-white shadow-sm' : 'text-dark hover-bg-light'}" 
+                       href="#" th:href="@{/regulations}">
+                        <i class="bi bi-journal-check me-1"></i> Quy định cầm cố
+                    </a>
+                </li>
+                <!-- Thủ tục cần chuẩn bị -->
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2 rounded-pill fw-medium" 
+                       th:classappend="${activePage == 'procedures' ? 'active bg-primary text-white shadow-sm' : 'text-dark hover-bg-light'}" 
+                       href="#" th:href="@{/procedures}">
+                        <i class="bi bi-clipboard-check me-1"></i> Thủ tục chuẩn bị
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Right Login Button -->
+            <div class="d-flex align-items-center pt-2 pt-xl-0 border-top border-xl-0 mt-2 mt-xl-0 gap-2">
+                <a href="#" th:href="@{/login}" class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm d-flex align-items-center gap-2 hover-scale">
+                    <i class="bi bi-box-arrow-in-right fs-5"></i>
+                    <span>Đăng nhập</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+</body>
+</html>

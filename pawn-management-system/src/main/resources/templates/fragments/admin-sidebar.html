@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+
+    <!-- ADMIN SIDEBAR FRAGMENT -->
+    <aside th:fragment="adminSidebar(activePage)" class="app-sidebar shadow-lg">
+        <!-- Top Branding -->
+        <div class="sidebar-brand">
+            <a th:href="@{/admin/dashboard}" class="brand-logo d-flex align-items-center text-decoration-none">
+                <div class="brand-icon me-2">
+                    <i class="bi bi-gem"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="fw-bold text-white fs-5">PAWN</span><span
+                        class="fw-bold text-primary fs-5">MASTER</span>
+                    <span
+                        class="badge bg-primary-subtle text-primary border border-primary-subtle ms-2 rounded-pill px-2 fs-7">ADMIN</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- Navigation Menu -->
+        <div class="sidebar-menu-wrapper custom-scrollbar">
+            <div class="menu-label text-uppercase text-muted px-3 mb-2 fw-semibold fs-7">Main Menu</div>
+            <nav class="nav flex-column sidebar-nav">
+                <!-- Dashboard -->
+                <a th:href="@{/dashboard}" class="nav-link menu-item"
+                    th:classappend="${activePage == 'dashboard' ? 'active' : ''}">
+                    <i class="bi bi-speedometer2 menu-icon"></i>
+                    <span class="menu-text">Dashboard</span>
+                </a>
+
+                <!-- Quản lý tài khoản -->
+                <a th:href="@{/accounts}" class="nav-link menu-item"
+                    th:classappend="${activePage == 'accounts' ? 'active' : ''}">
+                    <i class="bi bi-shield-lock menu-icon"></i>
+                    <span class="menu-text">Quản lý tài khoản</span>
+                </a>
+
+                <!-- Quản lý nhân viên -->
+                <a th:href="@{/staffs}" class="nav-link menu-item"
+                    th:classappend="${activePage == 'staffs' ? 'active' : ''}">
+                    <i class="bi bi-person-workspace menu-icon"></i>
+                    <span class="menu-text">Quản lý nhân viên</span>
+                </a>
+
+                <!-- Quản lý khách hàng -->
+                <a th:href="@{/customers}" class="nav-link menu-item"
+                    th:classappend="${activePage == 'customers' ? 'active' : ''}">
+                    <i class="bi bi-people menu-icon"></i>
+                    <span class="menu-text">Quản lý khách hàng</span>
+                </a>
+
+                <!-- Quản lý danh mục -->
+                <a th:href="@{/categories}" class="nav-link menu-item"
+                    th:classappend="${activePage == 'categories' ? 'active' : ''}">
+                    <i class="bi bi-tags menu-icon"></i>
+                    <span class="menu-text">Quản lý danh mục</span>
+                </a>
+
+                <!-- Quản lý tài sản thế chấp -->
+                <a th:href="@{/collaterals}" class="nav-link menu-item"
+                    th:classappend="${activePage == 'collaterals' ? 'active' : ''}">
+                    <i class="bi bi-box-seam menu-icon"></i>
+                    <span class="menu-text">Quản lý tài sản thế chấp</span>
+                </a>
+
+                <!-- Quản lý hợp đồng -->
+                <a href="#" class="nav-link menu-item" th:classappend="${activePage == 'contracts' ? 'active' : ''}">
+                    <i class="bi bi-file-earmark-text menu-icon"></i>
+                    <span class="menu-text">Quản lý hợp đồng</span>
+                </a>
+
+                <!-- Báo cáo -->
+                <a href="#" class="nav-link menu-item" th:classappend="${activePage == 'reports' ? 'active' : ''}">
+                    <i class="bi bi-graph-up-arrow menu-icon"></i>
+                    <span class="menu-text">Báo cáo & Thống kê</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- User Profile Footer with Dropdown -->
+        <div class="sidebar-user-footer border-top border-secondary border-opacity-25 pt-3 mt-auto">
+            <div class="dropup">
+                <button class="btn user-profile-btn w-100 d-flex align-items-center p-2 text-start rounded-3"
+                    type="button" id="adminUserDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="avatar-circle flex-shrink-0 me-2 bg-primary text-white fw-bold">
+                        <span sec:authentication="name"
+                            th:text="${#strings.substring(userFullName ?: 'Admin', 0, 1)}">A</span>
+                    </div>
+                    <div class="user-info text-truncate me-auto">
+                        <div class="user-fullname text-white fw-semibold text-truncate" sec:authentication="name"
+                            th:text="${userFullName ?: 'Nguyễn Văn Admin'}">Nguyễn Văn Admin</div>
+                        <div class="user-meta small text-muted d-flex align-items-center gap-1">
+                            <span class="user-name text-truncate" th:text="${username ?: '@admin'}">@admin</span>
+                            <span class="bullet-divider">•</span>
+                            <span class="badge bg-primary text-white rounded-pill px-1-5 py-0-5 fs-8">Admin</span>
+                        </div>
+                    </div>
+                    <i class="bi bi-chevron-up text-muted ms-1 small"></i>
+                </button>
+
+                <ul class="dropdown-menu dropdown-menu-dark shadow-lg border-0 rounded-3 py-2 w-100"
+                    aria-labelledby="adminUserDropdown">
+                    <li class="px-3 py-2 border-bottom border-secondary border-opacity-25 mb-1">
+                        <small class="text-muted d-block">Đăng nhập với tư cách</small>
+                        <strong class="text-white text-truncate d-block"
+                            th:text="${userFullName ?: 'Quản trị viên'}">Quản trị viên</strong>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center py-2" href="#" th:href="@{/profile}">
+                            <i class="bi bi-person me-2 text-primary"></i> Hồ sơ cá nhân
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center py-2" href="#" th:href="@{/change-password}">
+                            <i class="bi bi-key me-2 text-warning"></i> Đổi mật khẩu
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider bg-secondary opacity-25">
+                    </li>
+                    <li>
+                        <form th:action="@{/logout}" method="post" class="m-0">
+                            <button type="submit" class="dropdown-item d-flex align-items-center py-2 text-danger">
+                                <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </aside>
+
+</body>
+
+</html>

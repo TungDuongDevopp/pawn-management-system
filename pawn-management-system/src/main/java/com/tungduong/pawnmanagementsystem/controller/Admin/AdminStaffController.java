@@ -1,4 +1,4 @@
-package com.tungduong.pawnmanagementsystem.controller;
+package com.tungduong.pawnmanagementsystem.controller.Admin;
 
 import com.tungduong.pawnmanagementsystem.model.Staff;
 import com.tungduong.pawnmanagementsystem.model.enums.Department;
@@ -14,10 +14,10 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/staffs")
-public class StaffController {
+public class AdminStaffController {
     private final StaffService service;
 
-    public StaffController(StaffService service) {
+    public AdminStaffController(StaffService service) {
         this.service = service;
     }
 
@@ -26,7 +26,7 @@ public class StaffController {
         List<Staff> staff = service.getAllStaffs();
 
         model.addAttribute("staffs", staff);
-        return "Admin/Staff/index";
+        return "admin/Staff/index";
     }
 
     @GetMapping("/create")
@@ -34,13 +34,13 @@ public class StaffController {
         model.addAttribute("staff",new Staff());
         model.addAttribute("departments", Department.values());
         model.addAttribute("statuses", StaffStatus.values());
-        return "Admin/Staff/create";
+        return "admin/Staff/create";
     }
 
     @PostMapping("/create")
     public String createStaff(@Valid @ModelAttribute Staff staff, BindingResult result){
         if(result.hasErrors()){
-            return "Admin/Staff/create";
+            return "admin/Staff/create";
         }
         service.saveStaff(staff);
         return "redirect:/staffs";
@@ -52,12 +52,12 @@ public class StaffController {
         model.addAttribute("staff",currentStaff);
         model.addAttribute("departments", Department.values());
         model.addAttribute("statuses", StaffStatus.values());
-        return "Admin/Staff/update";
+        return "admin/Staff/update";
     }
     @PostMapping("/update")
     public String updateStaff(@Valid @ModelAttribute Staff updateStaff, BindingResult result){
         if(result.hasErrors()){
-            return "Admin/Staff/update";
+            return "admin/Staff/update";
 
         }
         service.updateStaff(updateStaff);
