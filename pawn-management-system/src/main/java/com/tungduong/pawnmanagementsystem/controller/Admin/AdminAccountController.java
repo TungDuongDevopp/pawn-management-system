@@ -1,4 +1,4 @@
-package com.tungduong.pawnmanagementsystem.controller;
+package com.tungduong.pawnmanagementsystem.controller.Admin;
 
 import com.tungduong.pawnmanagementsystem.model.Account;
 import com.tungduong.pawnmanagementsystem.model.enums.AccountStatus;
@@ -14,11 +14,11 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/accounts")
-public class AccountController {
+public class AdminAccountController {
 
     private final AccountService service;
 
-    public AccountController(AccountService service) {
+    public AdminAccountController(AccountService service) {
 
         this.service = service;
     }
@@ -28,7 +28,7 @@ public class AccountController {
         List<Account> accounts = service.getAllAccounts();
 
         model.addAttribute("accounts", accounts);
-        return "Admin/Account/index";
+        return "admin/Account/index";
     }
 
     @GetMapping("/create")
@@ -36,13 +36,13 @@ public class AccountController {
         model.addAttribute("account",new Account());
         model.addAttribute("roles", Role.values());
         model.addAttribute("statuses", AccountStatus.values());
-        return "Admin/Account/create";
+        return "admin/Account/create";
     }
 
     @PostMapping("/create")
     public String createAccount(@Valid @ModelAttribute Account account, BindingResult result){
         if(result.hasErrors()){
-            return "Admin/Account/create";
+            return "admin/Account/create";
         }
         service.saveAccount(account);
         return "redirect:/accounts";
@@ -54,12 +54,12 @@ public class AccountController {
         model.addAttribute("account",currentAccount);
         model.addAttribute("roles", Role.values());
         model.addAttribute("statuses", AccountStatus.values());
-        return "Admin/Account/update";
+        return "admin/Account/update";
     }
     @PostMapping("/update")
     public String updateAccount( @Valid @ModelAttribute Account updateAccount,BindingResult result){
         if(result.hasErrors()){
-            return "Admin/Account/update";
+            return "admin/Account/update";
         }
         service.updateAccount(updateAccount);
         return "redirect:/accounts";

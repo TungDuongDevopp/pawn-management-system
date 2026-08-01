@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Hệ Thống Cầm Đồ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body class="bg-light">
+
+    <div class="layout">
+        <!-- Sidebar Fragment -->
+        <nav th:replace="~{fragments/admin-sidebar :: adminSidebar(activePage='dashboard')}"></nav>
+
+        <!-- Main Content Area -->
+        <main class="content">
+            <div class="container-fluid p-4">
+
+                <!-- Welcome Banner Header -->
+                <div class="card shadow-sm border-0 mb-4 bg-gradient text-white"
+                    style="background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%); border-radius: 16px;">
+                    <div class="card-body p-4 d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="fw-bold mb-1"><i class="bi bi-speedometer2 me-2"></i> Bảng Điều Khiển Admin</h2>
+                            <p class="mb-0 text-white-50">Chào mừng trở lại! Hệ thống quản lý tiệm cầm đồ sẵn sàng.</p>
+                        </div>
+                        <div>
+                            <span class="badge bg-white text-primary px-3 py-2 fs-6 shadow-sm">
+                                <i class="bi bi-clock-history me-1"></i> Hệ thống hoạt động
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards Grid -->
+                <div class="row g-3 mb-4">
+                    <!-- Card 1: Tài khoản -->
+                    <div class="col-12 col-sm-6 col-xl-4">
+                        <div class="card border-0 shadow-sm h-100 stat-card">
+                            <div class="card-body d-flex align-items-center justify-content-between p-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="stat-icon bg-primary-subtle text-primary me-3">
+                                        <i class="bi bi-shield-lock fs-3"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-muted small fw-semibold">TÀI KHOẢN</div>
+                                        <div class="fs-3 fw-bold text-dark" th:text="${accountCount}">0</div>
+                                    </div>
+                                </div>
+                                <a th:href="@{/accounts}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                    Xem <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Khách hàng -->
+                    <div class="col-12 col-sm-6 col-xl-4">
+                        <div class="card border-0 shadow-sm h-100 stat-card">
+                            <div class="card-body d-flex align-items-center justify-content-between p-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="stat-icon bg-success-subtle text-success me-3">
+                                        <i class="bi bi-people fs-3"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-muted small fw-semibold">KHÁCH HÀNG</div>
+                                        <div class="fs-3 fw-bold text-dark" th:text="${customerCount}">0</div>
+                                    </div>
+                                </div>
+                                <a th:href="@{/customers}" class="btn btn-sm btn-outline-success rounded-pill px-3">
+                                    Xem <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Nhân viên -->
+                    <div class="col-12 col-sm-6 col-xl-4">
+                        <div class="card border-0 shadow-sm h-100 stat-card">
+                            <div class="card-body d-flex align-items-center justify-content-between p-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="stat-icon bg-info-subtle text-info me-3">
+                                        <i class="bi bi-person-workspace fs-3"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-muted small fw-semibold">NHÂN VIÊN</div>
+                                        <div class="fs-3 fw-bold text-dark" th:text="${staffCount}">0</div>
+                                    </div>
+                                </div>
+                                <a th:href="@{/staffs}" class="btn btn-sm btn-outline-info rounded-pill px-3">
+                                    Xem <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Danh mục -->
+                    <div class="col-12 col-sm-6 col-xl-6">
+                        <div class="card border-0 shadow-sm h-100 stat-card">
+                            <div class="card-body d-flex align-items-center justify-content-between p-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="stat-icon bg-warning-subtle text-warning me-3">
+                                        <i class="bi bi-tags fs-3"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-muted small fw-semibold">DANH MỤC TÀI SẢN</div>
+                                        <div class="fs-3 fw-bold text-dark" th:text="${categoryCount}">0</div>
+                                    </div>
+                                </div>
+                                <a th:href="@{/categories}" class="btn btn-sm btn-outline-warning rounded-pill px-3">
+                                    Xem <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 5: Tài sản cầm cố -->
+                    <div class="col-12 col-sm-6 col-xl-6">
+                        <div class="card border-0 shadow-sm h-100 stat-card">
+                            <div class="card-body d-flex align-items-center justify-content-between p-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="stat-icon bg-danger-subtle text-danger me-3">
+                                        <i class="bi bi-box-seam fs-3"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-muted small fw-semibold">TÀI SẢN CẦM CỐ</div>
+                                        <div class="fs-3 fw-bold text-dark" th:text="${collateralCount}">0</div>
+                                    </div>
+                                </div>
+                                <a th:href="@{/collaterals}" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                    Xem <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Section -->
+                <div class="row g-3 mb-4">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white py-3 border-0">
+                                <h5 class="fw-bold text-dark mb-0"><i
+                                        class="bi bi-lightning-charge text-warning me-2"></i> Thao Tác Nhanh</h5>
+                            </div>
+                            <div class="card-body pt-0">
+                                <div class="row g-2">
+                                    <div class="col-6 col-md-3">
+                                        <a th:href="@{/accounts/create}"
+                                            class="btn btn-light w-100 p-3 text-start border d-flex align-items-center justify-content-between rounded-3">
+                                            <span><i class="bi bi-person-plus text-primary me-2"></i> Thêm tài
+                                                khoản</span>
+                                            <i class="bi bi-chevron-right text-muted small"></i>
+                                        </a>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <a th:href="@{/customers/create}"
+                                            class="btn btn-light w-100 p-3 text-start border d-flex align-items-center justify-content-between rounded-3">
+                                            <span><i class="bi bi-person-add text-success me-2"></i> Thêm khách
+                                                hàng</span>
+                                            <i class="bi bi-chevron-right text-muted small"></i>
+                                        </a>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <a th:href="@{/staffs/create}"
+                                            class="btn btn-light w-100 p-3 text-start border d-flex align-items-center justify-content-between rounded-3">
+                                            <span><i class="bi bi-briefcase text-info me-2"></i> Thêm nhân viên</span>
+                                            <i class="bi bi-chevron-right text-muted small"></i>
+                                        </a>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <a th:href="@{/collaterals/create}"
+                                            class="btn btn-light w-100 p-3 text-start border d-flex align-items-center justify-content-between rounded-3">
+                                            <span><i class="bi bi-box-seam text-danger me-2"></i> Thêm tài sản</span>
+                                            <i class="bi bi-chevron-right text-muted small"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Overview Section -->
+                <div class="row g-3">
+                    <!-- Recent Customers Overview -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div
+                                class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-0">
+                                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-people me-2 text-success"></i> Danh
+                                    Sách Khách Hàng</h5>
+                                <a th:href="@{/customers}" class="btn btn-sm btn-link text-decoration-none p-0">Xem tất
+                                    cả</a>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Họ tên</th>
+                                                <th>SĐT</th>
+                                                <th>CCCD</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:unless="${#lists.isEmpty(recentCustomers)}"
+                                                th:each="customer, iter : ${recentCustomers}" th:if="${iter.index < 5}">
+                                                <td class="fw-semibold" th:text="${customer.name}">Nguyễn Văn A</td>
+                                                <td th:text="${customer.phone}">0912345678</td>
+                                                <td th:text="${customer.citizenId}">123456789</td>
+                                            </tr>
+                                            <tr th:if="${#lists.isEmpty(recentCustomers)}">
+                                                <td colspan="3" class="text-center text-muted py-3">Chưa có khách hàng
+                                                    nào</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Accounts Overview -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div
+                                class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-0">
+                                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-shield-lock me-2 text-primary"></i>
+                                    Tài Khoản Hệ Thống</h5>
+                                <a th:href="@{/accounts}" class="btn btn-sm btn-link text-decoration-none p-0">Xem tất
+                                    cả</a>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Username</th>
+                                                <th class="text-center">Role</th>
+                                                <th class="text-center">Trạng thái</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:unless="${#lists.isEmpty(recentAccounts)}"
+                                                th:each="account, iter : ${recentAccounts}" th:if="${iter.index < 5}">
+                                                <td class="fw-semibold" th:text="${account.username}">admin</td>
+                                                <td class="text-center">
+                                                    <span class="badge"
+                                                        th:classappend="'text-bg-' + ${account.role.color}"
+                                                        th:text="${account.role}">ADMIN</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="badge"
+                                                        th:classappend="'text-bg-' + ${account.status.color}"
+                                                        th:text="${account.status}">ACTIVE</span>
+                                                </td>
+                                            </tr>
+                                            <tr th:if="${#lists.isEmpty(recentAccounts)}">
+                                                <td colspan="3" class="text-center text-muted py-3">Chưa có tài khoản
+                                                    nào</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -2,31 +2,31 @@
    RESET
 ========================================= */
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-:root{
-    --primary:#2563eb;
-    --primary-dark:#1d4ed8;
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
 
-    --sidebar:#1e293b;
-    --sidebar-hover:#334155;
+    --sidebar: #1e293b;
+    --sidebar-hover: #334155;
 
-    --background:#f8fafc;
-    --border:#e5e7eb;
+    --background: #f8fafc;
+    --border: #e5e7eb;
 
-    --text:#1f2937;
-    --text-light:#64748b;
+    --text: #1f2937;
+    --text-light: #64748b;
 }
 
-body{
-    font-family:Arial, Helvetica, sans-serif;
-    background:var(--background);
-    color:var(--text);
-    min-height:100vh;
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--background);
+    color: var(--text);
+    min-height: 100vh;
 }
 
 
@@ -34,13 +34,14 @@ body{
    LAYOUT
 ========================================= */
 
-.layout{
-    display:flex;
-    min-height:100vh;
+.layout {
+    display: flex;
+    min-height: 100vh;
 }
 
-.content{
-    margin-left: 260px; /* Bằng đúng chiều rộng sidebar */
+.content {
+    margin-left: 260px;
+    /* Bằng đúng chiều rộng sidebar */
     padding: 24px;
     width: calc(100% - 260px);
     box-sizing: border-box;
@@ -61,7 +62,8 @@ body{
     /* SỬA CHỖ NÀY: Ép chiều cao tối thiểu bằng toàn bộ màn hình */
     height: 100vh;
     min-height: 100vh;
-    position: fixed; /* Hoặc sticky tùy bố cục, fixed giúp ghim chặt bên trái */
+    position: fixed;
+    /* Hoặc sticky tùy bố cục, fixed giúp ghim chặt bên trái */
     top: 0;
     left: 0;
 
@@ -70,8 +72,9 @@ body{
     padding: 24px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Đẩy nút Đăng xuất xuống sát đáy padding */
-    box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+    justify-content: space-between;
+    /* Đẩy nút Đăng xuất xuống sát đáy padding */
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
 }
 
 
@@ -81,12 +84,14 @@ body{
     flex-direction: column;
     width: 100%;
 }
-.sidebar-bottom{
+
+.sidebar-bottom {
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
 }
+
 /* Tối ưu Logo nằm trên cùng */
 .logo {
     margin: 0 0 24px 0;
@@ -140,7 +145,8 @@ body{
 .sidebar-nav {
     display: flex;
     flex-direction: column;
-    gap: 6px; /* Khoảng cách đều giữa các item */
+    gap: 6px;
+    /* Khoảng cách đều giữa các item */
 }
 
 .menu-item {
@@ -156,14 +162,19 @@ body{
 }
 
 .menu-icon {
-    width: 24px;         /* Đảm bảo ô chứa mọi icon luôn rộng bằng nhau */
+    width: 24px;
+    /* Đảm bảo ô chứa mọi icon luôn rộng bằng nhau */
     height: 24px;
     display: inline-flex;
     align-items: center;
-    justify-content: center; /* Căn giữa icon bên trong ô chứa */
-    margin-right: 12px;  /* Khoảng cách cố định từ icon đến chữ */
-    font-size: 18px;     /* Kích thước của icon */
-    flex-shrink: 0;      /* Ngăn icon bị bóp méo */
+    justify-content: center;
+    /* Căn giữa icon bên trong ô chứa */
+    margin-right: 12px;
+    /* Khoảng cách cố định từ icon đến chữ */
+    font-size: 18px;
+    /* Kích thước của icon */
+    flex-shrink: 0;
+    /* Ngăn icon bị bóp méo */
 }
 
 /* Hiệu ứng Hover & Active cho Menu */
@@ -183,7 +194,8 @@ body{
 /* Nhóm phía dưới */
 .sidebar-bottom {
     width: 100%;
-    border-top: 1px solid rgba(255, 255, 255, 0.08); /* Đường gạch mờ thay cho <hr> */
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    /* Đường gạch mờ thay cho <hr> */
     padding-top: 16px;
 }
 
@@ -213,7 +225,8 @@ body{
 /* Căn chỉnh khoảng cách icon trong Menu */
 .menu-icon {
     margin-right: 12px;
-    font-size: 18px; /* Tăng nhẹ kích thước icon để dễ nhìn */
+    font-size: 18px;
+    /* Tăng nhẹ kích thước icon để dễ nhìn */
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -235,23 +248,23 @@ body{
    CARD
 ========================================= */
 
-.card{
-    border:none;
-    border-radius:16px;
-    overflow:hidden;
-    box-shadow:0 8px 24px rgba(15,23,42,.08);
+.card {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, .08);
 }
 
-.card-header{
-    background:var(--primary)!important;
-    color:white;
-    border:none;
-    padding:18px 24px;
+.card-header {
+    background: var(--primary) !important;
+    color: white;
+    border: none;
+    padding: 18px 24px;
 }
 
-.card-header h3{
-    margin:0;
-    font-size:2rem;
+.card-header h3 {
+    margin: 0;
+    font-size: 2rem;
 }
 
 
@@ -259,31 +272,31 @@ body{
    TABLE
 ========================================= */
 
-.table{
-    margin-bottom:0;
+.table {
+    margin-bottom: 0;
 }
 
-.table thead{
-    background:#eff6ff;
+.table thead {
+    background: #eff6ff;
 }
 
-.table thead th{
-    color:var(--text);
-    font-weight:600;
-    border-bottom:2px solid var(--border);
+.table thead th {
+    color: var(--text);
+    font-weight: 600;
+    border-bottom: 2px solid var(--border);
 }
 
 .table td,
-.table th{
-    vertical-align:middle;
+.table th {
+    vertical-align: middle;
 }
 
-.table tbody tr{
-    transition:.2s;
+.table tbody tr {
+    transition: .2s;
 }
 
-.table tbody tr:hover{
-    background:#f8fbff;
+.table tbody tr:hover {
+    background: #f8fbff;
 }
 
 
@@ -292,47 +305,48 @@ body{
 ========================================= */
 
 .form-control,
-.form-select{
-    height:46px;
-    border-radius:10px;
-    border:1px solid var(--border);
+.form-select {
+    height: 46px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
 }
 
 .form-control:focus,
-.form-select:focus{
-    border-color:var(--primary);
-    box-shadow:0 0 0 .15rem rgba(37,99,235,.15);
+.form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 .15rem rgba(37, 99, 235, .15);
 }
 
 
 /* =========================================
    BUTTON
 ========================================= */
-.action{
+.action {
     display: flex;
     gap: 10px;
 }
-.btn{
-    border-radius:10px;
-    font-weight:600;
-    transition:.2s;
+
+.btn {
+    border-radius: 10px;
+    font-weight: 600;
+    transition: .2s;
 }
 
-.btn:hover{
-    transform:translateY(-1px);
+.btn:hover {
+    transform: translateY(-1px);
 }
 
-.action-btn{
-    min-width:72px;
+.action-btn {
+    min-width: 72px;
 }
 
-.btn-light{
-    background:white;
-    border:none;
+.btn-light {
+    background: white;
+    border: none;
 }
 
-.btn-light:hover{
-    background:#f1f5f9;
+.btn-light:hover {
+    background: #f1f5f9;
 }
 
 
@@ -340,8 +354,8 @@ body{
    BADGE
 ========================================= */
 
-.badge{
-    border-radius:8px;
+.badge {
+    border-radius: 8px;
 }
 
 
@@ -349,13 +363,13 @@ body{
    SCROLLBAR
 ========================================= */
 
-::-webkit-scrollbar{
-    width:8px;
+::-webkit-scrollbar {
+    width: 8px;
 }
 
-::-webkit-scrollbar-thumb{
-    background:#cbd5e1;
-    border-radius:10px;
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
 }
 
 
@@ -379,4 +393,170 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* =========================================
+   APP SIDEBAR FRAGMENTS (ADMIN & MANAGER)
+========================================= */
+.app-sidebar {
+    width: 270px;
+    min-width: 270px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+    color: #cbd5e1;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    z-index: 1040;
+    transition: all 0.3s ease;
+}
+
+.sidebar-brand {
+    padding: 4px 8px 18px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 16px;
+}
+
+.brand-icon {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: #ffffff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+.sidebar-menu-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.sidebar-nav .nav-link {
+    display: flex;
+    align-items: center;
+    color: #94a3b8;
+    padding: 11px 14px;
+    margin-bottom: 4px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-nav .nav-link .menu-icon {
+    font-size: 1.15rem;
+    margin-right: 12px;
+    width: 24px;
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.sidebar-nav .nav-link:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.07);
+    transform: translateX(3px);
+}
+
+.sidebar-nav .nav-link:hover .menu-icon {
+    color: #60a5fa;
+}
+
+.sidebar-nav .nav-link.active {
+    color: #ffffff;
+    background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+    font-weight: 600;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.sidebar-nav .nav-link.active .menu-icon {
+    color: #ffffff;
+}
+
+/* Sidebar User Footer */
+.user-profile-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.2s ease;
+}
+
+.user-profile-btn:hover,
+.user-profile-btn[aria-expanded="true"] {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.avatar-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* =========================================
+   APP NAVBAR FRAGMENTS (STAFF, CUSTOMER, GUEST)
+========================================= */
+.app-navbar {
+    background-color: #ffffff !important;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+}
+
+.hover-bg-light:hover {
+    background-color: #f1f5f9 !important;
+}
+
+.hover-scale {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-scale:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25) !important;
+}
+
+.shadow-xs {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.fs-7 {
+    font-size: 0.8rem !important;
+}
+
+.fs-8 {
+    font-size: 0.72rem !important;
+}
+
+.px-1-5 {
+    padding-left: 0.4rem !important;
+    padding-right: 0.4rem !important;
+}
+
+.py-0-5 {
+    padding-top: 0.15rem !important;
+    padding-bottom: 0.15rem !important;
+}
+
+.me-1-5 {
+    margin-right: 0.4rem !important;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
 }

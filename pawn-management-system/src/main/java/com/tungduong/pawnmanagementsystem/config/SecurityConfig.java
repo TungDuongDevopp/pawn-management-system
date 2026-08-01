@@ -13,6 +13,12 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
+    private final CustomSuccessHandler customSuccessHandler;
+
+    public SecurityConfig(CustomSuccessHandler customSuccessHandler) {
+        this.customSuccessHandler = customSuccessHandler;
+    }
+
     @Bean
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -33,10 +39,12 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http){
         http.authorizeHttpRequests((requests) ->
-                requests.requestMatchers("/auth","/auth/register","/").permitAll()
+                requests.requestMatchers("/login","/register","/").permitAll()
                         .requestMatchers("/accounts/**","/dashboards/**","/customers/**","/staffs/**","/categories/**","/collaterals/**").hasRole("ADMIN")
                         .anyRequest().authenticated());
-        http.formLogin(login-> login.loginPage("/auth"));
+        http.formLogin(login-> login.loginPage("/login")
+                .successHandler(customSuccessHandler)
+        );
         http.exceptionHandling(exception -> exception
                 .accessDeniedPage("/403")
         );

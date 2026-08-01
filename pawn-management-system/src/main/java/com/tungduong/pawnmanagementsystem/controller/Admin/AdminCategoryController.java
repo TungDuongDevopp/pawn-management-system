@@ -1,4 +1,4 @@
-package com.tungduong.pawnmanagementsystem.controller;
+package com.tungduong.pawnmanagementsystem.controller.Admin;
 
 import com.tungduong.pawnmanagementsystem.model.Category;
 import com.tungduong.pawnmanagementsystem.service.CategoryService;
@@ -12,10 +12,10 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/categories")
-public class CategoryController {
+public class AdminCategoryController {
     private final CategoryService service;
 
-    public CategoryController(CategoryService service) {
+    public AdminCategoryController(CategoryService service) {
         this.service = service;
     }
 
@@ -23,19 +23,19 @@ public class CategoryController {
     public String getCategory(Model model){
         List<Category> categories = service.getAllCategory();
         model.addAttribute("categories", categories);
-        return "Admin/Category/index";
+        return "admin/Category/index";
     }
 
     @GetMapping("/create")
     public String createCategory(Model model){
         model.addAttribute("category",new Category());
-        return "Admin/Category/create";
+        return "admin/Category/create";
     }
 
     @PostMapping("/create")
     public String createCategory(@Valid @ModelAttribute Category category, BindingResult result){
         if(result.hasErrors()){
-            return "Admin/Category/create";
+            return "admin/Category/create";
         }
         service.saveCategory(category);
         return "redirect:/categories";
@@ -45,12 +45,12 @@ public class CategoryController {
     public String updateCategory(Model model, @PathVariable Long id){
         Category currentCategory = service.getCategoryById(id).orElse(null);
         model.addAttribute("category",currentCategory);
-        return "Admin/Category/update";
+        return "admin/Category/update";
     }
     @PostMapping("/update")
     public String updateCategory(@Valid @ModelAttribute Category updateCategory, BindingResult result){
         if(result.hasErrors()){
-            return "Admin/Category/update";
+            return "admin/Category/update";
         }
         service.updateCategory(updateCategory);
         return "redirect:/categories";
