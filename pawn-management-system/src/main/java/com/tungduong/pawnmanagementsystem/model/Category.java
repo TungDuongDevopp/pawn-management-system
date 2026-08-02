@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
 @Entity
 @Getter @Setter
 @Table(name = "categories")

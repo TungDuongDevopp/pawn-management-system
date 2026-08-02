@@ -1,26 +1,26 @@
 package com.tungduong.pawnmanagementsystem.service;
 
+import com.tungduong.pawnmanagementsystem.helper.ResourceNotFoundException;
 import com.tungduong.pawnmanagementsystem.model.Category;
 import com.tungduong.pawnmanagementsystem.repository.CategoryRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class CategoryService {
     private final CategoryRepository repository;
-
-    public CategoryService(CategoryRepository repository) {
-        this.repository = repository;
-    }
 
     public List<Category> getAllCategory(){
         return repository.findAll();
     }
 
-    public Optional<Category> getCategoryById(Long id){
-        return repository.findById(id);
+    public Category getCategoryById(Long id){
+        return repository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Category not found"));
     }
 
     public Category saveCategory(Category category){
@@ -33,9 +33,7 @@ public class CategoryService {
         return true;
     }
     public Category updateCategory(Category category){
-        Optional<Category> opt = getCategoryById(category.getId());
-        if(opt.isEmpty()) return  null;
-        Category current = opt.get();
+        Category current = getCategoryById(category.getId());
         current.setName(category.getName());
         current.setDescription(category.getDescription());
         repository.save(category);

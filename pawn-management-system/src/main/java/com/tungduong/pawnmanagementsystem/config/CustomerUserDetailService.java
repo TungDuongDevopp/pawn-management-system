@@ -21,8 +21,7 @@ public class CustomerUserDetailService  implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Account> opt = service.getAccountByUsername(username);
-        Account account = opt.orElseThrow( () -> new UsernameNotFoundException("User not found"));
+       Account account = service.getAccountByUsername(username);
 
         return User.builder()
                 .username(account.getUsername())

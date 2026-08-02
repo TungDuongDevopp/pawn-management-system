@@ -3,8 +3,10 @@ package com.tungduong.pawnmanagementsystem.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
 @Getter @Setter
 @Entity
 @Table(name = "customers")
@@ -39,6 +41,5 @@ public class Customer {
     private Account account;
 
 
-    public Customer(){}
 }
 

@@ -1,27 +1,26 @@
 package com.tungduong.pawnmanagementsystem.service;
 
-import com.tungduong.pawnmanagementsystem.model.Account;
+import com.tungduong.pawnmanagementsystem.helper.ResourceNotFoundException;
 import com.tungduong.pawnmanagementsystem.model.Customer;
 import com.tungduong.pawnmanagementsystem.repository.CustomerRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class CustomerService {
 
     private final CustomerRepository repository;
 
-    public CustomerService(CustomerRepository repository) {
-        this.repository = repository;
-    }
-
     public List<Customer> getAllCustomer() {
         return repository.findAll();
     }
-    public Optional<Customer> getCustomerById(Long id){
-        return repository.findById(id);
+    public Customer getCustomerById(Long id){
+        return repository.findById(id).orElseThrow(
+                ()-> new ResourceNotFoundException("Customer not found"));
     }
     public Customer saveCustomer(Customer customer){
 
@@ -34,13 +33,8 @@ public class CustomerService {
         return true;
     }
     public Customer updateCustomer(Customer customer){
-        Optional<Customer> optional = getCustomerById(customer.getId());
+        Customer currentCustomer = getCustomerById(customer.getId());
 
-        if(optional.isEmpty()){
-            return null;
-        }
-
-        Customer currentCustomer = optional.get();
         currentCustomer.setName(customer.getName());
         currentCustomer.setCitizenId(customer.getCitizenId());
         currentCustomer.setEmail(customer.getEmail());

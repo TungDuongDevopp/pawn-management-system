@@ -1,26 +1,25 @@
 package com.tungduong.pawnmanagementsystem.service;
 
+import com.tungduong.pawnmanagementsystem.helper.ResourceNotFoundException;
 import com.tungduong.pawnmanagementsystem.model.Collateral;
-import com.tungduong.pawnmanagementsystem.model.Customer;
 import com.tungduong.pawnmanagementsystem.repository.CollateralRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class CollateralService {
     private final CollateralRepository repository;
 
-    public CollateralService(CollateralRepository repository) {
-        this.repository = repository;
-    }
-
     public List<Collateral> getAllCollateral() {
         return repository.findAll();
     }
-    public Optional<Collateral> getCollateralById(Long id){
-        return repository.findById(id);
+    public Collateral getCollateralById(Long id){
+        return repository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Collateral not found"));
     }
     public Collateral saveCollateral(Collateral collateral){
 
@@ -33,12 +32,8 @@ public class CollateralService {
         return true;
     }
     public Collateral updateCollateral(Collateral collateral){
-        Optional<Collateral> optional = getCollateralById(collateral.getId());
 
-        if(optional.isEmpty()){
-            return null;
-        }
-         Collateral currentCollateral = optional.get();
+         Collateral currentCollateral = getCollateralById(collateral.getId());
             currentCollateral.setName(collateral.getName());
             currentCollateral.setImageUrl(collateral.getImageUrl());
             currentCollateral.setDescription(collateral.getDescription());

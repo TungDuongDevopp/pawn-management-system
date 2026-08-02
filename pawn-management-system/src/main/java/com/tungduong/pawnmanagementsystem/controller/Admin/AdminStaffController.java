@@ -5,6 +5,7 @@ import com.tungduong.pawnmanagementsystem.model.enums.Department;
 import com.tungduong.pawnmanagementsystem.model.enums.StaffStatus;
 import com.tungduong.pawnmanagementsystem.service.StaffService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,14 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/staffs")
 public class AdminStaffController {
     private final StaffService service;
-
-    public AdminStaffController(StaffService service) {
-        this.service = service;
-    }
 
     @GetMapping
     public String getStaff(Model model){
@@ -48,7 +46,7 @@ public class AdminStaffController {
 
     @GetMapping("/{id}")
     public String updateStaff(Model model, @PathVariable Long id){
-        Staff currentStaff = service.getStaffById(id).orElse(null);
+        Staff currentStaff = service.getStaffById(id);
         model.addAttribute("staff",currentStaff);
         model.addAttribute("departments", Department.values());
         model.addAttribute("statuses", StaffStatus.values());
