@@ -1,35 +1,31 @@
 package com.tungduong.pawnmanagementsystem.service;
 import com.tungduong.pawnmanagementsystem.dto.request.RegisterRequest;
+import com.tungduong.pawnmanagementsystem.helper.ResourceNotFoundException;
 import com.tungduong.pawnmanagementsystem.model.Account;
 import com.tungduong.pawnmanagementsystem.model.enums.AccountStatus;
 import com.tungduong.pawnmanagementsystem.model.enums.Role;
 import com.tungduong.pawnmanagementsystem.repository.AccountRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
-
+@RequiredArgsConstructor
 @Service
     public class AccountService {
 
         private final AccountRepository repository;
         private final PasswordEncoder passwordEncoder;
 
-        public AccountService(AccountRepository repository,PasswordEncoder passwordEncoder) {
-            this.repository = repository;
-            this.passwordEncoder = passwordEncoder;
-        }
-
-        public List<Account> getAllAccounts() {
+    public List<Account> getAllAccounts() {
             return repository.findAll();
         }
-        public Optional<Account> getAccountById(Long id){
-            return repository.findById(id);
+        public Account getAccountById(Long id){
+            return repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Account not found"));
         }
-        public Optional<Account> getAccountByUsername(String username){
-        return repository.findByUsername(username);
+        public Account getAccountByUsername(String username){
+        return repository.findByUsername(username).orElseThrow(()-> new ResourceNotFoundException("Account not found"));
     }
         public Account saveAccount(Account account){
 
@@ -47,13 +43,8 @@ import java.util.Optional;
             return true;
         }
         public Account updateAccount(Account account){
-            Optional<Account> optional = getAccountById(account.getId());
 
-            if(optional.isEmpty()){
-                return null;
-            }
-
-            Account currentAccount = optional.get();
+            Account currentAccount = getAccountById(account.getId());
                 currentAccount.setStatus(account.getStatus());
                 currentAccount.setRole(account.getRole());
                 repository.save(currentAccount);

@@ -3,21 +3,18 @@ package com.tungduong.pawnmanagementsystem.controller.Admin;
 import com.tungduong.pawnmanagementsystem.model.Customer;
 import com.tungduong.pawnmanagementsystem.service.CustomerService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/customers")
 public class AdminCustomerController {
     private final CustomerService service;
-
-    public AdminCustomerController(CustomerService service) {
-        this.service = service;
-    }
 
     @GetMapping
     public String getCustomer(Model model){
@@ -43,7 +40,7 @@ public class AdminCustomerController {
 
     @GetMapping("/{id}")
     public String updateCustomer(Model model, @PathVariable Long id){
-        Customer currentCustomer = service.getCustomerById(id).orElse(null);
+        Customer currentCustomer = service.getCustomerById(id);
         model.addAttribute("customer",currentCustomer);
         return "admin/Customer/update";
     }

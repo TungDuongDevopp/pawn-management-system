@@ -5,12 +5,13 @@ import com.tungduong.pawnmanagementsystem.model.enums.StaffStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-
+@NoArgsConstructor
 @Getter @Setter
 @Entity
 @Table(name="staffs")
@@ -58,8 +59,6 @@ public class Staff {
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Vui lòng chọn status")
     private StaffStatus status;
-
-    public Staff(){}
 
 }
 

@@ -5,9 +5,11 @@ import com.tungduong.pawnmanagementsystem.model.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+@NoArgsConstructor
 @ToString(exclude = "password")
 @Setter @Getter
 @Entity
@@ -33,5 +35,4 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private AccountStatus status;
 
-    public Account(){}
 }

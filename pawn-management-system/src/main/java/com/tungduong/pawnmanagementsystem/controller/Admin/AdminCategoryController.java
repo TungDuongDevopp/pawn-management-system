@@ -3,6 +3,7 @@ package com.tungduong.pawnmanagementsystem.controller.Admin;
 import com.tungduong.pawnmanagementsystem.model.Category;
 import com.tungduong.pawnmanagementsystem.service.CategoryService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,14 +11,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/categories")
 public class AdminCategoryController {
     private final CategoryService service;
-
-    public AdminCategoryController(CategoryService service) {
-        this.service = service;
-    }
 
     @GetMapping
     public String getCategory(Model model){
@@ -43,7 +41,7 @@ public class AdminCategoryController {
 
     @GetMapping("/{id}")
     public String updateCategory(Model model, @PathVariable Long id){
-        Category currentCategory = service.getCategoryById(id).orElse(null);
+        Category currentCategory = service.getCategoryById(id);
         model.addAttribute("category",currentCategory);
         return "admin/Category/update";
     }

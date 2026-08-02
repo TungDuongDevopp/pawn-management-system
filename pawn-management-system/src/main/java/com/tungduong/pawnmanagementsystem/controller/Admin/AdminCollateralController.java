@@ -5,6 +5,7 @@ import com.tungduong.pawnmanagementsystem.model.enums.CollateralSatus;
 import com.tungduong.pawnmanagementsystem.service.CategoryService;
 import com.tungduong.pawnmanagementsystem.service.CollateralService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,16 +13,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/collaterals")
 public class AdminCollateralController {
     private final CollateralService service;
     private final CategoryService categoryService;
 
-    public AdminCollateralController(CollateralService service, CategoryService categoryService) {
-        this.service = service;
-        this.categoryService = categoryService;
-    }
     @GetMapping
     public String getCollateral(Model model){
         List<Collateral> collaterals= service.getAllCollateral();
@@ -50,7 +48,7 @@ public class AdminCollateralController {
 
     @GetMapping("/{id}")
     public String updateCollateral(Model model, @PathVariable Long id){
-        Collateral currentCollateral = service.getCollateralById(id).orElse(null);
+        Collateral currentCollateral = service.getCollateralById(id);
         model.addAttribute("collateral",currentCollateral);
         model.addAttribute("categories", categoryService.getAllCategory());
         model.addAttribute("statuses", CollateralSatus.values());

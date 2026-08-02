@@ -1,24 +1,23 @@
 package com.tungduong.pawnmanagementsystem.service;
 
+import com.tungduong.pawnmanagementsystem.helper.ResourceNotFoundException;
 import com.tungduong.pawnmanagementsystem.model.Staff;
 import com.tungduong.pawnmanagementsystem.repository.StaffRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+@RequiredArgsConstructor
 @Service
 public class StaffService {
     private final StaffRepository repository;
 
-    public StaffService(StaffRepository repository) {
-        this.repository = repository;
-    }
-
     public List<Staff> getAllStaffs() {
         return repository.findAll();
     }
-    public Optional<Staff> getStaffById(Long id){
-        return repository.findById(id);
+    public Staff getStaffById(Long id){
+        return repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Staff not found"));
     }
     public Staff saveStaff(Staff staff){
         return repository.save(staff);
@@ -33,13 +32,8 @@ public class StaffService {
         return true;
     }
     public Staff updateStaff(Staff staff){
-        Optional<Staff> optional = getStaffById(staff.getId());
 
-        if(optional.isEmpty()){
-            return null;
-        }
-
-        Staff currentStaff = optional.get();
+        Staff currentStaff = getStaffById(staff.getId());
         currentStaff.setFullname(staff.getFullname());
         currentStaff.setEmail(staff.getEmail());
         currentStaff.setPhone(staff.getPhone());

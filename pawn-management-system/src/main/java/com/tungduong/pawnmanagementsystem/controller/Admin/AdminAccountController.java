@@ -5,23 +5,19 @@ import com.tungduong.pawnmanagementsystem.model.enums.AccountStatus;
 import com.tungduong.pawnmanagementsystem.model.enums.Role;
 import com.tungduong.pawnmanagementsystem.service.AccountService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/accounts")
 public class AdminAccountController {
 
     private final AccountService service;
-
-    public AdminAccountController(AccountService service) {
-
-        this.service = service;
-    }
 
     @GetMapping
     public String getAccount(Model model){
@@ -50,7 +46,7 @@ public class AdminAccountController {
 
     @GetMapping("/{id}")
     public String updateAccount(Model model, @PathVariable Long id){
-        Account currentAccount = service.getAccountById(id).orElse(null);
+        Account currentAccount = service.getAccountById(id);
         model.addAttribute("account",currentAccount);
         model.addAttribute("roles", Role.values());
         model.addAttribute("statuses", AccountStatus.values());
