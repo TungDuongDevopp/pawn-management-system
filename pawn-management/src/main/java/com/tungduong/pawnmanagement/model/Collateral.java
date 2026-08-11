@@ -1,0 +1,58 @@
+package com.tungduong.pawnmanagement.model;
+
+import com.tungduong.pawnmanagement.model.enums.AssetStatus;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.List;
+
+@Entity
+@Table(name = "collaterals")
+@Getter
+@Setter
+@NoArgsConstructor
+public class Collateral {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank(message = "name can not be null")
+    private String name;
+
+    private String description;
+
+    @NotNull(message = "valuation can not be null")
+    private BigDecimal valuation;
+
+    @NotBlank(message = "location can not be null")
+    private String location;
+
+    @NotNull(message = "assetStatus can not be null ")
+    @Enumerated(EnumType.STRING)
+    private AssetStatus status;
+
+    private Instant updatedAt;
+
+    private Instant createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "loan_id")
+    private Loan loan;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "asset_type_id")
+    private AssetType type;
+
+    @OneToMany(mappedBy = "collateral")
+    private List<CollateralDocument> documents;
+
+
+
+
+}
