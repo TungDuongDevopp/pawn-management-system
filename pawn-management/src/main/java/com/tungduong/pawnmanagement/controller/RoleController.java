@@ -1,9 +1,9 @@
 package com.tungduong.pawnmanagement.controller;
 
+import com.tungduong.pawnmanagement.dto.request.RoleFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.RoleRequest;
 import com.tungduong.pawnmanagement.dto.response.RoleResponse;
 import com.tungduong.pawnmanagement.helper.ApiResponse;
-import com.tungduong.pawnmanagement.model.Role;
 import com.tungduong.pawnmanagement.service.RoleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,8 @@ public class RoleController {
     }
 
     @GetMapping("/roles")
-    private ResponseEntity<ApiResponse<List<RoleResponse>>>getRoles() {
-        return ApiResponse.success(roleService.findAll());
+    private ResponseEntity<ApiResponse<List<RoleResponse>>>getRoles(RoleFilterRequest roleFilterRequest) {
+        return ApiResponse.success(roleService.findAll(roleFilterRequest));
     }
 
     @GetMapping("/roles/{id}")
