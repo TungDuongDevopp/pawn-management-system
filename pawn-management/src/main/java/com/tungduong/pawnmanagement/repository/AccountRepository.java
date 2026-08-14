@@ -2,6 +2,9 @@ package com.tungduong.pawnmanagement.repository;
 
 import com.tungduong.pawnmanagement.model.Account;
 import com.tungduong.pawnmanagement.model.enums.AccountStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -16,8 +19,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> , JpaSpe
             String username,
             AccountStatus status
     );
-
-    List<Account> findAllByStatusNot(AccountStatus status);
 
     Optional<Account> findByIdAndStatusNot(Long id, AccountStatus status);
 }

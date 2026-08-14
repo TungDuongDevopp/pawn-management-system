@@ -1,22 +1,25 @@
 package com.tungduong.pawnmanagement.service;
 
+import com.tungduong.pawnmanagement.dto.request.AccountFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.AccountRequest;
 import com.tungduong.pawnmanagement.dto.request.AccountUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.AccountResponse;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.AccountMapper;
-import com.tungduong.pawnmanagement.mapper.RoleMapper;
 import com.tungduong.pawnmanagement.model.Account;
 import com.tungduong.pawnmanagement.model.Role;
 import com.tungduong.pawnmanagement.model.enums.AccountStatus;
 import com.tungduong.pawnmanagement.repository.AccountRepository;
 import com.tungduong.pawnmanagement.repository.RoleRepository;
+import com.tungduong.pawnmanagement.service.specification.AccountSpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,11 +27,17 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
     private final RoleRepository roleRepository;
-    private final RoleMapper roleMapper;
 
-    public List<AccountResponse> findAll() {
-        return accountMapper.toAccountList(accountRepository.findAllByStatusNot(AccountStatus.DELETED));
 
+    public Page<AccountResponse> findAll(Pageable pageable, AccountFilterRequest filterRequest) {
+        Specification<Account> specification = Specification.allOf(
+                AccountSpecification.statusNot(AccountStatus.DELETED),
+                AccountSpecification.hasRole(filterRequest),
+                AccountSpecification.hasStatus(filterRequest),
+                AccountSpecification.hasUsername(filterRequest)
+        );
+        return accountRepository.findAll(specification, pageable)
+                .map(accountMapper::toDto);
     }
     public AccountResponse findById(Long id) {
         return accountMapper.toDto(accountRepository.findByIdAndStatusNot(id,AccountStatus.DELETED).orElseThrow(()->new ResourceNotFoundException("Account not found")));
