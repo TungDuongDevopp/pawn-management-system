@@ -11,8 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoleFilterRequest {
-    private Long id;
-
     @NotBlank(message = "roleName can not be null")
     private String name;
 }
