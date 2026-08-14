@@ -38,12 +38,7 @@ public class RoleService {
         }
         return roleMapper.toResponse(roleRepository.save(role));
     }
-    public void deleteById(Long id) {
-        if(!roleRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Role not found");
-        }
-        roleRepository.deleteById(id);
-    }
+
     @Transactional
     public RoleResponse update(Long id, RoleRequest roleRequest) {
         Role role = roleMapper.toEntity(roleRequest);
@@ -56,4 +51,11 @@ public class RoleService {
         currentRole.setDescription(role.getDescription());
         return roleMapper.toResponse(currentRole);
     }
+    public void deleteById(Long id) {
+        if(!roleRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Role not found");
+        }
+        roleRepository.deleteById(id);
+    }
+
 }
