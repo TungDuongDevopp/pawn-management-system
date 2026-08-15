@@ -5,13 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
+import java.math.BigDecimal;
+
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class CustomerFilterRequest {
-
+public class StaffFilterRequest {
 
     private String fullname;
 
@@ -20,4 +19,11 @@ public class CustomerFilterRequest {
     private String email;
 
     private String address;
+
+    private BigDecimal minSalary;
+    private BigDecimal maxSalary;
+
+    private String department;
+
+    private String position;
 }

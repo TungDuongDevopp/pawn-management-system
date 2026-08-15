@@ -40,7 +40,7 @@ public class ApiResponse<T> {
     }
     //4. Deleted Trả về HTTP Status 404
     public static <T> ResponseEntity<ApiResponse<T>> delete(String message) {
-        ApiResponse<T> response = new ApiResponse<>(HttpStatus.NO_CONTENT,"Deleted successfully",null,null);
+        ApiResponse<T> response = new ApiResponse<>(HttpStatus.NO_CONTENT,message,null,null);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
     }
     // 4. Error: Trả về HTTP Status tùy chỉnh (400, 404, 500...) + Error Code

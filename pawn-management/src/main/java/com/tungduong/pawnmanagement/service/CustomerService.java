@@ -56,14 +56,14 @@ public class CustomerService {
         Customer currentCustomer = customerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
 
-        if(customerRequestUpdate.getPhone() != null || currentCustomer.getPhone().isBlank()) {
+        if(customerRequestUpdate.getPhone() != null || !currentCustomer.getPhone().isBlank()) {
             if(customerRepository.existsByPhone(customerRequestUpdate.getPhone()) && !id.equals(currentCustomer.getId())) {
                 throw new DuplicateResourceException("Phone number already exists");
             }
             currentCustomer.setPhone(customerRequestUpdate.getPhone());
         }
 
-        if(customerRequestUpdate.getEmail() != null || currentCustomer.getEmail().isBlank()){
+        if(customerRequestUpdate.getEmail() != null || !currentCustomer.getEmail().isBlank()){
             if(customerRepository.existsByEmail(customerRequestUpdate.getEmail()) && !id.equals(currentCustomer.getId())) {
                 throw new DuplicateResourceException("Email already exists");
 
@@ -71,11 +71,11 @@ public class CustomerService {
             currentCustomer.setEmail(customerRequestUpdate.getEmail());
         }
 
-        if(customerRequestUpdate.getFullname() != null || currentCustomer.getFullname().isBlank()){
+        if(customerRequestUpdate.getFullname() != null || !currentCustomer.getFullname().isBlank()){
             currentCustomer.setFullname(customerRequestUpdate.getFullname());
         }
 
-      if(customerRequestUpdate.getAddress() != null || currentCustomer.getAddress().isBlank()){
+      if(customerRequestUpdate.getAddress() != null || !currentCustomer.getAddress().isBlank()){
           currentCustomer.setAddress(customerRequestUpdate.getAddress());
       }
 

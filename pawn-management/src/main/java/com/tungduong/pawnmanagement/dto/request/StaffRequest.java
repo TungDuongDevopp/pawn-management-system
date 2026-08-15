@@ -1,4 +1,4 @@
-package com.tungduong.pawnmanagement.model;
+package com.tungduong.pawnmanagement.dto.request;
 
 import com.tungduong.pawnmanagement.model.enums.Department;
 import com.tungduong.pawnmanagement.model.enums.Position;
@@ -6,21 +6,19 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.List;
 
-@Entity
-@Table(name = "staffs")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Staff {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@AllArgsConstructor
+public class StaffRequest {
+
     private Long id;
 
     @NotBlank(message = "fullname can not be null")
@@ -37,18 +35,10 @@ public class Staff {
     @Positive(message = "salary must greater than 0")
     private BigDecimal salary;
 
-    @Enumerated(EnumType.STRING)
     @NotNull(message = "department can not be null")
     private Department department;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "position can not be null")
     private Position position;
-
-    @OneToOne
-    @JoinColumn(name = "account_id", unique = true)
-    private Account account;
-
-    @OneToMany(mappedBy = "staff")
-    private List<Contract> contracts;
 }
