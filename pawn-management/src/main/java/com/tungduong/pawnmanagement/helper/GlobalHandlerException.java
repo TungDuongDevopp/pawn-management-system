@@ -4,21 +4,38 @@ import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import tools.jackson.databind.exc.InvalidFormatException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 
 @RestControllerAdvice
-public class GlobalHanderException {
+public class GlobalHandlerException {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException ex) {
         return ApiResponse.error(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<?> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+
+        Throwable cause = ex.getCause();
+
+        if (cause instanceof InvalidFormatException e
+                && e.getTargetType().isEnum()) {
+            String message = "Invalid value '" + e.getValue() + "' for enum " + e.getTargetType().getSimpleName();
+
+            return ApiResponse.error(HttpStatus.BAD_REQUEST, message);
+
+        }
+
+        return ApiResponse.error(HttpStatus.BAD_REQUEST,"Invalid JSON request");
     }
 
     @ExceptionHandler(Exception.class)

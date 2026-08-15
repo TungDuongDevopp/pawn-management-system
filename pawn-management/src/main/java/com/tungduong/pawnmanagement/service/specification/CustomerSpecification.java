@@ -7,12 +7,18 @@ import org.springframework.data.jpa.domain.Specification;
 public class CustomerSpecification {
 
     public static Specification<Customer> hasName(CustomerFilterRequest request) {
+        return (root, query, criteriaBuilder) -> {
 
-        return (root,query,criteriaBuilder)->{
-            if(request == null || request.getFullname() == null || request.getFullname().isBlank())
+            if (request == null || request.getFullname() == null || request.getFullname().isBlank()) {
                 return criteriaBuilder.conjunction();
+            }
 
-            return criteriaBuilder.equal(criteriaBuilder.lower(root.get("fullname")),request.getFullname().trim().toLowerCase());
+            String fullname = "%" + request.getFullname().trim().toLowerCase() + "%";
+
+            return criteriaBuilder.like(
+                    criteriaBuilder.lower(root.get("fullname")),
+                    fullname
+            );
         };
     }
 
