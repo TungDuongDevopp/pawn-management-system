@@ -4,12 +4,12 @@ import com.tungduong.pawnmanagement.dto.request.AssetCategoryRequest;
 import com.tungduong.pawnmanagement.dto.request.update.AssetCategoryUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.AssetCategoryResponse;
 import com.tungduong.pawnmanagement.helper.ApiResponse;
+import com.tungduong.pawnmanagement.helper.PageResponse;
 import com.tungduong.pawnmanagement.service.AssetCategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,8 +17,8 @@ public class AssetCategoryController {
     private final AssetCategoryService assetCategoryService;
 
     @GetMapping("/asset-categories")
-    public ResponseEntity<ApiResponse<List<AssetCategoryResponse>>> getAssetCategories() {
-        return ApiResponse.success(assetCategoryService.getAll());
+    public ResponseEntity<ApiResponse<PageResponse<AssetCategoryResponse>>> getAssetCategories(Pageable pageable) {
+        return ApiResponse.success(PageResponse.from(assetCategoryService.getAll(pageable)));
     }
 
     @GetMapping("/asset-categories/{id}")

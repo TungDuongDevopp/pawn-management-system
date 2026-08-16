@@ -9,7 +9,6 @@ import com.tungduong.pawnmanagement.helper.PageResponse;
 import com.tungduong.pawnmanagement.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +27,7 @@ public class AccountController {
 
     @GetMapping("/accounts")
     public ResponseEntity<ApiResponse<PageResponse<AccountResponse>>> getAccounts(Pageable pageable, AccountFilterRequest filterRequest) {
-        Page<AccountResponse> account = accountService.findAll(pageable, filterRequest);
-        return ApiResponse.success(PageResponse.from(account));
+        return ApiResponse.success(PageResponse.from(accountService.findAll(pageable, filterRequest)));
     }
 
     @GetMapping("/accounts/{id}")

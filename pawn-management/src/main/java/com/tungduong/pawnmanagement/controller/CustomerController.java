@@ -5,10 +5,10 @@ import com.tungduong.pawnmanagement.dto.request.CustomerRequest;
 import com.tungduong.pawnmanagement.dto.request.update.CustomerUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CustomerResponse;
 import com.tungduong.pawnmanagement.helper.ApiResponse;
+import com.tungduong.pawnmanagement.helper.PageResponse;
 import com.tungduong.pawnmanagement.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +25,8 @@ public class CustomerController {
     }
 
     @GetMapping("/customers")
-    public ResponseEntity<ApiResponse<Page<CustomerResponse>>> getCustomers(Pageable pageable, CustomerFilterRequest customerFilterRequest) {
-        return ApiResponse.success(customerService.getAll(pageable, customerFilterRequest));
+    public ResponseEntity<ApiResponse<PageResponse<CustomerResponse>>> getCustomers(Pageable pageable, CustomerFilterRequest customerFilterRequest) {
+        return ApiResponse.success(PageResponse.from(customerService.getAll(pageable, customerFilterRequest)));
     }
 
     @PostMapping("/customers")

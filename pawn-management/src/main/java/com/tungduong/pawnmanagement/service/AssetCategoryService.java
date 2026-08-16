@@ -10,6 +10,8 @@ import com.tungduong.pawnmanagement.model.AssetCategory;
 import com.tungduong.pawnmanagement.repository.AssetCategoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,8 +22,8 @@ public class AssetCategoryService {
     private final AssetCategoryRepository assetCategoryRepository;
     private final AssetCategoryMapper assetCategoryMapper;
 
-    public List<AssetCategoryResponse> getAll() {
-        return assetCategoryMapper.toResponseList(assetCategoryRepository.findAll());
+    public Page<AssetCategoryResponse> getAll(Pageable pageable) {
+        return assetCategoryRepository.findAll(pageable).map(assetCategoryMapper::toResponse);
     }
 
     public AssetCategoryResponse getById(Long id) {
