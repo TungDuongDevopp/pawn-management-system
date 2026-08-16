@@ -42,7 +42,7 @@ public class StaffController {
     @DeleteMapping("/staffs/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteStaffById(@PathVariable Long id) {
         staffService.delete(id);
-        return ApiResponse.delete("Deleted Successfully!");
+        return ApiResponse.delete();
     }
 
 }

@@ -39,9 +39,8 @@ public class ApiResponse<T> {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     //4. Deleted Trả về HTTP Status 404
-    public static <T> ResponseEntity<ApiResponse<T>> delete(String message) {
-        ApiResponse<T> response = new ApiResponse<>(HttpStatus.NO_CONTENT,message,null,null);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+    public static <T> ResponseEntity<ApiResponse<T>> delete() {
+        return ResponseEntity.noContent().build();
     }
     // 4. Error: Trả về HTTP Status tùy chỉnh (400, 404, 500...) + Error Code
     public static <T> ResponseEntity<ApiResponse<T>> error(HttpStatus status, String message, String errorCode) {
