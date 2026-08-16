@@ -1,5 +1,6 @@
 package com.tungduong.pawnmanagement.model;
 
+import com.tungduong.pawnmanagement.model.base.BaseEntity;
 import com.tungduong.pawnmanagement.model.enums.PaymentMethod;
 import com.tungduong.pawnmanagement.model.enums.PaymentStatus;
 import jakarta.persistence.*;
@@ -9,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDate;
 
 @Entity
@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Payment {
+public class Payment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,7 +36,6 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
-    private Instant createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_schedule_id")

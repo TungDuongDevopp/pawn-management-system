@@ -1,5 +1,6 @@
 package com.tungduong.pawnmanagement.model;
 
+import com.tungduong.pawnmanagement.model.base.BaseEntity;
 import com.tungduong.pawnmanagement.model.enums.Department;
 import com.tungduong.pawnmanagement.model.enums.Position;
 import jakarta.persistence.*;
@@ -18,7 +19,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Staff {
+public class Staff extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
