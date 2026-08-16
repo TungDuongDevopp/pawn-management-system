@@ -1,5 +1,6 @@
 package com.tungduong.pawnmanagement.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,15 +10,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+public class AssetTypeRequest {
+    private Long id;
 
-public class CustomerFilterRequest {
+    @NotBlank( message = "Asset Type can not be null")
+    private String name;
 
-
-    private String fullname;
-
-    private String phone;
-
-    private String email;
-
-    private String address;
+    private String description;
 }

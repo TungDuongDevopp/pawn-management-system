@@ -1,6 +1,6 @@
 package com.tungduong.pawnmanagement.service;
 
-import com.tungduong.pawnmanagement.dto.request.RoleFilterRequest;
+import com.tungduong.pawnmanagement.dto.request.filter.RoleFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.RoleRequest;
 import com.tungduong.pawnmanagement.dto.response.RoleResponse;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;

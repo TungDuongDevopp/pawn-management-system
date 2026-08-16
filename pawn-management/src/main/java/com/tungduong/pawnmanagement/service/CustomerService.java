@@ -1,8 +1,8 @@
 package com.tungduong.pawnmanagement.service;
 
-import com.tungduong.pawnmanagement.dto.request.CustomerFilterRequest;
+import com.tungduong.pawnmanagement.dto.request.filter.CustomerFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.CustomerRequest;
-import com.tungduong.pawnmanagement.dto.request.CustomerRequestUpdate;
+import com.tungduong.pawnmanagement.dto.request.update.CustomerUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CustomerResponse;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
@@ -17,8 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -52,31 +50,31 @@ public class CustomerService {
     }
 
     @Transactional
-    public CustomerResponse update(CustomerRequestUpdate customerRequestUpdate, Long id) {
+    public CustomerResponse update(CustomerUpdateRequest customerUpdateRequest, Long id) {
         Customer currentCustomer = customerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
 
-        if(customerRequestUpdate.getPhone() != null || !currentCustomer.getPhone().isBlank()) {
-            if(customerRepository.existsByPhone(customerRequestUpdate.getPhone()) && !id.equals(currentCustomer.getId())) {
+        if(customerUpdateRequest.getPhone() != null || !currentCustomer.getPhone().isBlank()) {
+            if(customerRepository.existsByPhone(customerUpdateRequest.getPhone()) && !id.equals(currentCustomer.getId())) {
                 throw new DuplicateResourceException("Phone number already exists");
             }
-            currentCustomer.setPhone(customerRequestUpdate.getPhone());
+            currentCustomer.setPhone(customerUpdateRequest.getPhone());
         }
 
-        if(customerRequestUpdate.getEmail() != null || !currentCustomer.getEmail().isBlank()){
-            if(customerRepository.existsByEmail(customerRequestUpdate.getEmail()) && !id.equals(currentCustomer.getId())) {
+        if(customerUpdateRequest.getEmail() != null || !currentCustomer.getEmail().isBlank()){
+            if(customerRepository.existsByEmail(customerUpdateRequest.getEmail()) && !id.equals(currentCustomer.getId())) {
                 throw new DuplicateResourceException("Email already exists");
 
             }
-            currentCustomer.setEmail(customerRequestUpdate.getEmail());
+            currentCustomer.setEmail(customerUpdateRequest.getEmail());
         }
 
-        if(customerRequestUpdate.getFullname() != null || !currentCustomer.getFullname().isBlank()){
-            currentCustomer.setFullname(customerRequestUpdate.getFullname());
+        if(customerUpdateRequest.getFullname() != null || !currentCustomer.getFullname().isBlank()){
+            currentCustomer.setFullname(customerUpdateRequest.getFullname());
         }
 
-      if(customerRequestUpdate.getAddress() != null || !currentCustomer.getAddress().isBlank()){
-          currentCustomer.setAddress(customerRequestUpdate.getAddress());
+      if(customerUpdateRequest.getAddress() != null || !currentCustomer.getAddress().isBlank()){
+          currentCustomer.setAddress(customerUpdateRequest.getAddress());
       }
 
 

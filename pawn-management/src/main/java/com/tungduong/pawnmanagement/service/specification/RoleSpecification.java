@@ -1,6 +1,6 @@
 package com.tungduong.pawnmanagement.service.specification;
 
-import com.tungduong.pawnmanagement.dto.request.RoleFilterRequest;
+import com.tungduong.pawnmanagement.dto.request.filter.RoleFilterRequest;
 import com.tungduong.pawnmanagement.model.Role;
 import org.springframework.data.jpa.domain.Specification;
 

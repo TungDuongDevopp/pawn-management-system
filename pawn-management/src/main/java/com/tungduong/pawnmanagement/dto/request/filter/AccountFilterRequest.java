@@ -1,4 +1,4 @@
-package com.tungduong.pawnmanagement.dto.request;
+package com.tungduong.pawnmanagement.dto.request.filter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

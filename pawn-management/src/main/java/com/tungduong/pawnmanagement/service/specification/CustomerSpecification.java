@@ -1,6 +1,6 @@
 package com.tungduong.pawnmanagement.service.specification;
 
-import com.tungduong.pawnmanagement.dto.request.CustomerFilterRequest;
+import com.tungduong.pawnmanagement.dto.request.filter.CustomerFilterRequest;
 import com.tungduong.pawnmanagement.model.Customer;
 import org.springframework.data.jpa.domain.Specification;
 
