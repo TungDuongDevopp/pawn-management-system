@@ -1,5 +1,6 @@
-package com.tungduong.pawnmanagement.dto.request;
+package com.tungduong.pawnmanagement.dto.request.update;
 
+import com.tungduong.pawnmanagement.dto.request.RoleRequest;
 import com.tungduong.pawnmanagement.model.enums.AccountStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

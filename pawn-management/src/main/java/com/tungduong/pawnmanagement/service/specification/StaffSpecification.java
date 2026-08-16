@@ -1,6 +1,6 @@
 package com.tungduong.pawnmanagement.service.specification;
 
-import com.tungduong.pawnmanagement.dto.request.StaffFilterRequest;
+import com.tungduong.pawnmanagement.dto.request.filter.StaffFilterRequest;
 import com.tungduong.pawnmanagement.model.Staff;
 import org.springframework.data.jpa.domain.Specification;
 

@@ -1,8 +1,8 @@
 package com.tungduong.pawnmanagement.controller;
 
-import com.tungduong.pawnmanagement.dto.request.CustomerFilterRequest;
+import com.tungduong.pawnmanagement.dto.request.filter.CustomerFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.CustomerRequest;
-import com.tungduong.pawnmanagement.dto.request.CustomerRequestUpdate;
+import com.tungduong.pawnmanagement.dto.request.update.CustomerUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CustomerResponse;
 import com.tungduong.pawnmanagement.helper.ApiResponse;
 import com.tungduong.pawnmanagement.service.CustomerService;
@@ -35,7 +35,7 @@ public class CustomerController {
     }
 
     @PutMapping("/customers/{id}")
-    public ResponseEntity<ApiResponse<CustomerResponse>> updateCustomer(@Valid @RequestBody CustomerRequestUpdate customerRequest, @PathVariable Long id) {
+    public ResponseEntity<ApiResponse<CustomerResponse>> updateCustomer(@Valid @RequestBody CustomerUpdateRequest customerRequest, @PathVariable Long id) {
         return ApiResponse.success(customerService.update(customerRequest, id));
     }
 

@@ -1,4 +1,4 @@
-package com.tungduong.pawnmanagement.dto.request;
+package com.tungduong.pawnmanagement.dto.request.update;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerRequestUpdate {
-    private Long id;
+public class CustomerUpdateRequest {
 
+    private Long id;
     private String fullname;
 
     private String phone;

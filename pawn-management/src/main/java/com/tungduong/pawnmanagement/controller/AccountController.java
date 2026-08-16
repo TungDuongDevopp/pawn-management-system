@@ -1,8 +1,8 @@
 package com.tungduong.pawnmanagement.controller;
 
-import com.tungduong.pawnmanagement.dto.request.AccountFilterRequest;
+import com.tungduong.pawnmanagement.dto.request.filter.AccountFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.AccountRequest;
-import com.tungduong.pawnmanagement.dto.request.AccountUpdateRequest;
+import com.tungduong.pawnmanagement.dto.request.update.AccountUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.AccountResponse;
 import com.tungduong.pawnmanagement.helper.ApiResponse;
 import com.tungduong.pawnmanagement.helper.PageResponse;

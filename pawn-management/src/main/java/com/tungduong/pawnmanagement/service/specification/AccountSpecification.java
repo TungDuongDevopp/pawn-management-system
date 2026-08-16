@@ -1,6 +1,6 @@
 package com.tungduong.pawnmanagement.service.specification;
 
-import com.tungduong.pawnmanagement.dto.request.AccountFilterRequest;
+import com.tungduong.pawnmanagement.dto.request.filter.AccountFilterRequest;
 import com.tungduong.pawnmanagement.model.Account;
 import com.tungduong.pawnmanagement.model.enums.AccountStatus;
 import org.springframework.data.jpa.domain.Specification;

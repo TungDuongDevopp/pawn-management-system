@@ -1,4 +1,4 @@
-package com.tungduong.pawnmanagement.dto.request;
+package com.tungduong.pawnmanagement.dto.request.update;
 
 import com.tungduong.pawnmanagement.model.enums.Department;
 import com.tungduong.pawnmanagement.model.enums.Position;
@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StaffUpdateRequest {
+
     private Long id;
 
     private String fullname;

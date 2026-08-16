@@ -1,8 +1,8 @@
 package com.tungduong.pawnmanagement.service;
 
-import com.tungduong.pawnmanagement.dto.request.StaffFilterRequest;
+import com.tungduong.pawnmanagement.dto.request.filter.StaffFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.StaffRequest;
-import com.tungduong.pawnmanagement.dto.request.StaffUpdateRequest;
+import com.tungduong.pawnmanagement.dto.request.update.StaffUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.StaffResponse;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
@@ -56,14 +56,14 @@ public class StaffService {
       Staff currentStaff = staffRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Staff Not Found"));
 
         if(staffRequest.getEmail() != null && !staffRequest.getEmail().isBlank()) {
-            if(staffRepository.existsByEmail(staffRequest.getEmail()) && id.equals(staffRequest.getId())) {
+            if(staffRepository.existsByEmail(staffRequest.getEmail()) && !id.equals(staffRequest.getId())) {
               throw new DuplicateResourceException("Email already exists");
             }
             currentStaff.setEmail(staffRequest.getEmail());
 
         }
       if(staffRequest.getPhone() != null && !staffRequest.getPhone().isBlank()) {
-          if(staffRepository.existsByPhone(staffRequest.getPhone()) && id.equals(staffRequest.getId())) {
+          if(staffRepository.existsByPhone(staffRequest.getPhone()) && !id.equals(staffRequest.getId())) {
               throw new DuplicateResourceException("Phone already exists");
           }
           currentStaff.setPhone(staffRequest.getPhone());

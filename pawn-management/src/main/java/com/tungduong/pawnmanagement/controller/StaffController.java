@@ -1,8 +1,8 @@
 package com.tungduong.pawnmanagement.controller;
 
-import com.tungduong.pawnmanagement.dto.request.StaffFilterRequest;
+import com.tungduong.pawnmanagement.dto.request.filter.StaffFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.StaffRequest;
-import com.tungduong.pawnmanagement.dto.request.StaffUpdateRequest;
+import com.tungduong.pawnmanagement.dto.request.update.StaffUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.StaffResponse;
 import com.tungduong.pawnmanagement.helper.ApiResponse;
 import com.tungduong.pawnmanagement.helper.PageResponse;
