@@ -1,6 +1,8 @@
 package com.tungduong.pawnmanagement.dto.request.update;
 
 
+import com.tungduong.pawnmanagement.model.enums.CategoryStatus;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,4 +18,6 @@ public class AssetCategoryUpdateRequest {
     private String name;
 
     private String description;
+
+    private CategoryStatus status;
 }

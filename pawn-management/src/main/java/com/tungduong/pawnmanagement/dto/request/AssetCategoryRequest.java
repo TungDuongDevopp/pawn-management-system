@@ -17,4 +17,5 @@ public class AssetCategoryRequest {
     private String name;
 
     private String description;
+
 }
