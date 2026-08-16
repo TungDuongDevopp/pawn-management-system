@@ -40,6 +40,6 @@ public class RoleController {
     @DeleteMapping("/roles/{id}")
     private ResponseEntity<ApiResponse<Void>> deleteRoleById(@PathVariable Long id) {
         roleService.deleteById(id);
-        return ApiResponse.delete("Deleted role with id " + id);
+        return ApiResponse.delete();
     }
 }

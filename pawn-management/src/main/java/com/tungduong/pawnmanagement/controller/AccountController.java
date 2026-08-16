@@ -45,7 +45,7 @@ public class AccountController {
     @DeleteMapping("/accounts/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteAccountById(@PathVariable Long id) {
         accountService.deleteById(id);
-        return ApiResponse.delete("Deleted successfully");
+        return ApiResponse.delete();
     }
 
 }
