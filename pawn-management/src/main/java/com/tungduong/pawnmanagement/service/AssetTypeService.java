@@ -3,6 +3,7 @@ package com.tungduong.pawnmanagement.service;
 import com.tungduong.pawnmanagement.dto.request.AssetTypeRequest;
 import com.tungduong.pawnmanagement.dto.request.update.AssetTypeUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.AssetTypeResponse;
+import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.AssetTypeMapper;
@@ -38,7 +39,11 @@ public class AssetTypeService {
         }
         AssetCategory assetCategory = assetCategoryRepository.findById(request.getCategoryId()).orElseThrow(()-> new ResourceNotFoundException("Asset Category Not Found"));
 
+        if(assetCategory.getStatus().equals(CategoryStatus.INACTIVE)){
+            throw new CanNotManipulateDataException("Asset Category Status Not Active");
+        }
         AssetType assetType = assetTypeMapper.toEntity(request);
+
         assetType.setCategory(assetCategory);
         assetType.setStatus(CategoryStatus.ACTIVE);
         return assetTypeMapper.toResponse(assetTypeRepository.save(assetType));
@@ -48,6 +53,9 @@ public class AssetTypeService {
     public AssetTypeResponse update(AssetTypeUpdateRequest request, Long id) {
 
         AssetType assetType = assetTypeRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Asset Category Not Found"));
+        if(assetType.getStatus().equals(CategoryStatus.INACTIVE)){
+            throw new CanNotManipulateDataException("Asset Type Status Not Active");
+        }
         if(request.getName() != null && !request.getName().isBlank()){
             if(assetTypeRepository.existsByName(request.getName()) && !id.equals(assetType .getId())){
                 throw new DuplicateResourceException("Asset Category Name Already Exists");
@@ -60,6 +68,9 @@ public class AssetTypeService {
         }
         if(request.getCategoryId() != null){
             AssetCategory assetCategory = assetCategoryRepository.findById(request.getCategoryId()).orElseThrow(()-> new ResourceNotFoundException("Asset Category Not Found"));
+            if(assetCategory.getStatus().equals(CategoryStatus.INACTIVE)){
+                throw new CanNotManipulateDataException("Asset Category Status Not Active");
+            }
             assetType.setCategory(assetCategory);
         }
         return assetTypeMapper.toResponse(assetType);
@@ -68,6 +79,9 @@ public class AssetTypeService {
     @Transactional
     public void deleteById(Long id) {
         AssetType assetType = assetTypeRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Asset Type Not Found"));
+        if(assetType.getStatus().equals(CategoryStatus.INACTIVE)){
+            throw new CanNotManipulateDataException("Asset Type Status Not Active");
+        }
         assetType.setStatus(CategoryStatus.INACTIVE);
     }
 
