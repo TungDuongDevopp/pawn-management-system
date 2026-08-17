@@ -3,7 +3,7 @@ package com.tungduong.pawnmanagement.service;
 import com.tungduong.pawnmanagement.dto.request.AssetCategoryRequest;
 import com.tungduong.pawnmanagement.dto.request.update.AssetCategoryUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.AssetCategoryResponse;
-import com.tungduong.pawnmanagement.helper.exception.CanDeleteException;
+import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.AssetCategoryMapper;
@@ -39,6 +39,7 @@ public class AssetCategoryService {
             throw new DuplicateResourceException("Asset Category Name Already Exists");
         }
         AssetCategory assetCategory = assetCategoryMapper.toEntity(request);
+
         assetCategory.setStatus(CategoryStatus.ACTIVE);
         return assetCategoryMapper.toResponse(assetCategoryRepository.save(assetCategory));
     }
@@ -47,6 +48,9 @@ public class AssetCategoryService {
     public AssetCategoryResponse update(AssetCategoryUpdateRequest request, Long id) {
 
         AssetCategory assetCategory = assetCategoryRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Asset Category Not Found"));
+        if(assetCategory.getStatus().equals(CategoryStatus.INACTIVE)){
+            throw new CanNotManipulateDataException("Asset Category Status Not Active");
+        }
         if(request.getName() != null && !request.getName().isBlank()){
             if(assetCategoryRepository.existsByName(request.getName()) && !id.equals(assetCategory.getId())){
                 throw new DuplicateResourceException("Asset Category Name Already Exists");
@@ -68,7 +72,10 @@ public class AssetCategoryService {
         AssetCategory assetCategory = assetCategoryRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Asset Category Not Found"));
 
         if(assetTypeRepository.existsById(id)){
-            throw new CanDeleteException("Can Delete Asset Category");
+            throw new CanNotManipulateDataException("Can Delete Asset Category");
+        }
+        if(assetCategory.getStatus().equals(CategoryStatus.INACTIVE)){
+            throw new CanNotManipulateDataException("Asset Category Status Not Active");
         }
         assetCategory.setStatus(CategoryStatus.INACTIVE);
     }
