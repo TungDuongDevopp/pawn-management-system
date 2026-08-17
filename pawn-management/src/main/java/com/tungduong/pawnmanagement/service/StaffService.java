@@ -26,8 +26,8 @@ public class StaffService {
     private final StaffMapper staffMapper;
 
     private void ensureManipulable(Staff staff) {
-        if (staff != null && (staff.getRecordStatus() == RecordStatus.DELETED
-                || staff.getRecordStatus() == RecordStatus.INACTIVE)) {
+        if (staff.getRecordStatus() == RecordStatus.DELETED
+                || staff.getRecordStatus() == RecordStatus.INACTIVE) {
             throw new CanNotManipulateDataException(
                     "Staff has been deleted or inactivated and cannot be manipulated"
             );

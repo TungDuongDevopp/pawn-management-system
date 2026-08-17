@@ -10,7 +10,6 @@ import com.tungduong.pawnmanagement.mapper.AssetCategoryMapper;
 import com.tungduong.pawnmanagement.model.AssetCategory;
 import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import com.tungduong.pawnmanagement.repository.AssetCategoryRepository;
-import com.tungduong.pawnmanagement.repository.AssetTypeRepository;
 import com.tungduong.pawnmanagement.service.specification.AssetCategorySpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +23,13 @@ import org.springframework.stereotype.Service;
 public class AssetCategoryService {
     private final AssetCategoryRepository assetCategoryRepository;
     private final AssetCategoryMapper assetCategoryMapper;
-    private final AssetTypeRepository assetTypeRepository;
+
 
     private void ensureManipulable(AssetCategory assetCategory) {
-        if (assetCategory != null && (assetCategory.getStatus() == RecordStatus.DELETED
+        if (assetCategory.getStatus() == RecordStatus.DELETED
                 || assetCategory.getStatus() == RecordStatus.INACTIVE
                 || assetCategory.getRecordStatus() == RecordStatus.DELETED
-                || assetCategory.getRecordStatus() == RecordStatus.INACTIVE)) {
+                || assetCategory.getRecordStatus() == RecordStatus.INACTIVE) {
             throw new CanNotManipulateDataException(
                     "Asset Category has been deleted or inactivated and cannot be manipulated"
             );

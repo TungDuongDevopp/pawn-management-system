@@ -26,8 +26,8 @@ public class CustomerService {
     private final CustomerMapper customerMapper;
 
     private void ensureManipulable(Customer customer) {
-        if (customer != null && (customer.getRecordStatus() == RecordStatus.DELETED
-                || customer.getRecordStatus() == RecordStatus.INACTIVE)) {
+        if (customer.getRecordStatus() == RecordStatus.DELETED
+                || customer.getRecordStatus() == RecordStatus.INACTIVE) {
             throw new CanNotManipulateDataException(
                     "Customer has been deleted or inactivated and cannot be manipulated"
             );
