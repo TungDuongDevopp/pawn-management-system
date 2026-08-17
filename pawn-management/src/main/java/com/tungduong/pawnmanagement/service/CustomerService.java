@@ -4,11 +4,12 @@ import com.tungduong.pawnmanagement.dto.request.filter.CustomerFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.CustomerRequest;
 import com.tungduong.pawnmanagement.dto.request.update.CustomerUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CustomerResponse;
+import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.CustomerMapper;
-
 import com.tungduong.pawnmanagement.model.Customer;
+import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import com.tungduong.pawnmanagement.repository.CustomerRepository;
 import com.tungduong.pawnmanagement.service.specification.CustomerSpecification;
 import jakarta.transaction.Transactional;
@@ -24,25 +25,38 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
 
+    private void ensureManipulable(Customer customer) {
+        if (customer != null && (customer.getRecordStatus() == RecordStatus.DELETED
+                || customer.getRecordStatus() == RecordStatus.INACTIVE)) {
+            throw new CanNotManipulateDataException(
+                    "Customer has been deleted or inactivated and cannot be manipulated"
+            );
+        }
+    }
+
     public Page<CustomerResponse> getAll(Pageable pageable, CustomerFilterRequest request) {
         Specification<Customer> specification = Specification.allOf(
+                CustomerSpecification.recordStatusNot(RecordStatus.DELETED),
                 CustomerSpecification.hasEmail(request),
                 CustomerSpecification.hasName(request),
                 CustomerSpecification.hasPhone(request),
                 CustomerSpecification.hasAddress(request)
         );
-        return customerRepository.findAll(specification,pageable).map(customerMapper::toDto);
+        return customerRepository.findAll(specification, pageable).map(customerMapper::toDto);
     }
 
     public CustomerResponse getById(Long id) {
-        return customerMapper.toDto(customerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer not found")));
+        Customer customer = customerRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+        return customerMapper.toDto(customer);
     }
 
     public CustomerResponse create(CustomerRequest customerRequest) {
-        if(customerRepository.existsByPhone(customerRequest.getPhone())) {
+        if (customerRepository.existsByPhoneAndRecordStatusNot(customerRequest.getPhone(), RecordStatus.DELETED)) {
             throw new DuplicateResourceException("Phone number already exists");
         }
-        if(customerRepository.existsByEmail(customerRequest.getEmail())) {
+        if (customerRequest.getEmail() != null && !customerRequest.getEmail().isBlank()
+                && customerRepository.existsByEmailAndRecordStatusNot(customerRequest.getEmail(), RecordStatus.DELETED)) {
             throw new DuplicateResourceException("Email already exists");
         }
 
@@ -51,42 +65,45 @@ public class CustomerService {
 
     @Transactional
     public CustomerResponse update(CustomerUpdateRequest customerUpdateRequest, Long id) {
-        Customer currentCustomer = customerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+        Customer currentCustomer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
+        ensureManipulable(currentCustomer);
 
-        if(customerUpdateRequest.getPhone() != null || !currentCustomer.getPhone().isBlank()) {
-            if(customerRepository.existsByPhone(customerUpdateRequest.getPhone()) && !id.equals(currentCustomer.getId())) {
+        if (customerUpdateRequest.getPhone() != null && !customerUpdateRequest.getPhone().isBlank()) {
+            if (customerRepository.existsByPhoneAndIdNotAndRecordStatusNot(customerUpdateRequest.getPhone(), id, RecordStatus.DELETED)) {
                 throw new DuplicateResourceException("Phone number already exists");
             }
             currentCustomer.setPhone(customerUpdateRequest.getPhone());
         }
 
-        if(customerUpdateRequest.getEmail() != null || !currentCustomer.getEmail().isBlank()){
-            if(customerRepository.existsByEmail(customerUpdateRequest.getEmail()) && !id.equals(currentCustomer.getId())) {
+        if (customerUpdateRequest.getEmail() != null && !customerUpdateRequest.getEmail().isBlank()) {
+            if (customerRepository.existsByEmailAndIdNotAndRecordStatusNot(customerUpdateRequest.getEmail(), id, RecordStatus.DELETED)) {
                 throw new DuplicateResourceException("Email already exists");
-
             }
             currentCustomer.setEmail(customerUpdateRequest.getEmail());
         }
 
-        if(customerUpdateRequest.getFullname() != null || !currentCustomer.getFullname().isBlank()){
+        if (customerUpdateRequest.getFullname() != null && !customerUpdateRequest.getFullname().isBlank()) {
             currentCustomer.setFullname(customerUpdateRequest.getFullname());
         }
 
-      if(customerUpdateRequest.getAddress() != null || !currentCustomer.getAddress().isBlank()){
-          currentCustomer.setAddress(customerUpdateRequest.getAddress());
-      }
-
+        if (customerUpdateRequest.getAddress() != null && !customerUpdateRequest.getAddress().isBlank()) {
+            currentCustomer.setAddress(customerUpdateRequest.getAddress());
+        }
 
         return customerMapper.toDto(currentCustomer);
-
-
     }
 
+    @Transactional
     public void deleteById(Long id) {
-        if(!customerRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Customer not found");
-        }
-        customerRepository.deleteById(id);
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+
+        ensureManipulable(customer);
+
+        customer.setRecordStatus(RecordStatus.DELETED);
     }
 }
+
+

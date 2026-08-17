@@ -1,5 +1,6 @@
 package com.tungduong.pawnmanagement.model;
 
+import com.tungduong.pawnmanagement.model.base.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.util.List;
 @Table(name = "roles")
 @Getter @Setter
 @NoArgsConstructor
-public class Role {
+public class Role extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,3 +27,4 @@ public class Role {
     @OneToMany(mappedBy = "role")
     List<Account> accounts;
 }
+

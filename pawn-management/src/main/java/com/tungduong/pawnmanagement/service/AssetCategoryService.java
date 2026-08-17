@@ -8,15 +8,16 @@ import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.AssetCategoryMapper;
 import com.tungduong.pawnmanagement.model.AssetCategory;
-import com.tungduong.pawnmanagement.model.enums.CategoryStatus;
+import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import com.tungduong.pawnmanagement.repository.AssetCategoryRepository;
 import com.tungduong.pawnmanagement.repository.AssetTypeRepository;
+import com.tungduong.pawnmanagement.service.specification.AssetCategorySpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 
 @Service
 @RequiredArgsConstructor
@@ -25,59 +26,75 @@ public class AssetCategoryService {
     private final AssetCategoryMapper assetCategoryMapper;
     private final AssetTypeRepository assetTypeRepository;
 
+    private void ensureManipulable(AssetCategory assetCategory) {
+        if (assetCategory != null && (assetCategory.getStatus() == RecordStatus.DELETED
+                || assetCategory.getStatus() == RecordStatus.INACTIVE
+                || assetCategory.getRecordStatus() == RecordStatus.DELETED
+                || assetCategory.getRecordStatus() == RecordStatus.INACTIVE)) {
+            throw new CanNotManipulateDataException(
+                    "Asset Category has been deleted or inactivated and cannot be manipulated"
+            );
+        }
+    }
+
     public Page<AssetCategoryResponse> getAll(Pageable pageable) {
-        return assetCategoryRepository.findAll(pageable).map(assetCategoryMapper::toResponse);
+        Specification<AssetCategory> spec = AssetCategorySpecification.statusNot(RecordStatus.DELETED);
+        return assetCategoryRepository.findAll(spec, pageable).map(assetCategoryMapper::toResponse);
     }
 
     public AssetCategoryResponse getById(Long id) {
-        return assetCategoryMapper.toResponse(assetCategoryRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Asset Category Not Found")));
+        AssetCategory assetCategory = assetCategoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Asset Category Not Found"));
+        if (assetCategory.getStatus() == RecordStatus.DELETED || assetCategory.getRecordStatus() == RecordStatus.DELETED) {
+            throw new ResourceNotFoundException("Asset Category Not Found");
+        }
+        return assetCategoryMapper.toResponse(assetCategory);
     }
 
-
     public AssetCategoryResponse create(AssetCategoryRequest request) {
-        if(assetCategoryRepository.existsByName(request.getName())){
+        if (assetCategoryRepository.existsByNameAndStatusNot(request.getName(), RecordStatus.DELETED)) {
             throw new DuplicateResourceException("Asset Category Name Already Exists");
         }
         AssetCategory assetCategory = assetCategoryMapper.toEntity(request);
-
-        assetCategory.setStatus(CategoryStatus.ACTIVE);
+        assetCategory.setStatus(RecordStatus.ACTIVE);
+        assetCategory.setRecordStatus(RecordStatus.ACTIVE);
         return assetCategoryMapper.toResponse(assetCategoryRepository.save(assetCategory));
     }
 
     @Transactional
     public AssetCategoryResponse update(AssetCategoryUpdateRequest request, Long id) {
+        AssetCategory currentAssetCategory = assetCategoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Asset Category Not Found"));
 
-        AssetCategory assetCategory = assetCategoryRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Asset Category Not Found"));
-        if(assetCategory.getStatus().equals(CategoryStatus.INACTIVE)){
-            throw new CanNotManipulateDataException("Asset Category Status Not Active");
-        }
-        if(request.getName() != null && !request.getName().isBlank()){
-            if(assetCategoryRepository.existsByName(request.getName()) && !id.equals(assetCategory.getId())){
+        ensureManipulable(currentAssetCategory);
+
+        if (request.getName() != null && !request.getName().isBlank()) {
+            if (assetCategoryRepository.existsByNameAndIdNotAndStatusNot(request.getName(), id, RecordStatus.DELETED)) {
                 throw new DuplicateResourceException("Asset Category Name Already Exists");
             }
-            assetCategory.setName(request.getName());
+            currentAssetCategory.setName(request.getName());
+        }
 
+        if (request.getDescription() != null && !request.getDescription().isBlank()) {
+            currentAssetCategory.setDescription(request.getDescription());
         }
-        if(request.getDescription() != null && !request.getDescription().isBlank()){
-            assetCategory.setDescription(request.getDescription());
+
+        if (request.getStatus() != null) {
+            currentAssetCategory.setStatus(request.getStatus());
+            currentAssetCategory.setRecordStatus(request.getStatus());
         }
-        if(request.getStatus() != null){
-            assetCategory.setStatus(request.getStatus());
-        }
-        return  assetCategoryMapper.toResponse(assetCategory);
+
+        return assetCategoryMapper.toResponse(currentAssetCategory);
     }
 
     @Transactional
     public void deleteById(Long id) {
-        AssetCategory assetCategory = assetCategoryRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Asset Category Not Found"));
+        AssetCategory assetCategory = assetCategoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Asset Category Not Found"));
 
-        if(assetTypeRepository.existsById(id)){
-            throw new CanNotManipulateDataException("Can Delete Asset Category");
-        }
-        if(assetCategory.getStatus().equals(CategoryStatus.INACTIVE)){
-            throw new CanNotManipulateDataException("Asset Category Status Not Active");
-        }
-        assetCategory.setStatus(CategoryStatus.INACTIVE);
+        ensureManipulable(assetCategory);
+
+        assetCategory.setStatus(RecordStatus.DELETED);
+        assetCategory.setRecordStatus(RecordStatus.DELETED);
     }
 }
-

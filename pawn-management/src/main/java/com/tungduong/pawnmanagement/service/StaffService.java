@@ -4,10 +4,12 @@ import com.tungduong.pawnmanagement.dto.request.filter.StaffFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.StaffRequest;
 import com.tungduong.pawnmanagement.dto.request.update.StaffUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.StaffResponse;
+import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.StaffMapper;
 import com.tungduong.pawnmanagement.model.Staff;
+import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import com.tungduong.pawnmanagement.repository.StaffRepository;
 import com.tungduong.pawnmanagement.service.specification.StaffSpecification;
 import jakarta.transaction.Transactional;
@@ -17,80 +19,105 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-
 @Service
 @RequiredArgsConstructor
 public class StaffService {
     private final StaffRepository staffRepository;
     private final StaffMapper staffMapper;
 
-  public Page<StaffResponse> getAll(Pageable pageable, StaffFilterRequest request) {
-      Specification<Staff> spec = Specification.allOf(
-              StaffSpecification.hasFullName(request),
-              StaffSpecification.hasAddress(request),
-              StaffSpecification.hasEmail(request),
-              StaffSpecification.hasPhone(request),
-              StaffSpecification.hasSalary(request),
-              StaffSpecification.hasDepartment(request),
-              StaffSpecification.hasPosition(request)
-      );
-    return staffRepository.findAll(spec,pageable).map(staffMapper::toDto);
-  }
+    private void ensureManipulable(Staff staff) {
+        if (staff != null && (staff.getRecordStatus() == RecordStatus.DELETED
+                || staff.getRecordStatus() == RecordStatus.INACTIVE)) {
+            throw new CanNotManipulateDataException(
+                    "Staff has been deleted or inactivated and cannot be manipulated"
+            );
+        }
+    }
 
-  public StaffResponse getById(Long id) {
-      return staffMapper.toDto(staffRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Staff Not Found")));
-  }
+    public Page<StaffResponse> getAll(Pageable pageable, StaffFilterRequest request) {
+        Specification<Staff> spec = Specification.allOf(
+                StaffSpecification.recordStatusNot(RecordStatus.DELETED),
+                StaffSpecification.hasFullName(request),
+                StaffSpecification.hasAddress(request),
+                StaffSpecification.hasEmail(request),
+                StaffSpecification.hasPhone(request),
+                StaffSpecification.hasSalary(request),
+                StaffSpecification.hasDepartment(request),
+                StaffSpecification.hasPosition(request)
+        );
+        return staffRepository.findAll(spec, pageable).map(staffMapper::toDto);
+    }
 
-  public StaffResponse create(StaffRequest staffRequest) {
-      if(staffRepository.existsByPhone(staffRequest.getPhone())) {
-          throw new DuplicateResourceException("Phone number already exists");
-      }
-      if(staffRepository.existsByEmail(staffRequest.getEmail())) {
-          throw new DuplicateResourceException("Email already exists");
-      }
-      return staffMapper.toDto(staffRepository.save(staffMapper.toEntity(staffRequest)));
-  }
-  @Transactional
-  public StaffResponse update(StaffUpdateRequest staffRequest,Long id) {
+    public StaffResponse getById(Long id) {
+        Staff staff = staffRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
+                .orElseThrow(() -> new ResourceNotFoundException("Staff Not Found"));
+        return staffMapper.toDto(staff);
+    }
 
-      Staff currentStaff = staffRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Staff Not Found"));
+    public StaffResponse create(StaffRequest staffRequest) {
+        if (staffRepository.existsByPhoneAndRecordStatusNot(staffRequest.getPhone(), RecordStatus.DELETED)) {
+            throw new DuplicateResourceException("Phone number already exists");
+        }
+        if (staffRequest.getEmail() != null && !staffRequest.getEmail().isBlank()
+                && staffRepository.existsByEmailAndRecordStatusNot(staffRequest.getEmail(), RecordStatus.DELETED)) {
+            throw new DuplicateResourceException("Email already exists");
+        }
+        return staffMapper.toDto(staffRepository.save(staffMapper.toEntity(staffRequest)));
+    }
 
-        if(staffRequest.getEmail() != null && !staffRequest.getEmail().isBlank()) {
-            if(staffRepository.existsByEmail(staffRequest.getEmail()) && !id.equals(staffRequest.getId())) {
-              throw new DuplicateResourceException("Email already exists");
+    @Transactional
+    public StaffResponse update(StaffUpdateRequest staffRequest, Long id) {
+        Staff currentStaff = staffRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Staff Not Found"));
+
+        ensureManipulable(currentStaff);
+
+        if (staffRequest.getEmail() != null && !staffRequest.getEmail().isBlank()) {
+            if (staffRepository.existsByEmailAndIdNotAndRecordStatusNot(staffRequest.getEmail(), id, RecordStatus.DELETED)) {
+                throw new DuplicateResourceException("Email already exists");
             }
             currentStaff.setEmail(staffRequest.getEmail());
-
         }
-      if(staffRequest.getPhone() != null && !staffRequest.getPhone().isBlank()) {
-          if(staffRepository.existsByPhone(staffRequest.getPhone()) && !id.equals(staffRequest.getId())) {
-              throw new DuplicateResourceException("Phone already exists");
-          }
-          currentStaff.setPhone(staffRequest.getPhone());
 
-      }
-      if(staffRequest.getAddress() != null && !staffRequest.getAddress().isBlank()) {
-          currentStaff.setAddress(staffRequest.getAddress());
-      }
-      if(staffRequest.getFullname() != null && !staffRequest.getFullname().isBlank()) {
-          currentStaff.setFullname(staffRequest.getFullname());
-      }
-      if(staffRequest.getSalary() != null){
-          currentStaff.setSalary(staffRequest.getSalary());
-      }
-      if(staffRequest.getDepartment() != null){
-          currentStaff.setDepartment(staffRequest.getDepartment());
-      }
-      if(staffRequest.getPosition() != null){
-          currentStaff.setPosition(staffRequest.getPosition());
-      }
-      return staffMapper.toDto(currentStaff);
-  }
+        if (staffRequest.getPhone() != null && !staffRequest.getPhone().isBlank()) {
+            if (staffRepository.existsByPhoneAndIdNotAndRecordStatusNot(staffRequest.getPhone(), id, RecordStatus.DELETED)) {
+                throw new DuplicateResourceException("Phone already exists");
+            }
+            currentStaff.setPhone(staffRequest.getPhone());
+        }
 
-  public void delete(Long id) {
-      if(!staffRepository.existsById(id)) {
-          throw new ResourceNotFoundException("Staff Not Found");
-      }
-      staffRepository.deleteById(id);
-  }
+        if (staffRequest.getAddress() != null && !staffRequest.getAddress().isBlank()) {
+            currentStaff.setAddress(staffRequest.getAddress());
+        }
+
+        if (staffRequest.getFullname() != null && !staffRequest.getFullname().isBlank()) {
+            currentStaff.setFullname(staffRequest.getFullname());
+        }
+
+        if (staffRequest.getSalary() != null) {
+            currentStaff.setSalary(staffRequest.getSalary());
+        }
+
+        if (staffRequest.getDepartment() != null) {
+            currentStaff.setDepartment(staffRequest.getDepartment());
+        }
+
+        if (staffRequest.getPosition() != null) {
+            currentStaff.setPosition(staffRequest.getPosition());
+        }
+
+        return staffMapper.toDto(currentStaff);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        Staff staff = staffRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Staff Not Found"));
+
+        ensureManipulable(staff);
+
+        staff.setRecordStatus(RecordStatus.DELETED);
+    }
 }
+
+

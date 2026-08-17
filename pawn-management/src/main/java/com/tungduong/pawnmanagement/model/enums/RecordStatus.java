@@ -1,6 +1,6 @@
 package com.tungduong.pawnmanagement.model.enums;
 
-public enum CategoryStatus {
+public enum RecordStatus {
     ACTIVE,
     INACTIVE,
     DELETED

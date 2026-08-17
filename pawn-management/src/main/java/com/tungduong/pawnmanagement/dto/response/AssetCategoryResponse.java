@@ -1,6 +1,6 @@
 package com.tungduong.pawnmanagement.dto.response;
 
-import com.tungduong.pawnmanagement.model.enums.CategoryStatus;
+import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,5 +17,5 @@ public class AssetCategoryResponse {
 
     private String description;
 
-    private CategoryStatus status;
+    private RecordStatus status;
 }

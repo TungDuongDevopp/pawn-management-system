@@ -1,6 +1,6 @@
 package com.tungduong.pawnmanagement.dto.request.update;
 
-import com.tungduong.pawnmanagement.model.enums.CategoryStatus;
+import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,5 +19,5 @@ public class AssetTypeUpdateRequest {
 
     private Long categoryId;
 
-    private CategoryStatus status;
+    private RecordStatus status;
 }
