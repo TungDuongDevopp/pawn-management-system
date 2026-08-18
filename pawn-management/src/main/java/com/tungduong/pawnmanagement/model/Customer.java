@@ -39,4 +39,8 @@ public class Customer extends BaseEntity {
 
     @OneToMany(mappedBy = "customer")
     private List<Contract> contracts;
+
+    @OneToMany(mappedBy = "customer")
+    private List<Collateral> collaterals;
 }
+

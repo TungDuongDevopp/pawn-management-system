@@ -2,9 +2,18 @@ package com.tungduong.pawnmanagement.service.specification;
 
 import com.tungduong.pawnmanagement.dto.request.filter.StaffFilterRequest;
 import com.tungduong.pawnmanagement.model.Staff;
+import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import org.springframework.data.jpa.domain.Specification;
 
 public class StaffSpecification {
+
+    public static Specification<Staff> recordStatusNot(RecordStatus status) {
+        return (root, query, criteriaBuilder) -> {
+            if (status == null) return criteriaBuilder.conjunction();
+            return criteriaBuilder.notEqual(root.get("recordStatus"), status);
+        };
+    }
+
     public static Specification<Staff> hasFullName(StaffFilterRequest request) {
         return (root, query, criteriaBuilder) -> {
 

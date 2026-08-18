@@ -1,7 +1,7 @@
 package com.tungduong.pawnmanagement.model;
 
 import com.tungduong.pawnmanagement.model.base.BaseEntity;
-import com.tungduong.pawnmanagement.model.enums.CategoryStatus;
+import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,7 +28,7 @@ public class AssetCategory extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @NotNull (message = "status can not be null")
-    private CategoryStatus status;
+    private RecordStatus status;
 
     @OneToMany(mappedBy = "category")
     private List<AssetType> assetTypes;

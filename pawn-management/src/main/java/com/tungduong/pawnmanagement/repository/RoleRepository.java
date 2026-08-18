@@ -1,6 +1,7 @@
 package com.tungduong.pawnmanagement.repository;
 
 import com.tungduong.pawnmanagement.model.Role;
+import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -8,9 +9,15 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role,Long>, JpaSpecificationExecutor<Role> {
+public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificationExecutor<Role> {
 
     boolean existsByName(String name);
 
-    Optional<Role> findByIdOrName(Long id,String name);
+    Optional<Role> findByIdOrName(Long id, String name);
+
+    Optional<Role> findByIdAndRecordStatusNot(Long id, RecordStatus recordStatus);
+    boolean existsByNameAndIdNot(String name, Long id);
+
+    boolean existsByNameAndRecordStatusNot(String name, RecordStatus recordStatus);
 }
+

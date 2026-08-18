@@ -1,14 +1,25 @@
 package com.tungduong.pawnmanagement.repository;
 
 import com.tungduong.pawnmanagement.model.Staff;
-import com.tungduong.pawnmanagement.model.enums.Department;
-import com.tungduong.pawnmanagement.model.enums.Position;
+import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
 
-public interface StaffRepository  extends JpaRepository<Staff,Long>, JpaSpecificationExecutor<Staff> {
+import java.util.Optional;
 
-    boolean existsByEmail(String email);
-    boolean existsByPhone(String phone);
+@Repository
+public interface StaffRepository extends JpaRepository<Staff, Long>, JpaSpecificationExecutor<Staff> {
 
+    boolean existsByEmailAndRecordStatusNot(String email, RecordStatus recordStatus);
+
+    boolean existsByPhoneAndRecordStatusNot(String phone, RecordStatus recordStatus);
+
+    boolean existsByPhoneAndIdNotAndRecordStatusNot(String phone, Long id, RecordStatus recordStatus);
+
+    boolean existsByEmailAndIdNotAndRecordStatusNot(String email, Long id, RecordStatus recordStatus);
+
+    Optional<Staff> findByIdAndRecordStatusNot(Long id, RecordStatus recordStatus);
 }
+
+

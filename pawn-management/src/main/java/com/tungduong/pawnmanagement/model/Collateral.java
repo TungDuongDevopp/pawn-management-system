@@ -43,11 +43,15 @@ public class Collateral extends BaseEntity {
     private Loan loan;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "asset_type_id")
+    @JoinColumn(name = "asset_type_id",nullable = false)
     private AssetType type;
 
     @OneToMany(mappedBy = "collateral")
     private List<CollateralDocument> documents;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id",nullable = false)
+    private Customer customer;
 
 
 
