@@ -1,6 +1,6 @@
 package com.tungduong.pawnmanagement.service;
 
-import com.tungduong.pawnmanagement.dto.request.CollateralAppraiseRequest;
+import com.tungduong.pawnmanagement.dto.request.filter.CollateralFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.CollateralRequest;
 import com.tungduong.pawnmanagement.dto.request.update.CollateralUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CollateralResponse;
@@ -10,18 +10,19 @@ import com.tungduong.pawnmanagement.mapper.CollateralMapper;
 import com.tungduong.pawnmanagement.model.AssetType;
 import com.tungduong.pawnmanagement.model.Collateral;
 import com.tungduong.pawnmanagement.model.Customer;
-import com.tungduong.pawnmanagement.model.Staff;
 import com.tungduong.pawnmanagement.model.enums.AssetStatus;
 import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import com.tungduong.pawnmanagement.repository.AssetTypeRepository;
 import com.tungduong.pawnmanagement.repository.CollateralRepository;
 import com.tungduong.pawnmanagement.repository.CustomerRepository;
-import com.tungduong.pawnmanagement.repository.StaffRepository;
+import com.tungduong.pawnmanagement.service.specification.CollateralSpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -31,13 +32,10 @@ public class CollateralService {
     private final CollateralMapper collateralMapper;
     private final CustomerRepository customerRepository;
     private final AssetTypeRepository assetTypeRepository;
-    private final StaffRepository staffRepository;
-
     private void ensureManipulable(
             Collateral collateral,
             AssetType assetType,
-            Customer customer,
-            Staff staff
+            Customer customer
     ) {
         if (collateral != null &&
                 (collateral.getRecordStatus() == RecordStatus.INACTIVE
@@ -57,7 +55,7 @@ public class CollateralService {
                 (assetType.getRecordStatus() == RecordStatus.INACTIVE
                         || assetType.getRecordStatus() == RecordStatus.DELETED)) {
             throw new CanNotManipulateDataException(
-                    "AssetType cannot be manipulated in its current status"
+                    "Asset type cannot be manipulated in its current status"
             );
         }
 
@@ -69,52 +67,62 @@ public class CollateralService {
             );
         }
 
-        if (staff != null &&
-                (staff.getRecordStatus() == RecordStatus.INACTIVE
-                        || staff.getRecordStatus() == RecordStatus.DELETED)) {
-            throw new CanNotManipulateDataException(
-                    "Staff cannot be manipulated in its current status"
-            );
-        }
     }
-    public List<CollateralResponse> getAll() {
-        return collateralMapper.toResponseList(collateralRepository.findAll());
+    public Page<CollateralResponse> getAll(Pageable pageable, CollateralFilterRequest request) {
+        Specification<Collateral> specification = Specification.allOf(
+                CollateralSpecification.recordStatusNot(RecordStatus.DELETED),
+                CollateralSpecification.hasName(request),
+                CollateralSpecification.hasDeclaredValue(request),
+                CollateralSpecification.hasAppraisedValue(request),
+                CollateralSpecification.hasCustomerId(request),
+                CollateralSpecification.hasAssetTypeId(request),
+                CollateralSpecification.hasStatus(request),
+                CollateralSpecification.hasAppraisedByStaffId(request),
+                CollateralSpecification.hasAppraisedAt(request)
+        );
+        return collateralRepository.findAll(specification, pageable).map(collateralMapper::toDto);
     }
 
     public CollateralResponse getById(Long id) {
-        return collateralMapper.toDto(collateralRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED).orElseThrow(() -> new ResourceNotFoundException("Collateral not found")));
+        Collateral collateral = collateralRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Collateral not found with id " + id));
+        ensureManipulable(collateral, null, null);
+        return collateralMapper.toDto(collateral);
     }
 
     public CollateralResponse create(CollateralRequest request) {
-        Customer customer = customerRepository.findById(request.getCustomerId()).orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
-        AssetType assetType = assetTypeRepository.findById(request.getAssetTypeId()).orElseThrow(() -> new ResourceNotFoundException("AssetType not found"));
+        Customer customer = customerRepository.findById(request.getCustomerId())
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id " + request.getCustomerId()));
+        AssetType assetType = assetTypeRepository.findById(request.getAssetTypeId())
+                .orElseThrow(() -> new ResourceNotFoundException("Asset type not found with id " + request.getAssetTypeId()));
 
-        ensureManipulable(null, assetType, customer,null);
+        ensureManipulable(null, assetType, customer);
         Collateral collateral = collateralMapper.toEntity(request);
         collateral.setCustomer(customer);
         collateral.setType(assetType);
+        collateral.setStatus(AssetStatus.UNDER_REVIEW);
         return collateralMapper.toDto(collateralRepository.save(collateral));
     }
 
     @Transactional
     public CollateralResponse update(CollateralUpdateRequest request, Long id) {
         Collateral currentCollateral = collateralRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Collateral not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Collateral not found with id " + id));
 
         Customer customer = null;
         AssetType assetType = null;
 
         if (request.getCustomerId() != null) {
             customer = customerRepository.findById(request.getCustomerId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id " + request.getCustomerId()));
         }
 
         if (request.getAssetTypeId() != null) {
             assetType = assetTypeRepository.findById(request.getAssetTypeId())
-                    .orElseThrow(() -> new ResourceNotFoundException("AssetType not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Asset type not found with id " + request.getAssetTypeId()));
         }
 
-        ensureManipulable(currentCollateral, assetType, customer, null);
+        ensureManipulable(currentCollateral, assetType, customer);
 
         if (request.getName() != null && !request.getName().isBlank()) {
             currentCollateral.setName(request.getName());
@@ -139,23 +147,13 @@ public class CollateralService {
         return collateralMapper.toDto(currentCollateral);
     }
 
-    @Transactional
-    public CollateralResponse appraised(Long id, CollateralAppraiseRequest request) {
-        Collateral currentCollateral = collateralRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Collateral not found"));
-        Staff currentStaff = staffRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Staff not found"));
-        ensureManipulable(currentCollateral,null,null,currentStaff);
-        currentCollateral.setAppraisedAt(Instant.now());
-        currentCollateral.setStatus(AssetStatus.APPROVED);
-        currentCollateral.setAppraisedBy(currentStaff);
-        currentCollateral.setAppraisedValue(request.getAppraisedValue());
-        return collateralMapper.toDto(currentCollateral);
 
-    }
 
     @Transactional
     public void delete(Long id) {
-        Collateral collateral = collateralRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Collateral not found"));
-        ensureManipulable(collateral,null,null,null);
+        Collateral collateral = collateralRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Collateral not found with id " + id));
+        ensureManipulable(collateral, null, null);
         collateral.setRecordStatus(RecordStatus.DELETED);
     }
 

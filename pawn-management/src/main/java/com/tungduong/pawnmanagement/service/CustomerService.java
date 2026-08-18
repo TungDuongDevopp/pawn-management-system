@@ -29,7 +29,7 @@ public class CustomerService {
         if (customer.getRecordStatus() == RecordStatus.DELETED
                 || customer.getRecordStatus() == RecordStatus.INACTIVE) {
             throw new CanNotManipulateDataException(
-                    "Customer has been deleted or inactivated and cannot be manipulated"
+                    "Customer cannot be manipulated in its current status"
             );
         }
     }
@@ -46,8 +46,9 @@ public class CustomerService {
     }
 
     public CustomerResponse getById(Long id) {
-        Customer customer = customerRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id " + id));
+        ensureManipulable(customer);
         return customerMapper.toDto(customer);
     }
 
@@ -66,7 +67,7 @@ public class CustomerService {
     @Transactional
     public CustomerResponse update(CustomerUpdateRequest customerUpdateRequest, Long id) {
         Customer currentCustomer = customerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id " + id));
 
         ensureManipulable(currentCustomer);
 
@@ -98,7 +99,7 @@ public class CustomerService {
     @Transactional
     public void deleteById(Long id) {
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id " + id));
 
         ensureManipulable(customer);
 

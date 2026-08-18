@@ -29,7 +29,7 @@ public class StaffService {
         if (staff.getRecordStatus() == RecordStatus.DELETED
                 || staff.getRecordStatus() == RecordStatus.INACTIVE) {
             throw new CanNotManipulateDataException(
-                    "Staff has been deleted or inactivated and cannot be manipulated"
+                    "Staff cannot be manipulated in its current status"
             );
         }
     }
@@ -49,8 +49,9 @@ public class StaffService {
     }
 
     public StaffResponse getById(Long id) {
-        Staff staff = staffRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
-                .orElseThrow(() -> new ResourceNotFoundException("Staff Not Found"));
+        Staff staff = staffRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Staff not found with id " + id));
+        ensureManipulable(staff);
         return staffMapper.toDto(staff);
     }
 
@@ -68,7 +69,7 @@ public class StaffService {
     @Transactional
     public StaffResponse update(StaffUpdateRequest staffRequest, Long id) {
         Staff currentStaff = staffRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Staff Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Staff not found with id " + id));
 
         ensureManipulable(currentStaff);
 
@@ -112,7 +113,7 @@ public class StaffService {
     @Transactional
     public void delete(Long id) {
         Staff staff = staffRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Staff Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Staff not found with id " + id));
 
         ensureManipulable(staff);
 

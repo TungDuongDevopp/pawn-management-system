@@ -32,14 +32,14 @@ public class AssetTypeService {
                 (assetType.getRecordStatus() == RecordStatus.DELETED
                 || assetType.getRecordStatus() == RecordStatus.INACTIVE)) {
             throw new CanNotManipulateDataException(
-                    "Asset Type has been deleted or inactivated and cannot be manipulated"
+                    "Asset type cannot be manipulated in its current status"
             );
         }
 
         if (assetCategory != null && (assetCategory.getRecordStatus() == RecordStatus.DELETED
                 || assetCategory.getRecordStatus() == RecordStatus.INACTIVE)) {
             throw new CanNotManipulateDataException(
-                    "Asset Category has been deleted or inactivated and cannot be manipulated"
+                    "Asset category cannot be manipulated in its current status"
             );
         }
     }
@@ -50,7 +50,10 @@ public class AssetTypeService {
     }
 
     public AssetTypeResponse getById(Long id) {
-        return assetTypeMapper.toResponse(assetTypeRepository.findByIdAndRecordStatusNot(id,RecordStatus.DELETED).orElseThrow(()-> new ResourceNotFoundException("Asset Type not found")));
+        AssetType assetType = assetTypeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Asset type not found with id " + id));
+        ensureManipulable(assetType, null);
+        return assetTypeMapper.toResponse(assetType);
     }
 
     public AssetTypeResponse create(AssetTypeRequest request) {
@@ -58,7 +61,7 @@ public class AssetTypeService {
             throw new DuplicateResourceException("Asset Type Name Already Exists");
         }
         AssetCategory assetCategory = assetCategoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Asset Category Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Asset category not found with id " + request.getCategoryId()));
 
         ensureManipulable(null, assetCategory);
 
@@ -71,12 +74,12 @@ public class AssetTypeService {
     @Transactional
     public AssetTypeResponse update(AssetTypeUpdateRequest request, Long id) {
         AssetType currentAssetType = assetTypeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Asset Type Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Asset type not found with id " + id));
 
         AssetCategory assetCategory = null;
         if (request.getCategoryId() != null) {
             assetCategory = assetCategoryRepository.findById(request.getCategoryId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Asset Category Not Found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Asset category not found with id " + request.getCategoryId()));
         }
 
         ensureManipulable(currentAssetType, assetCategory);
@@ -102,7 +105,7 @@ public class AssetTypeService {
     @Transactional
     public void deleteById(Long id) {
         AssetType assetType = assetTypeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Asset Type Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Asset type not found with id " + id));
 
         ensureManipulable(assetType, null);
         assetType.setRecordStatus(RecordStatus.DELETED);
