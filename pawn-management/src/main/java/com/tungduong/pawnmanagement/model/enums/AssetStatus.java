@@ -17,5 +17,5 @@ public enum AssetStatus {
     // Giai đoạn hoàn trả hoặc xử lý đặc biệt
     RETURNED,           // Đã trả lại khách (Khách đã tất toán hợp đồng, nhận lại nguyên vẹn tài sản)
     DAMAGED_LOST,       // Bị hư hỏng/mất mát (Trường hợp rủi ro kho bãi, tài sản bị hỏng hoặc mất trong quá trình công ty lưu giữ)
-    CONFISCATED
+    CONFISCATED       // Bị thu hồi
 }

@@ -3,6 +3,7 @@ package com.tungduong.pawnmanagement.dto.response;
 
 import com.tungduong.pawnmanagement.model.enums.Department;
 import com.tungduong.pawnmanagement.model.enums.Position;
+import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,4 +33,6 @@ public class StaffResponse {
     private Department department;
 
     private Position position;
+
+    private RecordStatus recordStatus;
 }

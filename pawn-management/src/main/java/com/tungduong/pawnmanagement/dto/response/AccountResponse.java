@@ -1,6 +1,7 @@
 package com.tungduong.pawnmanagement.dto.response;
 
 import com.tungduong.pawnmanagement.model.enums.AccountStatus;
+import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,9 @@ public class AccountResponse {
 
     private String username;
 
-    private RoleResponse role;
+    private Long roleId;
 
     private AccountStatus status;
+
+    private RecordStatus recordStatus;
 }

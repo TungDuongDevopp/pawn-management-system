@@ -25,11 +25,6 @@ public class AssetCategory extends BaseEntity {
     private String name;
 
     private String description;
-
-    @Enumerated(EnumType.STRING)
-    @NotNull (message = "status can not be null")
-    private RecordStatus status;
-
     @OneToMany(mappedBy = "category")
     private List<AssetType> assetTypes;
 }

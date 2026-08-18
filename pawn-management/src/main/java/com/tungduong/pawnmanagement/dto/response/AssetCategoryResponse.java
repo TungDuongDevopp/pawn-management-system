@@ -17,5 +17,6 @@ public class AssetCategoryResponse {
 
     private String description;
 
-    private RecordStatus status;
+    private RecordStatus recordStatus;
+
 }
