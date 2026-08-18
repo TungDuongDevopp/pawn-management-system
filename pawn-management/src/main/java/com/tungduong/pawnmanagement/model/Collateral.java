@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 
 @Entity
@@ -27,16 +28,15 @@ public class Collateral extends BaseEntity {
 
     private String description;
 
-    @NotNull(message = "valuation can not be null")
-    private BigDecimal valuation;
+    @NotNull(message = "declared value can not be null")
+    private BigDecimal declaredValue;
 
-    @NotBlank(message = "location can not be null")
-    private String location;
+    @NotNull(message = "declared value can not be null")
+    private BigDecimal appraisedValue;
 
     @NotNull(message = "assetStatus can not be null ")
     @Enumerated(EnumType.STRING)
     private AssetStatus status;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "loan_id")
@@ -53,7 +53,10 @@ public class Collateral extends BaseEntity {
     @JoinColumn(name = "customer_id",nullable = false)
     private Customer customer;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "staff_id")
+    private Staff appraisedBy;
 
-
+    private Instant appraisedAt;
 
 }

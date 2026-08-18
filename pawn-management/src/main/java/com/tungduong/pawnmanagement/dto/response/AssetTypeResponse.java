@@ -18,6 +18,6 @@ public class AssetTypeResponse {
     private String name;
 
     private String description;
+    private RecordStatus recordStatus;
 
-    private RecordStatus status;
 }

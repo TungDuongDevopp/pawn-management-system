@@ -26,9 +26,7 @@ public class AssetCategoryService {
 
 
     private void ensureManipulable(AssetCategory assetCategory) {
-        if (assetCategory.getStatus() == RecordStatus.DELETED
-                || assetCategory.getStatus() == RecordStatus.INACTIVE
-                || assetCategory.getRecordStatus() == RecordStatus.DELETED
+        if (assetCategory.getRecordStatus() == RecordStatus.DELETED
                 || assetCategory.getRecordStatus() == RecordStatus.INACTIVE) {
             throw new CanNotManipulateDataException(
                     "Asset Category has been deleted or inactivated and cannot be manipulated"
@@ -42,20 +40,14 @@ public class AssetCategoryService {
     }
 
     public AssetCategoryResponse getById(Long id) {
-        AssetCategory assetCategory = assetCategoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Asset Category Not Found"));
-        if (assetCategory.getStatus() == RecordStatus.DELETED || assetCategory.getRecordStatus() == RecordStatus.DELETED) {
-            throw new ResourceNotFoundException("Asset Category Not Found");
-        }
-        return assetCategoryMapper.toResponse(assetCategory);
+        return assetCategoryMapper.toResponse(assetCategoryRepository.findByIdAndRecordStatusNot(id,RecordStatus.DELETED).orElseThrow(()-> new ResourceNotFoundException("Asset Category not found")));
     }
 
     public AssetCategoryResponse create(AssetCategoryRequest request) {
-        if (assetCategoryRepository.existsByNameAndStatusNot(request.getName(), RecordStatus.DELETED)) {
+        if (assetCategoryRepository.existsByNameAndRecordStatusNot(request.getName(), RecordStatus.DELETED)) {
             throw new DuplicateResourceException("Asset Category Name Already Exists");
         }
         AssetCategory assetCategory = assetCategoryMapper.toEntity(request);
-        assetCategory.setStatus(RecordStatus.ACTIVE);
         assetCategory.setRecordStatus(RecordStatus.ACTIVE);
         return assetCategoryMapper.toResponse(assetCategoryRepository.save(assetCategory));
     }
@@ -68,7 +60,7 @@ public class AssetCategoryService {
         ensureManipulable(currentAssetCategory);
 
         if (request.getName() != null && !request.getName().isBlank()) {
-            if (assetCategoryRepository.existsByNameAndIdNotAndStatusNot(request.getName(), id, RecordStatus.DELETED)) {
+            if (assetCategoryRepository.existsByNameAndIdNotAndRecordStatusNot(request.getName(), id, RecordStatus.DELETED)) {
                 throw new DuplicateResourceException("Asset Category Name Already Exists");
             }
             currentAssetCategory.setName(request.getName());
@@ -79,7 +71,6 @@ public class AssetCategoryService {
         }
 
         if (request.getStatus() != null) {
-            currentAssetCategory.setStatus(request.getStatus());
             currentAssetCategory.setRecordStatus(request.getStatus());
         }
 
@@ -93,7 +84,6 @@ public class AssetCategoryService {
 
         ensureManipulable(assetCategory);
 
-        assetCategory.setStatus(RecordStatus.DELETED);
         assetCategory.setRecordStatus(RecordStatus.DELETED);
     }
 }

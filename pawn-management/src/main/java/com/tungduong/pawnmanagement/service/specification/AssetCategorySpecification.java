@@ -13,7 +13,7 @@ public class AssetCategorySpecification {
     public static Specification<AssetCategory> statusNot(RecordStatus status) {
         return (root, query, criteriaBuilder) -> {
             if (status == null) return criteriaBuilder.conjunction();
-            return criteriaBuilder.notEqual(root.get("status"), status);
+            return criteriaBuilder.notEqual(root.get("recordStatus"), status);
         };
     }
 }

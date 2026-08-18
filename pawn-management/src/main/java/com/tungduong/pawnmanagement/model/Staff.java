@@ -52,4 +52,7 @@ public class Staff extends BaseEntity {
 
     @OneToMany(mappedBy = "staff")
     private List<Contract> contracts;
+
+    @OneToMany(mappedBy = "appraisedBy")
+    private List<Collateral> collaterals;
 }

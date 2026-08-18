@@ -1,7 +1,5 @@
 package com.tungduong.pawnmanagement.dto.request;
 
-import com.tungduong.pawnmanagement.model.Role;
-import com.tungduong.pawnmanagement.model.enums.AccountStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -27,5 +25,4 @@ public class AccountRequest {
     @NotNull(message = "role can not be null")
     private RoleRequest role;
 
-    private AccountStatus status;
 }
