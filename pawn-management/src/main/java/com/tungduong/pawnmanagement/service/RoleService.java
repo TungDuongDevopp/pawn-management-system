@@ -26,7 +26,7 @@ public class RoleService {
 
     private void ensureManipulable(Role role){
         if(role.getRecordStatus() == RecordStatus.DELETED || role.getRecordStatus() == RecordStatus.INACTIVE){
-            throw new CanNotManipulateDataException("Role has been deleted or inactivated and cannot be manipulated");
+            throw new CanNotManipulateDataException("Role cannot be manipulated in its current status");
         }
     }
 
@@ -39,8 +39,9 @@ public class RoleService {
     }
 
     public RoleResponse findById(Long id) {
-        Role role = roleRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
-                .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with id " + id));
+        ensureManipulable(role);
         return roleMapper.toResponse(role);
     }
 
@@ -56,7 +57,7 @@ public class RoleService {
     @Transactional
     public RoleResponse update(Long id, RoleRequest roleRequest) {
         Role currentRole = roleRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with id " + id));
 
         ensureManipulable(currentRole);
 
@@ -70,8 +71,8 @@ public class RoleService {
 
     @Transactional
     public void deleteById(Long id) {
-        Role role = roleRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
-                .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with id " + id));
         ensureManipulable(role);
         role.setRecordStatus(RecordStatus.DELETED);
     }

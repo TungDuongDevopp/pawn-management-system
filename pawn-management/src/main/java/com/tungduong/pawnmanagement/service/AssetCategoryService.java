@@ -29,7 +29,7 @@ public class AssetCategoryService {
         if (assetCategory.getRecordStatus() == RecordStatus.DELETED
                 || assetCategory.getRecordStatus() == RecordStatus.INACTIVE) {
             throw new CanNotManipulateDataException(
-                    "Asset Category has been deleted or inactivated and cannot be manipulated"
+                    "Asset category cannot be manipulated in its current status"
             );
         }
     }
@@ -40,7 +40,10 @@ public class AssetCategoryService {
     }
 
     public AssetCategoryResponse getById(Long id) {
-        return assetCategoryMapper.toResponse(assetCategoryRepository.findByIdAndRecordStatusNot(id,RecordStatus.DELETED).orElseThrow(()-> new ResourceNotFoundException("Asset Category not found")));
+        AssetCategory assetCategory = assetCategoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Asset category not found with id " + id));
+        ensureManipulable(assetCategory);
+        return assetCategoryMapper.toResponse(assetCategory);
     }
 
     public AssetCategoryResponse create(AssetCategoryRequest request) {
@@ -55,7 +58,7 @@ public class AssetCategoryService {
     @Transactional
     public AssetCategoryResponse update(AssetCategoryUpdateRequest request, Long id) {
         AssetCategory currentAssetCategory = assetCategoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Asset Category Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Asset category not found with id " + id));
 
         ensureManipulable(currentAssetCategory);
 
@@ -80,7 +83,7 @@ public class AssetCategoryService {
     @Transactional
     public void deleteById(Long id) {
         AssetCategory assetCategory = assetCategoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Asset Category Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Asset category not found with id " + id));
 
         ensureManipulable(assetCategory);
 

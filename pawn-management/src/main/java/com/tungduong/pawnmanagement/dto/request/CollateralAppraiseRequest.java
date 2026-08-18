@@ -1,6 +1,5 @@
 package com.tungduong.pawnmanagement.dto.request;
 
-import com.tungduong.pawnmanagement.model.enums.AssetStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

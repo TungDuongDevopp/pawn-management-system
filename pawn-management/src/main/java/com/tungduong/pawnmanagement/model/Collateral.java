@@ -31,7 +31,6 @@ public class Collateral extends BaseEntity {
     @NotNull(message = "declared value can not be null")
     private BigDecimal declaredValue;
 
-    @NotNull(message = "declared value can not be null")
     private BigDecimal appraisedValue;
 
     @NotNull(message = "assetStatus can not be null ")

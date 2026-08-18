@@ -1,5 +1,6 @@
 package com.tungduong.pawnmanagement.helper;
 
+import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,11 @@ public class GlobalHandlerException {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException ex) {
         return ApiResponse.error(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(CanNotManipulateDataException.class)
+    public ResponseEntity<?> handleCanNotManipulateDataException(CanNotManipulateDataException ex) {
+        return ApiResponse.error(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)

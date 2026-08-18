@@ -34,16 +34,17 @@ public class AccountService {
         if (account != null &&
                 (account.getRecordStatus() == RecordStatus.DELETED
                         || account.getRecordStatus() == RecordStatus.INACTIVE
-                        || account.getStatus() == AccountStatus.DELETED)) {
+                        || account.getStatus() == AccountStatus.DELETED
+                        || account.getStatus() == AccountStatus.DISABLED)) {
             throw new CanNotManipulateDataException(
-                    "Account has been deleted or inactivated and cannot be manipulated"
+                    "Account cannot be manipulated in its current status"
             );
         }
         if (role != null &&
                 (role.getRecordStatus() == RecordStatus.DELETED
                         || role.getRecordStatus() == RecordStatus.INACTIVE)) {
             throw new CanNotManipulateDataException(
-                    "Role has been deleted or inactivated and cannot be manipulated"
+                    "Role cannot be manipulated in its current status"
             );
         }
     }
@@ -60,11 +61,11 @@ public class AccountService {
     }
 
     public AccountResponse findById(Long id) {
-        return accountMapper.toDto(
-                accountRepository.findByIdAndStatusNot(id, AccountStatus.DELETED)
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException("Account not found"))
-        );
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Account not found with id " + id));
+        ensureManipulable(account, null);
+        return accountMapper.toDto(account);
     }
 
     public AccountResponse create(AccountRequest accountRequest) {
@@ -78,7 +79,7 @@ public class AccountService {
         String roleName = accountRequest.getRole().getName();
         Role role = roleRepository.findByIdOrName(id, roleName)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Role not found"));
+                        new ResourceNotFoundException("Role not found with id " + id));
         ensureManipulable(null, role);
         Account account = accountMapper.toEntity(accountRequest);
         account.setStatus(AccountStatus.ACTIVE);
@@ -90,13 +91,13 @@ public class AccountService {
     public AccountResponse update(AccountUpdateRequest request, Long id) {
         Account currentAccount = accountRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Account not found"));
+                        new ResourceNotFoundException("Account not found with id " + id));
 
         Role role = null;
         if (request.getRole() != null) {
             role = roleRepository.findById(request.getRole().getId())
                     .orElseThrow(() ->
-                            new ResourceNotFoundException("Role not found"));
+                            new ResourceNotFoundException("Role not found with id " + request.getRole().getId()));
         }
         ensureManipulable(currentAccount, role);
         if (role != null) {
@@ -112,7 +113,7 @@ public class AccountService {
     public void deleteById(Long id) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Account not found"));
+                        new ResourceNotFoundException("Account not found with id " + id));
         ensureManipulable(account, null);
         account.setStatus(AccountStatus.DELETED);
         account.setRecordStatus(RecordStatus.DELETED);
