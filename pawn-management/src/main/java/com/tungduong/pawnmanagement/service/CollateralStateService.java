@@ -67,7 +67,7 @@ public class CollateralStateService {
         currentCollateral.setStatus(AssetStatus.APPROVED);
         currentCollateral.setAppraisedBy(currentStaff);
         currentCollateral.setAppraisedValue(request.getAppraisedValue());
-        return collateralMapper.toDto(currentCollateral);
+        return collateralMapper.toResponse(currentCollateral);
 
     }
 }

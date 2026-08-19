@@ -8,5 +8,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface StaffMapper {
     Staff toEntity(StaffRequest staffRequest);
-    StaffResponse toDto(Staff staff);
+    StaffResponse toResponse(Staff staff);
 }

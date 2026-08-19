@@ -47,7 +47,7 @@ class AccountServiceTest {
 
         Page<Account> accountPage = new PageImpl<>(List.of(account));
         when(accountRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(accountPage);
-        when(accountMapper.toDto(account)).thenReturn(responseDto);
+        when(accountMapper.toResponse(account)).thenReturn(responseDto);
 
         Page<AccountResponse> result = accountService.findAll(pageable, filterRequest);
 
