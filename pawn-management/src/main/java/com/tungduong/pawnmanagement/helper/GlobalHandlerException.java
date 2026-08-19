@@ -1,8 +1,6 @@
 package com.tungduong.pawnmanagement.helper;
 
-import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
-import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
-import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
+import com.tungduong.pawnmanagement.helper.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -28,6 +26,15 @@ public class GlobalHandlerException {
         return ApiResponse.error(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
+    @ExceptionHandler(FileStorageException.class)
+    public ResponseEntity<?>handleStorageException(FileStorageException ex) {
+        return ApiResponse.error(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidTypeFileException.class)
+    public ResponseEntity<?> handleInvalidFormatException(InvalidFormatException ex) {
+        return ApiResponse.error(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<?> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
 
