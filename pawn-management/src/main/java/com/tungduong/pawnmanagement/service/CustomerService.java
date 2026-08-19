@@ -3,6 +3,7 @@ package com.tungduong.pawnmanagement.service;
 import com.tungduong.pawnmanagement.dto.request.filter.CustomerFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.CustomerRequest;
 import com.tungduong.pawnmanagement.dto.request.update.CustomerUpdateRequest;
+import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CustomerResponse;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
@@ -94,6 +95,19 @@ public class CustomerService {
         }
 
         return customerMapper.toResponse(currentCustomer);
+    }
+
+    @Transactional
+    public CustomerResponse updateRecordStatus(Long id, RecordStatusUpdateRequest request) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id " + id));
+
+        if (customer.getRecordStatus() == RecordStatus.DELETED) {
+            throw new CanNotManipulateDataException("Customer cannot be manipulated in its current status");
+        }
+
+        customer.setRecordStatus(request.getRecordStatus());
+        return customerMapper.toResponse(customer);
     }
 
     @Transactional

@@ -3,6 +3,7 @@ package com.tungduong.pawnmanagement.service;
 import com.tungduong.pawnmanagement.dto.request.filter.StaffFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.StaffRequest;
 import com.tungduong.pawnmanagement.dto.request.update.StaffUpdateRequest;
+import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.StaffResponse;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
@@ -108,6 +109,19 @@ public class StaffService {
         }
 
         return staffMapper.toResponse(currentStaff);
+    }
+
+    @Transactional
+    public StaffResponse updateRecordStatus(Long id, RecordStatusUpdateRequest request) {
+        Staff staff = staffRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Staff not found with id " + id));
+
+        if (staff.getRecordStatus() == RecordStatus.DELETED) {
+            throw new CanNotManipulateDataException("Staff cannot be manipulated in its current status");
+        }
+
+        staff.setRecordStatus(request.getRecordStatus());
+        return staffMapper.toResponse(staff);
     }
 
     @Transactional

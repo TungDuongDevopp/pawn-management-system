@@ -3,6 +3,7 @@ package com.tungduong.pawnmanagement.service;
 import com.tungduong.pawnmanagement.dto.request.filter.AccountFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.AccountRequest;
 import com.tungduong.pawnmanagement.dto.request.update.AccountUpdateRequest;
+import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.AccountResponse;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
@@ -107,6 +108,20 @@ public class AccountService {
             currentAccount.setStatus(request.getStatus());
         }
         return accountMapper.toResponse(currentAccount);
+    }
+
+    @Transactional
+    public AccountResponse updateRecordStatus(Long id, RecordStatusUpdateRequest request) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Account not found with id " + id));
+
+        if (account.getRecordStatus() == RecordStatus.DELETED) {
+            throw new CanNotManipulateDataException("Account cannot be manipulated in its current status");
+        }
+
+        account.setRecordStatus(request.getRecordStatus());
+        return accountMapper.toResponse(account);
     }
 
     @Transactional

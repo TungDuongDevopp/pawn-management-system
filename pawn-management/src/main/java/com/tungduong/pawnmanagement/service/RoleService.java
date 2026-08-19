@@ -2,6 +2,7 @@ package com.tungduong.pawnmanagement.service;
 
 import com.tungduong.pawnmanagement.dto.request.filter.RoleFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.RoleRequest;
+import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.RoleResponse;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
@@ -67,6 +68,19 @@ public class RoleService {
         currentRole.setName(roleRequest.getName());
         currentRole.setDescription(roleRequest.getDescription());
         return roleMapper.toResponse(currentRole);
+    }
+
+    @Transactional
+    public RoleResponse updateRecordStatus(Long id, RecordStatusUpdateRequest request) {
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with id " + id));
+
+        if (role.getRecordStatus() == RecordStatus.DELETED) {
+            throw new CanNotManipulateDataException("Role cannot be manipulated in its current status");
+        }
+
+        role.setRecordStatus(request.getRecordStatus());
+        return roleMapper.toResponse(role);
     }
 
     @Transactional

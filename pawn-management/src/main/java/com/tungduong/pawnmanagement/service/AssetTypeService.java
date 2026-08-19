@@ -2,6 +2,7 @@ package com.tungduong.pawnmanagement.service;
 
 import com.tungduong.pawnmanagement.dto.request.AssetTypeRequest;
 import com.tungduong.pawnmanagement.dto.request.update.AssetTypeUpdateRequest;
+import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.AssetTypeResponse;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
@@ -99,6 +100,19 @@ public class AssetTypeService {
             currentAssetType.setCategory(assetCategory);
         }
 
+        return assetTypeMapper.toResponse(currentAssetType);
+    }
+
+    @Transactional
+    public AssetTypeResponse updateRecordStatus(Long id, RecordStatusUpdateRequest request) {
+        AssetType currentAssetType = assetTypeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Asset type not found with id " + id));
+
+        if (currentAssetType.getRecordStatus() == RecordStatus.DELETED) {
+            throw new CanNotManipulateDataException("Asset type cannot be manipulated in its current status");
+        }
+
+        currentAssetType.setRecordStatus(request.getRecordStatus());
         return assetTypeMapper.toResponse(currentAssetType);
     }
 

@@ -2,6 +2,7 @@ package com.tungduong.pawnmanagement.controller;
 
 import com.tungduong.pawnmanagement.dto.request.CollateralDocumentTypeRequest;
 import com.tungduong.pawnmanagement.dto.request.update.CollateralDocumentTypeUpdateRequest;
+import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CollateralDocumentTypeResponse;
 import com.tungduong.pawnmanagement.helper.ApiResponse;
 import com.tungduong.pawnmanagement.helper.PageResponse;
@@ -33,8 +34,13 @@ public class CollateralDocumentTypeController {
     }
 
     @PutMapping("/collateral-document-types/{id}")
-    public ResponseEntity<ApiResponse<CollateralDocumentTypeResponse>> updateCollateralDocumentType(@RequestBody CollateralDocumentTypeUpdateRequest collateralDocumentTypeRequest, @PathVariable Long id) {
+    public ResponseEntity<ApiResponse<CollateralDocumentTypeResponse>> updateCollateralDocumentType(@Valid @RequestBody CollateralDocumentTypeUpdateRequest collateralDocumentTypeRequest, @PathVariable Long id) {
         return ApiResponse.success(collateralDocumentTypeService.update(collateralDocumentTypeRequest, id));
+    }
+
+    @PatchMapping("/collateral-document-types/{id}/status")
+    public ResponseEntity<ApiResponse<CollateralDocumentTypeResponse>> updateCollateralDocumentTypeStatus(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
+        return ApiResponse.success(collateralDocumentTypeService.updateRecordStatus(id, request));
     }
 
     @DeleteMapping("/collateral-document-types/{id}")
