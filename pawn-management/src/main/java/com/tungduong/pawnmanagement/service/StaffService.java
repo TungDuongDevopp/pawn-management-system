@@ -45,14 +45,14 @@ public class StaffService {
                 StaffSpecification.hasDepartment(request),
                 StaffSpecification.hasPosition(request)
         );
-        return staffRepository.findAll(spec, pageable).map(staffMapper::toDto);
+        return staffRepository.findAll(spec, pageable).map(staffMapper::toResponse);
     }
 
     public StaffResponse getById(Long id) {
         Staff staff = staffRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Staff not found with id " + id));
         ensureManipulable(staff);
-        return staffMapper.toDto(staff);
+        return staffMapper.toResponse(staff);
     }
 
     public StaffResponse create(StaffRequest staffRequest) {
@@ -63,7 +63,7 @@ public class StaffService {
                 && staffRepository.existsByEmailAndRecordStatusNot(staffRequest.getEmail(), RecordStatus.DELETED)) {
             throw new DuplicateResourceException("Email already exists");
         }
-        return staffMapper.toDto(staffRepository.save(staffMapper.toEntity(staffRequest)));
+        return staffMapper.toResponse(staffRepository.save(staffMapper.toEntity(staffRequest)));
     }
 
     @Transactional
@@ -107,7 +107,7 @@ public class StaffService {
             currentStaff.setPosition(staffRequest.getPosition());
         }
 
-        return staffMapper.toDto(currentStaff);
+        return staffMapper.toResponse(currentStaff);
     }
 
     @Transactional

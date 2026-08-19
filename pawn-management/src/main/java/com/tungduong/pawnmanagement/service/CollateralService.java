@@ -80,14 +80,14 @@ public class CollateralService {
                 CollateralSpecification.hasAppraisedByStaffId(request),
                 CollateralSpecification.hasAppraisedAt(request)
         );
-        return collateralRepository.findAll(specification, pageable).map(collateralMapper::toDto);
+        return collateralRepository.findAll(specification, pageable).map(collateralMapper::toResponse);
     }
 
     public CollateralResponse getById(Long id) {
         Collateral collateral = collateralRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Collateral not found with id " + id));
         ensureManipulable(collateral, null, null);
-        return collateralMapper.toDto(collateral);
+        return collateralMapper.toResponse(collateral);
     }
 
     public CollateralResponse create(CollateralRequest request) {
@@ -101,7 +101,7 @@ public class CollateralService {
         collateral.setCustomer(customer);
         collateral.setType(assetType);
         collateral.setStatus(AssetStatus.UNDER_REVIEW);
-        return collateralMapper.toDto(collateralRepository.save(collateral));
+        return collateralMapper.toResponse(collateralRepository.save(collateral));
     }
 
     @Transactional
@@ -144,7 +144,7 @@ public class CollateralService {
             currentCollateral.setType(assetType);
         }
 
-        return collateralMapper.toDto(currentCollateral);
+        return collateralMapper.toResponse(currentCollateral);
     }
 
 

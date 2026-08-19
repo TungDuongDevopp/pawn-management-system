@@ -42,14 +42,14 @@ public class CustomerService {
                 CustomerSpecification.hasPhone(request),
                 CustomerSpecification.hasAddress(request)
         );
-        return customerRepository.findAll(specification, pageable).map(customerMapper::toDto);
+        return customerRepository.findAll(specification, pageable).map(customerMapper::toResponse);
     }
 
     public CustomerResponse getById(Long id) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id " + id));
         ensureManipulable(customer);
-        return customerMapper.toDto(customer);
+        return customerMapper.toResponse(customer);
     }
 
     public CustomerResponse create(CustomerRequest customerRequest) {
@@ -61,7 +61,7 @@ public class CustomerService {
             throw new DuplicateResourceException("Email already exists");
         }
 
-        return customerMapper.toDto(customerRepository.save(customerMapper.toEntity(customerRequest)));
+        return customerMapper.toResponse(customerRepository.save(customerMapper.toEntity(customerRequest)));
     }
 
     @Transactional
@@ -93,7 +93,7 @@ public class CustomerService {
             currentCustomer.setAddress(customerUpdateRequest.getAddress());
         }
 
-        return customerMapper.toDto(currentCustomer);
+        return customerMapper.toResponse(currentCustomer);
     }
 
     @Transactional

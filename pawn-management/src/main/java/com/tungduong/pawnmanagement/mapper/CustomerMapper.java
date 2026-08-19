@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface CustomerMapper {
     Customer toEntity(CustomerRequest customerRequest);
-    CustomerResponse toDto(Customer customer);
+    CustomerResponse toResponse(Customer customer);
 
 
 }

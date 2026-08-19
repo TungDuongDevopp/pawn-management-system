@@ -57,7 +57,7 @@ public class AccountService {
                 AccountSpecification.hasUsername(filterRequest)
         );
         return accountRepository.findAll(specification, pageable)
-                .map(accountMapper::toDto);
+                .map(accountMapper::toResponse);
     }
 
     public AccountResponse findById(Long id) {
@@ -65,7 +65,7 @@ public class AccountService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Account not found with id " + id));
         ensureManipulable(account, null);
-        return accountMapper.toDto(account);
+        return accountMapper.toResponse(account);
     }
 
     public AccountResponse create(AccountRequest accountRequest) {
@@ -84,7 +84,7 @@ public class AccountService {
         Account account = accountMapper.toEntity(accountRequest);
         account.setStatus(AccountStatus.ACTIVE);
         account.setRole(role);
-        return accountMapper.toDto(accountRepository.save(account));
+        return accountMapper.toResponse(accountRepository.save(account));
     }
 
     @Transactional
@@ -106,7 +106,7 @@ public class AccountService {
         if (request.getStatus() != null) {
             currentAccount.setStatus(request.getStatus());
         }
-        return accountMapper.toDto(currentAccount);
+        return accountMapper.toResponse(currentAccount);
     }
 
     @Transactional

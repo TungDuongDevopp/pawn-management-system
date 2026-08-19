@@ -16,7 +16,7 @@ public interface AccountMapper {
     Account toEntity(AccountRequest accountRequest);
 
     @Mapping(source = "role.id",target = "roleId")
-    AccountResponse toDto(Account account);
+    AccountResponse toResponse(Account account);
 
 
 }

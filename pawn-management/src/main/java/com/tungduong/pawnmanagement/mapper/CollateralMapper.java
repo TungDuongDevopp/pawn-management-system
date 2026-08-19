@@ -16,7 +16,7 @@ public interface CollateralMapper {
     @Mapping(source = "customer.id",target = "customerId")
     @Mapping(source = "type.id",target = "assetTypeId")
     @Mapping(source = "appraisedBy.id",target = "appraisedByStaffId")
-    CollateralResponse toDto(Collateral collateral);
+    CollateralResponse toResponse(Collateral collateral);
 
     List<CollateralResponse> toResponseList(List<Collateral> collaterals);
 }
