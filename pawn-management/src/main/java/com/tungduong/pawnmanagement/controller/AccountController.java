@@ -3,6 +3,7 @@ package com.tungduong.pawnmanagement.controller;
 import com.tungduong.pawnmanagement.dto.request.filter.AccountFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.AccountRequest;
 import com.tungduong.pawnmanagement.dto.request.update.AccountUpdateRequest;
+import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.AccountResponse;
 import com.tungduong.pawnmanagement.helper.ApiResponse;
 import com.tungduong.pawnmanagement.helper.PageResponse;
@@ -38,6 +39,11 @@ public class AccountController {
     @PutMapping("/accounts/{id}")
     public ResponseEntity<ApiResponse<AccountResponse>> updateAccount(@Valid @RequestBody AccountUpdateRequest accountRequest, @PathVariable Long id) {
         return ApiResponse.success(accountService.update(accountRequest,id));
+    }
+
+    @PatchMapping("/accounts/{id}/status")
+    public ResponseEntity<ApiResponse<AccountResponse>> updateAccountStatus(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
+        return ApiResponse.success(accountService.updateRecordStatus(id, request));
     }
 
     @DeleteMapping("/accounts/{id}")

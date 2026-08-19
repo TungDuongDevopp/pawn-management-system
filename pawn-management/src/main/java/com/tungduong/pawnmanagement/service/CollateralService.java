@@ -3,6 +3,7 @@ package com.tungduong.pawnmanagement.service;
 import com.tungduong.pawnmanagement.dto.request.filter.CollateralFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.CollateralRequest;
 import com.tungduong.pawnmanagement.dto.request.update.CollateralUpdateRequest;
+import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CollateralResponse;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
@@ -22,8 +23,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -148,6 +147,19 @@ public class CollateralService {
     }
 
 
+
+    @Transactional
+    public CollateralResponse updateRecordStatus(Long id, RecordStatusUpdateRequest request) {
+        Collateral collateral = collateralRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Collateral not found with id " + id));
+
+        if (collateral.getRecordStatus() == RecordStatus.DELETED) {
+            throw new CanNotManipulateDataException("Collateral cannot be manipulated in its current status");
+        }
+
+        collateral.setRecordStatus(request.getRecordStatus());
+        return collateralMapper.toResponse(collateral);
+    }
 
     @Transactional
     public void delete(Long id) {

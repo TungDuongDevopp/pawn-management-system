@@ -2,6 +2,7 @@ package com.tungduong.pawnmanagement.service;
 
 import com.tungduong.pawnmanagement.dto.request.CollateralDocumentTypeRequest;
 import com.tungduong.pawnmanagement.dto.request.update.CollateralDocumentTypeUpdateRequest;
+import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CollateralDocumentTypeResponse;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
@@ -72,10 +73,19 @@ public class CollateralDocumentTypeService {
             currentCollateralDocumentType.setDescription(request.getDescription());
         }
 
-        if (request.getStatus() != null) {
-            currentCollateralDocumentType.setRecordStatus(request.getStatus());
+        return collateralDocumentTypeMapper.toResponse(currentCollateralDocumentType);
+    }
+
+    @Transactional
+    public CollateralDocumentTypeResponse updateRecordStatus(Long id, RecordStatusUpdateRequest request) {
+        CollateralDocumentType currentCollateralDocumentType = collateralDocumentTypeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Collateral document type not found with id " + id));
+
+        if (currentCollateralDocumentType.getRecordStatus() == RecordStatus.DELETED) {
+            throw new CanNotManipulateDataException("Collateral document type cannot be manipulated in its current status");
         }
 
+        currentCollateralDocumentType.setRecordStatus(request.getRecordStatus());
         return collateralDocumentTypeMapper.toResponse(currentCollateralDocumentType);
     }
 

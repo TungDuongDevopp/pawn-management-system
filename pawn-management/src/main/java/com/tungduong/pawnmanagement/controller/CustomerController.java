@@ -3,6 +3,7 @@ package com.tungduong.pawnmanagement.controller;
 import com.tungduong.pawnmanagement.dto.request.filter.CustomerFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.CustomerRequest;
 import com.tungduong.pawnmanagement.dto.request.update.CustomerUpdateRequest;
+import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CustomerResponse;
 import com.tungduong.pawnmanagement.helper.ApiResponse;
 import com.tungduong.pawnmanagement.helper.PageResponse;
@@ -39,10 +40,15 @@ public class CustomerController {
         return ApiResponse.success(customerService.update(customerRequest, id));
     }
 
+    @PatchMapping("/customers/{id}/status")
+    public ResponseEntity<ApiResponse<CustomerResponse>> updateCustomerStatus(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
+        return ApiResponse.success(customerService.updateRecordStatus(id, request));
+    }
+
     @DeleteMapping("/customers/{id}")
-    public ResponseEntity<ApiResponse<CustomerResponse>> deleteCustomer(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteCustomer(@PathVariable Long id) {
         customerService.deleteById(id);
-       return ApiResponse.delete();
+        return ApiResponse.delete();
     }
 
 

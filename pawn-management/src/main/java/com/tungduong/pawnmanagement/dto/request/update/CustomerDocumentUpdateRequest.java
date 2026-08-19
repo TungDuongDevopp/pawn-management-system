@@ -1,5 +1,6 @@
 package com.tungduong.pawnmanagement.dto.request.update;
 
+import com.tungduong.pawnmanagement.model.enums.CustomerDocumentType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,12 +10,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CollateralDocumentTypeUpdateRequest {
-
+public class CustomerDocumentUpdateRequest {
     private Long id;
 
-    private String name;
+    private CustomerDocumentType customerDocumentType;
 
-    private String description;
+    private String fileName;
 
+    private Long customerId;
 }

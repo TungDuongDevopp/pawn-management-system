@@ -3,6 +3,7 @@ package com.tungduong.pawnmanagement.controller;
 import com.tungduong.pawnmanagement.dto.request.filter.StaffFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.StaffRequest;
 import com.tungduong.pawnmanagement.dto.request.update.StaffUpdateRequest;
+import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.StaffResponse;
 import com.tungduong.pawnmanagement.helper.ApiResponse;
 import com.tungduong.pawnmanagement.helper.PageResponse;
@@ -35,6 +36,11 @@ public class StaffController {
     @PutMapping("/staffs/{id}")
     public ResponseEntity<ApiResponse<StaffResponse>> updateStaff(@Valid @RequestBody StaffUpdateRequest staffRequest, @PathVariable Long id) {
         return ApiResponse.success(staffService.update(staffRequest,id));
+    }
+
+    @PatchMapping("/staffs/{id}/status")
+    public ResponseEntity<ApiResponse<StaffResponse>> updateStaffStatus(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
+        return ApiResponse.success(staffService.updateRecordStatus(id, request));
     }
 
     @DeleteMapping("/staffs/{id}")

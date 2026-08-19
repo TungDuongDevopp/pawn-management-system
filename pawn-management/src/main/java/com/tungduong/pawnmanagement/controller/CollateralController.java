@@ -3,6 +3,7 @@ package com.tungduong.pawnmanagement.controller;
 import com.tungduong.pawnmanagement.dto.request.filter.CollateralFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.CollateralRequest;
 import com.tungduong.pawnmanagement.dto.request.update.CollateralUpdateRequest;
+import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CollateralResponse;
 import com.tungduong.pawnmanagement.helper.ApiResponse;
 import com.tungduong.pawnmanagement.helper.PageResponse;
@@ -12,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,11 +39,15 @@ public class CollateralController {
         return ApiResponse.success(collateralService.update(request,id));
     }
 
-    @DeleteMapping("collaterals/{id}")
+    @PatchMapping("/collaterals/{id}/status")
+    public ResponseEntity<ApiResponse<CollateralResponse>> updateCollateralStatus(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
+        return ApiResponse.success(collateralService.updateRecordStatus(id, request));
+    }
+
+    @DeleteMapping("/collaterals/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteCollateral(@PathVariable Long id) {
         collateralService.delete(id);
         return ApiResponse.delete();
     }
-
 
 }

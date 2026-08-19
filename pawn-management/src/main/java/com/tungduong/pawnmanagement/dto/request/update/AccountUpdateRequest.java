@@ -11,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountUpdateRequest {
+    private Long id;
     private RoleRequest role;
     private AccountStatus status;
 }
