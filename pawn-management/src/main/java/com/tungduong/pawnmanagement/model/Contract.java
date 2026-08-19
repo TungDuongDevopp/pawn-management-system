@@ -43,7 +43,8 @@ public class Contract extends BaseEntity {
     private Staff staff;
 
 
-    private String fileUrl;
+    @NotBlank(message = "File name can not be null")
+    private String fileName;
 
 
 

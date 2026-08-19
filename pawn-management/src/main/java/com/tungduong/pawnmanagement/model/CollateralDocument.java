@@ -2,6 +2,8 @@ package com.tungduong.pawnmanagement.model;
 
 import com.tungduong.pawnmanagement.model.base.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,7 +22,8 @@ public class CollateralDocument extends BaseEntity {
     @JoinColumn(name = "collateral_type_id")
     private CollateralDocumentType documentType;
 
-    private String fileUrl;
+    @NotBlank(message = "fileName can not be null")
+    private String fileName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "collateral_id")
