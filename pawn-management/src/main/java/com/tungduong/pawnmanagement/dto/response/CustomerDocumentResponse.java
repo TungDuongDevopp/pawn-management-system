@@ -17,5 +17,13 @@ public class CustomerDocumentResponse {
 
     private String fileName;
 
+    private Long fileSize;
+
+    private String extension;
+
+    private String storageKey;
+
+    private String contentType;
+
     private Long customerId;
 }

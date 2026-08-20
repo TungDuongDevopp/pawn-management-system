@@ -3,11 +3,11 @@ package com.tungduong.pawnmanagement.service;
 import com.tungduong.pawnmanagement.helper.exception.FileStorageException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.service.interfaces.IFileStorageService;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -16,6 +16,8 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -23,6 +25,14 @@ import java.util.UUID;
 public class LocalFileStorageService implements IFileStorageService {
 
     private final Path rootLocation;
+    private static final List<String> allowedExtensions = Arrays.asList("pdf", "jpg", "jpeg", "png", "doc", "docx");
+    private static final List<String> allowedMimeTypes = Arrays.asList(
+            "application/pdf",
+            "image/jpeg",
+            "image/png",
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    );
 
     public LocalFileStorageService(@Value("${document.upload-file.base-uri}") String storageLocation) {
         this.rootLocation = Paths.get(URI.create(storageLocation)).normalize();
@@ -30,27 +40,31 @@ public class LocalFileStorageService implements IFileStorageService {
         try {
             Files.createDirectories(rootLocation);
         } catch (IOException e) {
-            throw new RuntimeException("Could not initialize storage", e);
+            throw new FileStorageException("Could not initialize storage");
         }
+    }
+
+    private String createStorageKey(MultipartFile file) {
+        if(Objects.isNull(file) || file.isEmpty()) {
+            throw new FileStorageException("File is empty");
+        }
+        String fileName = FilenameUtils.getName(file.getOriginalFilename());
+        String contentType = file.getContentType();
+        if(!allowedMimeTypes.contains(contentType)) {
+            throw new FileStorageException("File type is not allowed: " + contentType);
+        }
+        String extension = FilenameUtils.getExtension(fileName);
+        if(!allowedExtensions.contains(extension)) {
+            throw new FileStorageException("File extension is not allowed: " + extension);
+        }
+        return "%s.%s".formatted(UUID.randomUUID(), extension);
+
     }
 
     @Override
     public String save(MultipartFile file) {
-        if (file.isEmpty()) {
-            throw new FileStorageException("File is empty");
-        }
 
-        String originalFileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-
-        String extension = "";
-
-        int dotIndex = originalFileName.lastIndexOf('.');
-        if (dotIndex >= 0) {
-            extension = originalFileName.substring(dotIndex);
-        }
-
-        String storageKey = UUID.randomUUID() + extension;
-
+        String storageKey = createStorageKey(file);
         try {
             Path target = rootLocation.resolve(storageKey).normalize();
 
@@ -59,7 +73,7 @@ public class LocalFileStorageService implements IFileStorageService {
             return storageKey;
 
         } catch (IOException e) {
-            throw new RuntimeException("Could not save file", e);
+            throw new FileStorageException("Could not save file");
         }
     }
 
@@ -77,7 +91,7 @@ public class LocalFileStorageService implements IFileStorageService {
             return resource;
 
         } catch (MalformedURLException e) {
-            throw new RuntimeException("Could not read file", e);
+            throw new FileStorageException("Could not read file");
         }
     }
 
@@ -92,7 +106,7 @@ public class LocalFileStorageService implements IFileStorageService {
             Files.deleteIfExists(file);
 
         } catch (IOException e) {
-            throw new RuntimeException("Could not delete file", e);
+            throw new FileStorageException("Could not delete file");
         }
     }
 

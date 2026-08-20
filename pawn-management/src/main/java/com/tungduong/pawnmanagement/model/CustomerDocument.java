@@ -26,6 +26,18 @@ public class CustomerDocument extends BaseEntity {
     @NotBlank(message = "fileName can not be null")
     private String fileName;
 
+    @NotBlank(message = "contentType can not be null")
+    private String contentType;
+
+    @NotBlank(message = "extension can not be null")
+    private String extension;
+
+    @NotBlank(message = "storageKey can not be null")
+    private String storageKey;
+
+    @NotNull (message = "filesize can not be null")
+    private Long fileSize;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private Customer customer;

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -15,7 +16,7 @@ public class CustomerDocumentUpdateRequest {
 
     private CustomerDocumentType customerDocumentType;
 
-    private String fileName;
+    private MultipartFile file;
 
     private Long customerId;
 }
