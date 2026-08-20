@@ -6,10 +6,14 @@ import com.tungduong.pawnmanagement.model.CustomerDocument;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface CustomerDocumentMapper {
     CustomerDocument toEntity(CustomerDocumentRequest customerDocumentRequest);
 
     @Mapping(source = "customer.id",target = "customerId")
     CustomerDocumentResponse toResponse(CustomerDocument customerDocument);
+
+    List<CustomerDocumentResponse> toResponseList(List<CustomerDocument> customerDocuments);
 }
