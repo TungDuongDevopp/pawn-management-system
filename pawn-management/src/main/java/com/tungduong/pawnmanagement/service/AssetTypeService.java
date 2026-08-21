@@ -51,9 +51,8 @@ public class AssetTypeService {
     }
 
     public AssetTypeResponse getById(Long id) {
-        AssetType assetType = assetTypeRepository.findById(id)
+        AssetType assetType = assetTypeRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Asset type not found with id " + id));
-        ensureManipulable(assetType, null);
         return assetTypeMapper.toResponse(assetType);
     }
 

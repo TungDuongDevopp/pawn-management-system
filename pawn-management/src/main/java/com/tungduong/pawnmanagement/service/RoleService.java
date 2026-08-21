@@ -40,10 +40,13 @@ public class RoleService {
     }
 
     public RoleResponse findById(Long id) {
-        Role role = roleRepository.findById(id)
+        Role role = roleRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found with id " + id));
-        ensureManipulable(role);
         return roleMapper.toResponse(role);
+    }
+
+    public RoleResponse getById(Long id) {
+        return findById(id);
     }
 
     public RoleResponse save(RoleRequest roleRequest) {

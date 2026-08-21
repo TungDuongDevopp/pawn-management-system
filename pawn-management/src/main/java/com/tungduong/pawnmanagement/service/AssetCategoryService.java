@@ -41,9 +41,8 @@ public class AssetCategoryService {
     }
 
     public AssetCategoryResponse getById(Long id) {
-        AssetCategory assetCategory = assetCategoryRepository.findById(id)
+        AssetCategory assetCategory = assetCategoryRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Asset category not found with id " + id));
-        ensureManipulable(assetCategory);
         return assetCategoryMapper.toResponse(assetCategory);
     }
 

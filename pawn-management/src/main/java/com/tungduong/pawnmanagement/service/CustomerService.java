@@ -47,9 +47,8 @@ public class CustomerService {
     }
 
     public CustomerResponse getById(Long id) {
-        Customer customer = customerRepository.findById(id)
+        Customer customer = customerRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id " + id));
-        ensureManipulable(customer);
         return customerMapper.toResponse(customer);
     }
 
