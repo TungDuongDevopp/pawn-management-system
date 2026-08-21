@@ -44,7 +44,7 @@ public class LocalFileStorageService implements IFileStorageService {
         }
     }
 
-    private String createStorageKey(MultipartFile file) {
+    private String createStorageKey(MultipartFile file){
         if(Objects.isNull(file) || file.isEmpty()) {
             throw new FileStorageException("File is empty");
         }
@@ -57,20 +57,24 @@ public class LocalFileStorageService implements IFileStorageService {
         if(!allowedExtensions.contains(extension)) {
             throw new FileStorageException("File extension is not allowed: " + extension);
         }
-        return "%s.%s".formatted(UUID.randomUUID(), extension);
+
+        return UUID.randomUUID()+"."+extension;
 
     }
 
     @Override
-    public String save(MultipartFile file) {
-
+    public String save(MultipartFile file, String directory) throws IOException {
         String storageKey = createStorageKey(file);
+
         try {
-            Path target = rootLocation.resolve(storageKey).normalize();
+            Path directoryPath = rootLocation.resolve(directory).normalize();
+            Files.createDirectories(directoryPath);
+
+            Path target = directoryPath.resolve(storageKey).normalize();
 
             file.transferTo(target);
 
-            return storageKey;
+            return directory + "/" + storageKey;
 
         } catch (IOException e) {
             throw new FileStorageException("Could not save file");
