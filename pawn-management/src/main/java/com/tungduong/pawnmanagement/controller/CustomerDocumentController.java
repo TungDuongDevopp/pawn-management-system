@@ -10,6 +10,7 @@ import com.tungduong.pawnmanagement.helper.PageResponse;
 import com.tungduong.pawnmanagement.service.CustomerDocumentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,6 +52,11 @@ public class CustomerDocumentController {
     @PatchMapping("/customer-documents/{id}")
     public ResponseEntity<ApiResponse<CustomerDocumentResponse>> updateStatus(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
         return ApiResponse.success(customerDocumentService.updateRecordStatus(id, request));
+    }
+
+    @GetMapping("/customer-documents/{id}/download")
+    public ResponseEntity<ApiResponse<Resource>> downloadCustomerDocument(@PathVariable Long id) {
+        return ApiResponse.success(customerDocumentService.download(id));
     }
 
 }

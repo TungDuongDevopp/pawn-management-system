@@ -58,4 +58,40 @@ class AccountServiceTest {
         verify(accountRepository).findAll(specCaptor.capture(), eq(pageable));
         assertNotNull(specCaptor.getValue());
     }
+
+    @Test
+    void findById_WhenExistsAndNotDeleted_ShouldReturnAccountResponse() {
+        Long id = 1L;
+        Account account = new Account();
+        account.setRecordStatus(com.tungduong.pawnmanagement.model.enums.RecordStatus.INACTIVE);
+        AccountResponse responseDto = new AccountResponse();
+
+        when(accountRepository.findByIdAndRecordStatusNotAndStatusNot(
+                id,
+                com.tungduong.pawnmanagement.model.enums.RecordStatus.DELETED,
+                com.tungduong.pawnmanagement.model.enums.AccountStatus.DELETED
+        )).thenReturn(java.util.Optional.of(account));
+        when(accountMapper.toResponse(account)).thenReturn(responseDto);
+
+        AccountResponse result = accountService.findById(id);
+
+        assertNotNull(result);
+        assertEquals(responseDto, result);
+    }
+
+    @Test
+    void findById_WhenDeletedOrNotFound_ShouldThrowResourceNotFoundException() {
+        Long id = 1L;
+
+        when(accountRepository.findByIdAndRecordStatusNotAndStatusNot(
+                id,
+                com.tungduong.pawnmanagement.model.enums.RecordStatus.DELETED,
+                com.tungduong.pawnmanagement.model.enums.AccountStatus.DELETED
+        )).thenReturn(java.util.Optional.empty());
+
+        org.junit.jupiter.api.Assertions.assertThrows(
+                com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException.class,
+                () -> accountService.findById(id)
+        );
+    }
 }

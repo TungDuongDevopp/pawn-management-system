@@ -63,9 +63,8 @@ public class CustomerDocumentService {
     }
 
     public CustomerDocumentResponse getById(Long id) {
-
-        CustomerDocument document = customerDocumentRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Document not found  with id " + id));
-        ensureManipulable(document, null);
+        CustomerDocument document = customerDocumentRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
+                .orElseThrow(() -> new ResourceNotFoundException("Document not found with id " + id));
         return customerDocumentMapper.toResponse(document);
     }
 
@@ -128,14 +127,10 @@ public class CustomerDocumentService {
             document.setCustomerDocumentType(request.getCustomerDocumentType());
         }
 
-        if(request.getCustomerId() != null){
-            customer = customerRepository.findById(request.getCustomerId()).orElseThrow(() -> new ResourceNotFoundException("Customer not found with id " +request.getCustomerId()));
-            document.setCustomer(customer);
-        }
         ensureManipulable(document, customer);
 
         String oldStorageKey = document.getStorageKey();
-        String directory = "customers/" + request.getCustomerId() + "/documents";
+        String directory = "customers/" + customer.getId() + "/documents";
         if(request.getFile() != null){
             MultipartFile file = request.getFile();
             String newStorageKey = fileStorageService.save(file,directory);
@@ -154,6 +149,7 @@ public class CustomerDocumentService {
         }
         return customerDocumentMapper.toResponse(document);
     }
+
     @Transactional
     public CustomerDocumentResponse updateRecordStatus(Long id, RecordStatusUpdateRequest request) {
         CustomerDocument document = customerDocumentRepository.findById(id)

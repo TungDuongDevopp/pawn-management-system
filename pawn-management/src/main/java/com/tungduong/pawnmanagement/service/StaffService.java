@@ -50,9 +50,8 @@ public class StaffService {
     }
 
     public StaffResponse getById(Long id) {
-        Staff staff = staffRepository.findById(id)
+        Staff staff = staffRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Staff not found with id " + id));
-        ensureManipulable(staff);
         return staffMapper.toResponse(staff);
     }
 

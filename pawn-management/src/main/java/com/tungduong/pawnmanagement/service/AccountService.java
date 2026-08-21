@@ -62,12 +62,12 @@ public class AccountService {
     }
 
     public AccountResponse findById(Long id) {
-        Account account = accountRepository.findById(id)
+        Account account = accountRepository.findByIdAndRecordStatusNotAndStatusNot(id, RecordStatus.DELETED, AccountStatus.DELETED)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Account not found with id " + id));
-        ensureManipulable(account, null);
         return accountMapper.toResponse(account);
     }
+
 
     public AccountResponse create(AccountRequest accountRequest) {
         if (accountRepository.existsByUsernameAndStatusNot(

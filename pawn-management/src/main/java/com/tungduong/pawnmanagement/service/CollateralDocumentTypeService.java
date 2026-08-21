@@ -40,9 +40,8 @@ public class CollateralDocumentTypeService {
     }
 
     public CollateralDocumentTypeResponse getById(Long id) {
-        CollateralDocumentType collateralDocumentType = collateralDocumentTypeRepository.findById(id)
+        CollateralDocumentType collateralDocumentType = collateralDocumentTypeRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Collateral document type not found with id " + id));
-        ensureManipulable(collateralDocumentType);
         return collateralDocumentTypeMapper.toResponse(collateralDocumentType);
     }
 

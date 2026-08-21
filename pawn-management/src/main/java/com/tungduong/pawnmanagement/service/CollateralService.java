@@ -83,9 +83,8 @@ public class CollateralService {
     }
 
     public CollateralResponse getById(Long id) {
-        Collateral collateral = collateralRepository.findById(id)
+        Collateral collateral = collateralRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Collateral not found with id " + id));
-        ensureManipulable(collateral, null, null);
         return collateralMapper.toResponse(collateral);
     }
 

@@ -17,6 +17,4 @@ public class CustomerDocumentUpdateRequest {
     private CustomerDocumentType customerDocumentType;
 
     private MultipartFile file;
-
-    private Long customerId;
 }
