@@ -1,6 +1,7 @@
 package com.tungduong.pawnmanagement.service;
 
 import com.tungduong.pawnmanagement.dto.request.CustomerDocumentRequest;
+import com.tungduong.pawnmanagement.dto.request.filter.CustomerDocumentFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.update.CustomerDocumentUpdateRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CustomerDocumentResponse;
@@ -14,15 +15,18 @@ import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import com.tungduong.pawnmanagement.repository.CustomerDocumentRepository;
 import com.tungduong.pawnmanagement.repository.CustomerRepository;
 import com.tungduong.pawnmanagement.service.interfaces.IFileStorageService;
+import com.tungduong.pawnmanagement.service.specification.CustomerDocumentSpecification;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
+import java.io.IOException;
 
 @Service
 @AllArgsConstructor
@@ -34,7 +38,7 @@ public class CustomerDocumentService {
 
     public void ensureManipulable(CustomerDocument customerDocument, Customer customer) {
         if(customerDocument !=null &&(
-                customerDocument.getRecordStatus()== RecordStatus.INACTIVE ||
+                customerDocument.getRecordStatus() == RecordStatus.INACTIVE ||
                         customerDocument.getRecordStatus()== RecordStatus.DELETED
                 )){
             throw new CanNotManipulateDataException("Customer Document can not be manipulated in its current status");
@@ -46,28 +50,42 @@ public class CustomerDocumentService {
         }
     }
 
-    public List<CustomerDocumentResponse> getAll(){
-        return customerDocumentMapper.toResponseList(customerDocumentRepository.findAll());
+    public Page<CustomerDocumentResponse> getAll(CustomerDocumentFilterRequest request, Pageable pageable) {
+      Specification<CustomerDocument> spec = Specification.allOf(
+              CustomerDocumentSpecification.recordStatusNot(RecordStatus.DELETED),
+              CustomerDocumentSpecification.hasContentType(request),
+              CustomerDocumentSpecification.hasCustomerId(request),
+              CustomerDocumentSpecification.hasFileSize(request),
+              CustomerDocumentSpecification.hasDocumentType(request),
+              CustomerDocumentSpecification.hasExtension(request)
+      );
+      return customerDocumentRepository.findAll(spec,pageable).map(customerDocumentMapper::toResponse);
     }
 
-    public CustomerDocumentResponse getById(long id) {
-        return customerDocumentMapper.toResponse(customerDocumentRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Customer not found with id "+id)));
+    public CustomerDocumentResponse getById(Long id) {
+
+        CustomerDocument document = customerDocumentRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Document not found  with id " + id));
+        ensureManipulable(document, null);
+        return customerDocumentMapper.toResponse(document);
     }
+
 
     @Transactional
-    public CustomerDocumentResponse create(CustomerDocumentRequest customerDocumentRequest) {
+    public CustomerDocumentResponse create(CustomerDocumentRequest customerDocumentRequest) throws IOException {
         Long customerId = customerDocumentRequest.getCustomerId();
         Customer customer = customerRepository.findById(customerId).orElseThrow(()-> new ResourceNotFoundException("Customer not found with id "+customerId));
         ensureManipulable(null, customer);
         MultipartFile file = customerDocumentRequest.getFile();
 
-        String storageKey = fileStorageService.save(file);
+        String directory = "customers/" + customerId + "/documents";
+        String storageKey = fileStorageService.save(file,directory);
 
         try{
             CustomerDocument document = new CustomerDocument();
             document.setCustomer(customer);
             document.setFileName(FilenameUtils.getName(file.getOriginalFilename()));
             document.setFileSize(file.getSize());
+            document.setCustomerDocumentType(customerDocumentRequest.getCustomerDocumentType());
             document.setExtension(FilenameUtils.getExtension(file.getOriginalFilename()));
             document.setContentType(file.getContentType());
             document.setStorageKey(storageKey);
@@ -100,7 +118,7 @@ public class CustomerDocumentService {
     }
 
     @Transactional
-    public CustomerDocumentResponse replaceFile(Long id,CustomerDocumentUpdateRequest request){
+    public CustomerDocumentResponse replaceFile(Long id,CustomerDocumentUpdateRequest request) throws IOException {
         CustomerDocument document = customerDocumentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Document not found with id " + id));
 
@@ -117,10 +135,10 @@ public class CustomerDocumentService {
         ensureManipulable(document, customer);
 
         String oldStorageKey = document.getStorageKey();
-
+        String directory = "customers/" + request.getCustomerId() + "/documents";
         if(request.getFile() != null){
             MultipartFile file = request.getFile();
-            String newStorageKey = fileStorageService.save(file);
+            String newStorageKey = fileStorageService.save(file,directory);
             try{
                 document.setStorageKey(newStorageKey);
                 document.setFileName(FilenameUtils.getName(file.getOriginalFilename()));

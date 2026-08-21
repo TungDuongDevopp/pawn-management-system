@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
 public class FileController {
@@ -15,8 +17,9 @@ public class FileController {
     private final IFileStorageService fileStorageService;
 
     @PostMapping("/files")
-    public ResponseEntity<ApiResponse<String>> upload(@RequestParam("file") MultipartFile file) {
-        return ApiResponse.created(fileStorageService.save(file));
+    public ResponseEntity<ApiResponse<String>> upload(@RequestParam("file") MultipartFile file) throws IOException {
+        String folder = "FileTest";
+        return ApiResponse.created(fileStorageService.save(file,folder));
     }
 
     @GetMapping("/files/{storageKey}")

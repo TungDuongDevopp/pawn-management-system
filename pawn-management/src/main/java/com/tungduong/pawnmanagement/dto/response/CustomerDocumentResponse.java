@@ -1,6 +1,7 @@
 package com.tungduong.pawnmanagement.dto.response;
 
 import com.tungduong.pawnmanagement.model.enums.CustomerDocumentType;
+import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,4 +27,6 @@ public class CustomerDocumentResponse {
     private String contentType;
 
     private Long customerId;
+
+    private RecordStatus recordStatus;
 }
