@@ -63,14 +63,13 @@ public class CustomerDocumentService {
     }
 
     public CustomerDocumentResponse findById(Long id) {
-        CustomerDocument document = customerDocumentRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
-                .orElseThrow(() -> new ResourceNotFoundException("Document not found with id " + id));
-        return customerDocumentMapper.toResponse(document);
+        return customerDocumentMapper.toResponse(customerDocumentRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
+                .orElseThrow(() -> new ResourceNotFoundException("Document not found with id " + id)));
     }
 
 
     @Transactional
-    public CustomerDocumentResponse create(CustomerDocumentRequest customerDocumentRequest) throws IOException {
+    public CustomerDocumentResponse upload(CustomerDocumentRequest customerDocumentRequest) throws IOException {
         Long customerId = customerDocumentRequest.getCustomerId();
         Customer customer = customerRepository.findById(customerId).orElseThrow(()-> new ResourceNotFoundException("Customer not found with id "+customerId));
         ensureManipulable(null, customer);
