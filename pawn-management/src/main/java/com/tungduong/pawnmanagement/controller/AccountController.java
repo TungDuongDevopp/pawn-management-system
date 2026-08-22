@@ -22,33 +22,33 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping("/accounts")
-    public ResponseEntity<ApiResponse<AccountResponse>> createAccount(@Valid @RequestBody AccountRequest accountRequest) {
+    public ResponseEntity<ApiResponse<AccountResponse>> create(@Valid @RequestBody AccountRequest accountRequest) {
         return ApiResponse.created(accountService.create(accountRequest));
     }
 
     @GetMapping("/accounts")
-    public ResponseEntity<ApiResponse<PageResponse<AccountResponse>>> getAccounts(Pageable pageable, AccountFilterRequest filterRequest) {
+    public ResponseEntity<ApiResponse<PageResponse<AccountResponse>>> findAll(Pageable pageable, AccountFilterRequest filterRequest) {
         return ApiResponse.success(PageResponse.from(accountService.findAll(pageable, filterRequest)));
     }
 
     @GetMapping("/accounts/{id}")
-    public ResponseEntity<ApiResponse<AccountResponse>> getAccountById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<AccountResponse>> findById(@PathVariable Long id) {
         return ApiResponse.success(accountService.findById(id));
     }
 
     @PutMapping("/accounts/{id}")
-    public ResponseEntity<ApiResponse<AccountResponse>> updateAccount(@Valid @RequestBody AccountUpdateRequest accountRequest, @PathVariable Long id) {
-        return ApiResponse.success(accountService.update(accountRequest,id));
+    public ResponseEntity<ApiResponse<AccountResponse>> update(@Valid @RequestBody AccountUpdateRequest accountRequest, @PathVariable Long id) {
+        return ApiResponse.success(accountService.update(accountRequest, id));
     }
 
-    @PatchMapping("/accounts/{id}/status")
-    public ResponseEntity<ApiResponse<AccountResponse>> updateAccountStatus(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
+    @PatchMapping("/accounts/{id}")
+    public ResponseEntity<ApiResponse<AccountResponse>> update(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
         return ApiResponse.success(accountService.updateRecordStatus(id, request));
     }
 
     @DeleteMapping("/accounts/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteAccountById(@PathVariable Long id) {
-        accountService.deleteById(id);
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
+        accountService.delete(id);
         return ApiResponse.delete();
     }
 

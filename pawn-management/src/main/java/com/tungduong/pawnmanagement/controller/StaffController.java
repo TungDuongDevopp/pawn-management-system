@@ -20,31 +20,32 @@ public class StaffController {
     private final StaffService staffService;
 
     @PostMapping("/staffs")
-    public ResponseEntity<ApiResponse<StaffResponse>> createStaff(@Valid @RequestBody StaffRequest staffRequest) {
+    public ResponseEntity<ApiResponse<StaffResponse>> create(@Valid @RequestBody StaffRequest staffRequest) {
         return ApiResponse.created(staffService.create(staffRequest));
     }
 
-    @GetMapping("/staffs/{id}")
-    public ResponseEntity<ApiResponse<StaffResponse>> getStaffById(@PathVariable Long id) {
-        return ApiResponse.success(staffService.getById(id));
-    }
-
     @GetMapping("/staffs")
-    public ResponseEntity<ApiResponse<PageResponse<StaffResponse>>> getStaffs(Pageable pageable, StaffFilterRequest request) {
-        return ApiResponse.success(PageResponse.from( staffService.getAll(pageable,request)));
-    }
-    @PutMapping("/staffs/{id}")
-    public ResponseEntity<ApiResponse<StaffResponse>> updateStaff(@Valid @RequestBody StaffUpdateRequest staffRequest, @PathVariable Long id) {
-        return ApiResponse.success(staffService.update(staffRequest,id));
+    public ResponseEntity<ApiResponse<PageResponse<StaffResponse>>> findAll(Pageable pageable, StaffFilterRequest request) {
+        return ApiResponse.success(PageResponse.from(staffService.findAll(pageable, request)));
     }
 
-    @PatchMapping("/staffs/{id}/status")
-    public ResponseEntity<ApiResponse<StaffResponse>> updateStaffStatus(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
+    @GetMapping("/staffs/{id}")
+    public ResponseEntity<ApiResponse<StaffResponse>> findById(@PathVariable Long id) {
+        return ApiResponse.success(staffService.findById(id));
+    }
+
+    @PutMapping("/staffs/{id}")
+    public ResponseEntity<ApiResponse<StaffResponse>> update(@Valid @RequestBody StaffUpdateRequest staffRequest, @PathVariable Long id) {
+        return ApiResponse.success(staffService.update(staffRequest, id));
+    }
+
+    @PatchMapping("/staffs/{id}")
+    public ResponseEntity<ApiResponse<StaffResponse>> update(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
         return ApiResponse.success(staffService.updateRecordStatus(id, request));
     }
 
     @DeleteMapping("/staffs/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteStaffById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
         staffService.delete(id);
         return ApiResponse.delete();
     }

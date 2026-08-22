@@ -50,7 +50,7 @@ public class CustomerDocumentService {
         }
     }
 
-    public Page<CustomerDocumentResponse> getAll(CustomerDocumentFilterRequest request, Pageable pageable) {
+    public Page<CustomerDocumentResponse> findAll(CustomerDocumentFilterRequest request, Pageable pageable) {
       Specification<CustomerDocument> spec = Specification.allOf(
               CustomerDocumentSpecification.recordStatusNot(RecordStatus.DELETED),
               CustomerDocumentSpecification.hasContentType(request),
@@ -62,7 +62,7 @@ public class CustomerDocumentService {
       return customerDocumentRepository.findAll(spec,pageable).map(customerDocumentMapper::toResponse);
     }
 
-    public CustomerDocumentResponse getById(Long id) {
+    public CustomerDocumentResponse findById(Long id) {
         CustomerDocument document = customerDocumentRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Document not found with id " + id));
         return customerDocumentMapper.toResponse(document);

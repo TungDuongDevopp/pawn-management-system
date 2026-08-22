@@ -45,12 +45,12 @@ public class AssetTypeService {
         }
     }
 
-    public Page<AssetTypeResponse> getAll(Pageable pageable) {
+    public Page<AssetTypeResponse> findAll(Pageable pageable) {
         Specification<AssetType> spec = AssetTypeSpecification.statusNot(RecordStatus.DELETED);
         return assetTypeRepository.findAll(spec, pageable).map(assetTypeMapper::toResponse);
     }
 
-    public AssetTypeResponse getById(Long id) {
+    public AssetTypeResponse findById(Long id) {
         AssetType assetType = assetTypeRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Asset type not found with id " + id));
         return assetTypeMapper.toResponse(assetType);
@@ -116,7 +116,7 @@ public class AssetTypeService {
     }
 
     @Transactional
-    public void deleteById(Long id) {
+    public void delete(Long id) {
         AssetType assetType = assetTypeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Asset type not found with id " + id));
 

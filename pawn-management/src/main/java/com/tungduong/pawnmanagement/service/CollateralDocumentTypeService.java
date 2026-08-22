@@ -34,12 +34,12 @@ public class CollateralDocumentTypeService {
         }
     }
 
-    public Page<CollateralDocumentTypeResponse> getAll(Pageable pageable) {
+    public Page<CollateralDocumentTypeResponse> findAll(Pageable pageable) {
         Specification<CollateralDocumentType> spec = CollateralDocumentTypeSpecification.statusNot(RecordStatus.DELETED);
         return collateralDocumentTypeRepository.findAll(spec, pageable).map(collateralDocumentTypeMapper::toResponse);
     }
 
-    public CollateralDocumentTypeResponse getById(Long id) {
+    public CollateralDocumentTypeResponse findById(Long id) {
         CollateralDocumentType collateralDocumentType = collateralDocumentTypeRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Collateral document type not found with id " + id));
         return collateralDocumentTypeMapper.toResponse(collateralDocumentType);
@@ -89,7 +89,7 @@ public class CollateralDocumentTypeService {
     }
 
     @Transactional
-    public void deleteById(Long id) {
+    public void delete(Long id) {
         CollateralDocumentType collateralDocumentType = collateralDocumentTypeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Collateral document type not found with id " + id));
 

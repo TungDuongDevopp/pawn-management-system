@@ -35,7 +35,7 @@ public class CustomerService {
         }
     }
 
-    public Page<CustomerResponse> getAll(Pageable pageable, CustomerFilterRequest request) {
+    public Page<CustomerResponse> findAll(Pageable pageable, CustomerFilterRequest request) {
         Specification<Customer> specification = Specification.allOf(
                 CustomerSpecification.recordStatusNot(RecordStatus.DELETED),
                 CustomerSpecification.hasEmail(request),
@@ -46,7 +46,7 @@ public class CustomerService {
         return customerRepository.findAll(specification, pageable).map(customerMapper::toResponse);
     }
 
-    public CustomerResponse getById(Long id) {
+    public CustomerResponse findById(Long id) {
         Customer customer = customerRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id " + id));
         return customerMapper.toResponse(customer);
@@ -110,7 +110,7 @@ public class CustomerService {
     }
 
     @Transactional
-    public void deleteById(Long id) {
+    public void delete(Long id) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id " + id));
 

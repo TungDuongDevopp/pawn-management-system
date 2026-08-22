@@ -35,12 +35,12 @@ public class AssetCategoryService {
         }
     }
 
-    public Page<AssetCategoryResponse> getAll(Pageable pageable) {
+    public Page<AssetCategoryResponse> findAll(Pageable pageable) {
         Specification<AssetCategory> spec = AssetCategorySpecification.statusNot(RecordStatus.DELETED);
         return assetCategoryRepository.findAll(spec, pageable).map(assetCategoryMapper::toResponse);
     }
 
-    public AssetCategoryResponse getById(Long id) {
+    public AssetCategoryResponse findById(Long id) {
         AssetCategory assetCategory = assetCategoryRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Asset category not found with id " + id));
         return assetCategoryMapper.toResponse(assetCategory);
@@ -90,7 +90,7 @@ public class AssetCategoryService {
     }
 
     @Transactional
-    public void deleteById(Long id) {
+    public void delete(Long id) {
         AssetCategory assetCategory = assetCategoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Asset category not found with id " + id));
 

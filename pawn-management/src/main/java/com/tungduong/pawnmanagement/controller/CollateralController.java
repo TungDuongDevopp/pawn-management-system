@@ -20,32 +20,32 @@ public class CollateralController {
     private final CollateralService collateralService;
 
     @PostMapping("/collaterals")
-    public ResponseEntity<ApiResponse<CollateralResponse>> createCollateral(@Valid @RequestBody CollateralRequest request){
+    public ResponseEntity<ApiResponse<CollateralResponse>> create(@Valid @RequestBody CollateralRequest request){
         return ApiResponse.created(collateralService.create(request));
     }
 
     @GetMapping("/collaterals")
-    public ResponseEntity<ApiResponse<PageResponse<CollateralResponse>>> getCollaterals(Pageable pageable, CollateralFilterRequest request) {
-        return ApiResponse.success(PageResponse.from(collateralService.getAll(pageable, request)));
+    public ResponseEntity<ApiResponse<PageResponse<CollateralResponse>>> findAll(Pageable pageable, CollateralFilterRequest request) {
+        return ApiResponse.success(PageResponse.from(collateralService.findAll(pageable, request)));
     }
 
     @GetMapping("/collaterals/{id}")
-    public ResponseEntity<ApiResponse<CollateralResponse>> getCollateralById(@PathVariable Long id) {
-        return ApiResponse.success(collateralService.getById(id));
+    public ResponseEntity<ApiResponse<CollateralResponse>> findById(@PathVariable Long id) {
+        return ApiResponse.success(collateralService.findById(id));
     }
 
     @PutMapping("/collaterals/{id}")
-    public ResponseEntity<ApiResponse<CollateralResponse>> updateCollateral(@Valid @RequestBody CollateralUpdateRequest request, @PathVariable Long id) {
-        return ApiResponse.success(collateralService.update(request,id));
+    public ResponseEntity<ApiResponse<CollateralResponse>> update(@Valid @RequestBody CollateralUpdateRequest request, @PathVariable Long id) {
+        return ApiResponse.success(collateralService.update(request, id));
     }
 
-    @PatchMapping("/collaterals/{id}/status")
-    public ResponseEntity<ApiResponse<CollateralResponse>> updateCollateralStatus(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
+    @PatchMapping("/collaterals/{id}")
+    public ResponseEntity<ApiResponse<CollateralResponse>> update(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
         return ApiResponse.success(collateralService.updateRecordStatus(id, request));
     }
 
     @DeleteMapping("/collaterals/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteCollateral(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
         collateralService.delete(id);
         return ApiResponse.delete();
     }

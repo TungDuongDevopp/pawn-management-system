@@ -25,12 +25,12 @@ public class CustomerDocumentController {
 
     @GetMapping("/customer-documents/{id}")
     public ResponseEntity<ApiResponse<CustomerDocumentResponse>> getCustomerDocumentById(@PathVariable Long id) {
-        return ApiResponse.success(customerDocumentService.getById(id));
+        return ApiResponse.success(customerDocumentService.findById(id));
     }
 
     @GetMapping("/customer-documents")
     public ResponseEntity<ApiResponse<PageResponse<CustomerDocumentResponse>>> getCustomerDocuments(Pageable pageable, CustomerDocumentFilterRequest request) {
-        return ApiResponse.success(PageResponse.from(customerDocumentService.getAll(request, pageable)));
+        return ApiResponse.success(PageResponse.from(customerDocumentService.findAll(request, pageable)));
     }
 
     @PostMapping("/customer-documents")

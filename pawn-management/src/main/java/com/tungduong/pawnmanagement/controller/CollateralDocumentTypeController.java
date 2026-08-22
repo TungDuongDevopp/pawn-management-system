@@ -18,34 +18,34 @@ import org.springframework.web.bind.annotation.*;
 public class CollateralDocumentTypeController {
     private final CollateralDocumentTypeService collateralDocumentTypeService;
 
-    @GetMapping("/collateral-document-types")
-    public ResponseEntity<ApiResponse<PageResponse<CollateralDocumentTypeResponse>>> getCollateralDocumentTypes(Pageable pageable) {
-        return ApiResponse.success(PageResponse.from(collateralDocumentTypeService.getAll(pageable)));
-    }
-
-    @GetMapping("/collateral-document-types/{id}")
-    public ResponseEntity<ApiResponse<CollateralDocumentTypeResponse>> getCollateralDocumentTypeById(@PathVariable Long id) {
-        return ApiResponse.success(collateralDocumentTypeService.getById(id));
-    }
-
     @PostMapping("/collateral-document-types")
-    public ResponseEntity<ApiResponse<CollateralDocumentTypeResponse>> createCollateralDocumentType(@RequestBody @Valid CollateralDocumentTypeRequest collateralDocumentTypeRequest) {
+    public ResponseEntity<ApiResponse<CollateralDocumentTypeResponse>> create(@RequestBody @Valid CollateralDocumentTypeRequest collateralDocumentTypeRequest) {
         return ApiResponse.created(collateralDocumentTypeService.create(collateralDocumentTypeRequest));
     }
 
+    @GetMapping("/collateral-document-types")
+    public ResponseEntity<ApiResponse<PageResponse<CollateralDocumentTypeResponse>>> findAll(Pageable pageable) {
+        return ApiResponse.success(PageResponse.from(collateralDocumentTypeService.findAll(pageable)));
+    }
+
+    @GetMapping("/collateral-document-types/{id}")
+    public ResponseEntity<ApiResponse<CollateralDocumentTypeResponse>> findById(@PathVariable Long id) {
+        return ApiResponse.success(collateralDocumentTypeService.findById(id));
+    }
+
     @PutMapping("/collateral-document-types/{id}")
-    public ResponseEntity<ApiResponse<CollateralDocumentTypeResponse>> updateCollateralDocumentType(@Valid @RequestBody CollateralDocumentTypeUpdateRequest collateralDocumentTypeRequest, @PathVariable Long id) {
+    public ResponseEntity<ApiResponse<CollateralDocumentTypeResponse>> update(@Valid @RequestBody CollateralDocumentTypeUpdateRequest collateralDocumentTypeRequest, @PathVariable Long id) {
         return ApiResponse.success(collateralDocumentTypeService.update(collateralDocumentTypeRequest, id));
     }
 
-    @PatchMapping("/collateral-document-types/{id}/status")
-    public ResponseEntity<ApiResponse<CollateralDocumentTypeResponse>> updateCollateralDocumentTypeStatus(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
+    @PatchMapping("/collateral-document-types/{id}")
+    public ResponseEntity<ApiResponse<CollateralDocumentTypeResponse>> update(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
         return ApiResponse.success(collateralDocumentTypeService.updateRecordStatus(id, request));
     }
 
     @DeleteMapping("/collateral-document-types/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteCollateralDocumentType(@PathVariable Long id) {
-        collateralDocumentTypeService.deleteById(id);
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
+        collateralDocumentTypeService.delete(id);
         return ApiResponse.delete();
     }
 }

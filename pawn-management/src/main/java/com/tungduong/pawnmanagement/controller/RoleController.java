@@ -19,33 +19,33 @@ public class RoleController {
     private final RoleService roleService;
 
     @PostMapping("/roles")
-    public ResponseEntity<ApiResponse<RoleResponse>> createRole(@Valid @RequestBody RoleRequest roleInput) {
-        return ApiResponse.created(roleService.save(roleInput));
+    public ResponseEntity<ApiResponse<RoleResponse>> create(@Valid @RequestBody RoleRequest roleInput) {
+        return ApiResponse.created(roleService.create(roleInput));
     }
 
     @GetMapping("/roles")
-    public ResponseEntity<ApiResponse<List<RoleResponse>>> getRoles(RoleFilterRequest roleFilterRequest) {
+    public ResponseEntity<ApiResponse<List<RoleResponse>>> findAll(RoleFilterRequest roleFilterRequest) {
         return ApiResponse.success(roleService.findAll(roleFilterRequest));
     }
 
     @GetMapping("/roles/{id}")
-    public ResponseEntity<ApiResponse<RoleResponse>> getRoleById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<RoleResponse>> findById(@PathVariable Long id) {
         return ApiResponse.success(roleService.findById(id));
     }
 
     @PutMapping("/roles/{id}")
-    public ResponseEntity<ApiResponse<RoleResponse>> updateRole(@PathVariable Long id, @Valid @RequestBody RoleRequest roleInput) {
+    public ResponseEntity<ApiResponse<RoleResponse>> update(@PathVariable Long id, @Valid @RequestBody RoleRequest roleInput) {
         return ApiResponse.success(roleService.update(id, roleInput));
     }
 
-    @PatchMapping("/roles/{id}/status")
-    public ResponseEntity<ApiResponse<RoleResponse>> updateRoleStatus(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
+    @PatchMapping("/roles/{id}")
+    public ResponseEntity<ApiResponse<RoleResponse>> update(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
         return ApiResponse.success(roleService.updateRecordStatus(id, request));
     }
 
     @DeleteMapping("/roles/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteRoleById(@PathVariable Long id) {
-        roleService.deleteById(id);
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
+        roleService.delete(id);
         return ApiResponse.delete();
     }
 }
