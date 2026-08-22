@@ -1,6 +1,7 @@
 package com.tungduong.pawnmanagement.service;
 
 import com.tungduong.pawnmanagement.helper.exception.FileStorageException;
+import com.tungduong.pawnmanagement.helper.exception.FileTooLargeException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.service.interfaces.IFileStorageService;
 import org.apache.commons.io.FilenameUtils;
@@ -33,6 +34,7 @@ public class LocalFileStorageService implements IFileStorageService {
             "application/msword",
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     );
+    private static final long MAX_FILE_SIZE = 50L * 1024 * 1024;
 
     public LocalFileStorageService(@Value("${document.upload-file.base-uri}") String storageLocation) {
         this.rootLocation = Paths.get(URI.create(storageLocation)).normalize();
@@ -44,10 +46,14 @@ public class LocalFileStorageService implements IFileStorageService {
         }
     }
 
-    private String createStorageKey(MultipartFile file){
+    private String createStorageKey(MultipartFile file) {
         if(Objects.isNull(file) || file.isEmpty()) {
             throw new FileStorageException("File is empty");
         }
+        if (file.getSize() > MAX_FILE_SIZE) {
+            throw new FileTooLargeException("File size exceeds 50MB");
+        }
+
         String fileName = FilenameUtils.getName(file.getOriginalFilename());
         String contentType = file.getContentType();
         if(!allowedMimeTypes.contains(contentType)) {

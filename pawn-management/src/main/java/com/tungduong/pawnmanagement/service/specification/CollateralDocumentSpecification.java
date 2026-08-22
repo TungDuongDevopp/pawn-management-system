@@ -11,7 +11,7 @@ public class CollateralDocumentSpecification {
             if(request == null || request.getCollateralId()==null){
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.equal(root.get("customer").get("id"),request.getCollateralId());
+            return criteriaBuilder.equal(root.get("collateral").get("id"),request.getCollateralId());
         };
 
     }
@@ -20,7 +20,7 @@ public class CollateralDocumentSpecification {
             if(request == null || request.getCollateralTypeId()==null){
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.equal(root.get("customer").get("id"),request.getCollateralTypeId());
+            return criteriaBuilder.equal(root.get("documentType").get("id"),request.getCollateralTypeId());
         };
 
     }
