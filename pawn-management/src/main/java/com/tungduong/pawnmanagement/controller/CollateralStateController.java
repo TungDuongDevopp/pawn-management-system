@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/collaterals/{id}")
 public class CollateralStateController {
-    private final CollateralStateService service;
+    private final CollateralStateService collateralStateService;
 
     @PostMapping("/appraise")
     public ResponseEntity<ApiResponse<CollateralResponse>> appraisedCollateral(@Valid @RequestBody CollateralAppraiseRequest request,@PathVariable Long id) {
-        return ApiResponse.success(service.appraised(id,request));
+        return ApiResponse.success(collateralStateService.appraised(id,request));
     }
 }

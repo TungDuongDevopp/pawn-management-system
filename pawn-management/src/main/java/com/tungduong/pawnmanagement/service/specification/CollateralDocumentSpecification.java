@@ -1,22 +1,30 @@
 package com.tungduong.pawnmanagement.service.specification;
 
-import com.tungduong.pawnmanagement.dto.request.filter.CustomerDocumentFilterRequest;
-import com.tungduong.pawnmanagement.model.CustomerDocument;
+import com.tungduong.pawnmanagement.dto.request.filter.CollateralDocumentFilterRequest;
+import com.tungduong.pawnmanagement.model.CollateralDocument;
 import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import org.springframework.data.jpa.domain.Specification;
 
-public class CustomerDocumentSpecification {
-
-    public static Specification<CustomerDocument> hasCustomerId(CustomerDocumentFilterRequest request) {
+public class CollateralDocumentSpecification {
+    public static Specification<CollateralDocument> hasCollateralId(CollateralDocumentFilterRequest request) {
         return (root, query,criteriaBuilder)->{
-            if(request == null || request.getCustomerId()==null){
+            if(request == null || request.getCollateralId()==null){
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.equal(root.get("customer").get("id"),request.getCustomerId());
+            return criteriaBuilder.equal(root.get("customer").get("id"),request.getCollateralId());
         };
 
     }
-    public static Specification<CustomerDocument> hasContentType(CustomerDocumentFilterRequest request) {
+    public static Specification<CollateralDocument> hasCollateralTypeId(CollateralDocumentFilterRequest request) {
+        return (root, query,criteriaBuilder)->{
+            if(request == null || request.getCollateralTypeId()==null){
+                return criteriaBuilder.conjunction();
+            }
+            return criteriaBuilder.equal(root.get("customer").get("id"),request.getCollateralTypeId());
+        };
+
+    }
+    public static Specification<CollateralDocument> hasContentType(CollateralDocumentFilterRequest request) {
         return (root,query,criteriaBuilder)->{
             if(request == null || request.getContentType()==null|| request.getContentType().isEmpty()){
                 return criteriaBuilder.conjunction();
@@ -27,7 +35,7 @@ public class CustomerDocumentSpecification {
         };
 
     }
-    public  static Specification<CustomerDocument> hasExtension(CustomerDocumentFilterRequest request) {
+    public  static Specification<CollateralDocument> hasExtension(CollateralDocumentFilterRequest request) {
         return (root,query,criteriaBuilder)->{
             if(request == null || request.getExtension()==null|| request.getExtension().isEmpty()){
                 return criteriaBuilder.conjunction();
@@ -38,7 +46,7 @@ public class CustomerDocumentSpecification {
         };
 
     }
-    public static Specification<CustomerDocument> hasFileSize(CustomerDocumentFilterRequest request) {
+    public static Specification<CollateralDocument> hasFileSize(CollateralDocumentFilterRequest request) {
         return(root,query,criteriaBuilder)->{
 
             if(request == null){
@@ -56,16 +64,9 @@ public class CustomerDocumentSpecification {
             return criteriaBuilder.conjunction();
         };
     }
-    public static Specification<CustomerDocument> hasDocumentType(CustomerDocumentFilterRequest request) {
-        return (root,query,criteriaBuilder)->{
-            if( request == null || request.getCustomerDocumentType()== null){
-                return criteriaBuilder.conjunction();
-            }
-            return criteriaBuilder.equal(criteriaBuilder.lower(root.get("customerDocumentType")),request.getCustomerDocumentType().name().toLowerCase());
-        };
 
-    }
-    public static Specification<CustomerDocument> recordStatusNot(RecordStatus status) {
+
+    public static Specification<CollateralDocument> recordStatusNot(RecordStatus status) {
         return (root, query, criteriaBuilder) -> {
             if (status == null) return criteriaBuilder.conjunction();
             return criteriaBuilder.notEqual(root.get("recordStatus"), status);

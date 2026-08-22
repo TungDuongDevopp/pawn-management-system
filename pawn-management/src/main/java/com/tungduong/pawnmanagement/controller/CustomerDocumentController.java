@@ -24,38 +24,38 @@ public class CustomerDocumentController {
     private final CustomerDocumentService customerDocumentService;
 
     @GetMapping("/customer-documents/{id}")
-    public ResponseEntity<ApiResponse<CustomerDocumentResponse>> getCustomerDocumentById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<CustomerDocumentResponse>> findById(@PathVariable Long id) {
         return ApiResponse.success(customerDocumentService.findById(id));
     }
 
     @GetMapping("/customer-documents")
-    public ResponseEntity<ApiResponse<PageResponse<CustomerDocumentResponse>>> getCustomerDocuments(Pageable pageable, CustomerDocumentFilterRequest request) {
+    public ResponseEntity<ApiResponse<PageResponse<CustomerDocumentResponse>>> findAll(Pageable pageable, CustomerDocumentFilterRequest request) {
         return ApiResponse.success(PageResponse.from(customerDocumentService.findAll(request, pageable)));
     }
 
     @PostMapping("/customer-documents")
-    public ResponseEntity<ApiResponse<CustomerDocumentResponse>> createCustomerDocument(CustomerDocumentRequest request) throws IOException {
-        return ApiResponse.created(customerDocumentService.create(request));
+    public ResponseEntity<ApiResponse<CustomerDocumentResponse>> upload(CustomerDocumentRequest request) throws IOException {
+        return ApiResponse.created(customerDocumentService.upload(request));
     }
 
     @PutMapping("/customer-documents/{id}")
-    public ResponseEntity<ApiResponse<CustomerDocumentResponse>> updateCustomerDocument(CustomerDocumentUpdateRequest request,@PathVariable Long id) throws IOException {
+    public ResponseEntity<ApiResponse<CustomerDocumentResponse>> replaceFile(CustomerDocumentUpdateRequest request,@PathVariable Long id) throws IOException {
         return ApiResponse.success(customerDocumentService.replaceFile(id, request));
     }
 
     @DeleteMapping("/customer-documents/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteCustomerDocument(@PathVariable Long id)  {
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id)  {
         customerDocumentService.delete(id);
         return ApiResponse.delete();
     }
 
     @PatchMapping("/customer-documents/{id}")
-    public ResponseEntity<ApiResponse<CustomerDocumentResponse>> updateStatus(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
+    public ResponseEntity<ApiResponse<CustomerDocumentResponse>> update(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
         return ApiResponse.success(customerDocumentService.updateRecordStatus(id, request));
     }
 
     @GetMapping("/customer-documents/{id}/download")
-    public ResponseEntity<ApiResponse<Resource>> downloadCustomerDocument(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Resource>> download(@PathVariable Long id) {
         return ApiResponse.success(customerDocumentService.download(id));
     }
 
