@@ -20,36 +20,35 @@ import org.springframework.web.bind.annotation.*;
 public class CustomerController {
     private final CustomerService customerService;
 
-    @GetMapping("/customers/{id}")
-    public ResponseEntity<ApiResponse<CustomerResponse>> getCustomerById(@PathVariable Long id) {
-        return ApiResponse.success(customerService.getById(id));
-    }
-
-    @GetMapping("/customers")
-    public ResponseEntity<ApiResponse<PageResponse<CustomerResponse>>> getCustomers(Pageable pageable, CustomerFilterRequest customerFilterRequest) {
-        return ApiResponse.success(PageResponse.from(customerService.getAll(pageable, customerFilterRequest)));
-    }
-
     @PostMapping("/customers")
-    public ResponseEntity<ApiResponse<CustomerResponse>> createCustomer(@Valid @RequestBody CustomerRequest customerRequest) {
+    public ResponseEntity<ApiResponse<CustomerResponse>> create(@Valid @RequestBody CustomerRequest customerRequest) {
         return ApiResponse.created(customerService.create(customerRequest));
     }
 
+    @GetMapping("/customers")
+    public ResponseEntity<ApiResponse<PageResponse<CustomerResponse>>> findAll(Pageable pageable, CustomerFilterRequest customerFilterRequest) {
+        return ApiResponse.success(PageResponse.from(customerService.findAll(pageable, customerFilterRequest)));
+    }
+
+    @GetMapping("/customers/{id}")
+    public ResponseEntity<ApiResponse<CustomerResponse>> findById(@PathVariable Long id) {
+        return ApiResponse.success(customerService.findById(id));
+    }
+
     @PutMapping("/customers/{id}")
-    public ResponseEntity<ApiResponse<CustomerResponse>> updateCustomer(@Valid @RequestBody CustomerUpdateRequest customerRequest, @PathVariable Long id) {
+    public ResponseEntity<ApiResponse<CustomerResponse>> update(@Valid @RequestBody CustomerUpdateRequest customerRequest, @PathVariable Long id) {
         return ApiResponse.success(customerService.update(customerRequest, id));
     }
 
-    @PatchMapping("/customers/{id}/status")
-    public ResponseEntity<ApiResponse<CustomerResponse>> updateCustomerStatus(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
+    @PatchMapping("/customers/{id}")
+    public ResponseEntity<ApiResponse<CustomerResponse>> update(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
         return ApiResponse.success(customerService.updateRecordStatus(id, request));
     }
 
     @DeleteMapping("/customers/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteCustomer(@PathVariable Long id) {
-        customerService.deleteById(id);
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
+        customerService.delete(id);
         return ApiResponse.delete();
     }
-
 
 }

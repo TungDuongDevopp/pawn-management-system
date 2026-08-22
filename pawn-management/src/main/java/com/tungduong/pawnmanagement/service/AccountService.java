@@ -125,7 +125,7 @@ public class AccountService {
     }
 
     @Transactional
-    public void deleteById(Long id) {
+    public void delete(Long id) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Account not found with id " + id));

@@ -35,7 +35,7 @@ public class StaffService {
         }
     }
 
-    public Page<StaffResponse> getAll(Pageable pageable, StaffFilterRequest request) {
+    public Page<StaffResponse> findAll(Pageable pageable, StaffFilterRequest request) {
         Specification<Staff> spec = Specification.allOf(
                 StaffSpecification.recordStatusNot(RecordStatus.DELETED),
                 StaffSpecification.hasFullName(request),
@@ -49,7 +49,7 @@ public class StaffService {
         return staffRepository.findAll(spec, pageable).map(staffMapper::toResponse);
     }
 
-    public StaffResponse getById(Long id) {
+    public StaffResponse findById(Long id) {
         Staff staff = staffRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Staff not found with id " + id));
         return staffMapper.toResponse(staff);

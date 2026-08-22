@@ -67,7 +67,7 @@ public class CollateralService {
         }
 
     }
-    public Page<CollateralResponse> getAll(Pageable pageable, CollateralFilterRequest request) {
+    public Page<CollateralResponse> findAll(Pageable pageable, CollateralFilterRequest request) {
         Specification<Collateral> specification = Specification.allOf(
                 CollateralSpecification.recordStatusNot(RecordStatus.DELETED),
                 CollateralSpecification.hasName(request),
@@ -82,7 +82,7 @@ public class CollateralService {
         return collateralRepository.findAll(specification, pageable).map(collateralMapper::toResponse);
     }
 
-    public CollateralResponse getById(Long id) {
+    public CollateralResponse findById(Long id) {
         Collateral collateral = collateralRepository.findByIdAndRecordStatusNot(id, RecordStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Collateral not found with id " + id));
         return collateralMapper.toResponse(collateral);

@@ -18,34 +18,34 @@ import org.springframework.web.bind.annotation.*;
 public class AssetCategoryController {
     private final AssetCategoryService assetCategoryService;
 
-    @GetMapping("/asset-categories")
-    public ResponseEntity<ApiResponse<PageResponse<AssetCategoryResponse>>> getAssetCategories(Pageable pageable) {
-        return ApiResponse.success(PageResponse.from(assetCategoryService.getAll(pageable)));
-    }
-
-    @GetMapping("/asset-categories/{id}")
-    public ResponseEntity<ApiResponse<AssetCategoryResponse>> getAssetCategoriesById(@PathVariable Long id) {
-        return ApiResponse.success(assetCategoryService.getById(id));
-    }
-
     @PostMapping("/asset-categories")
-    public ResponseEntity<ApiResponse<AssetCategoryResponse>> createAssetCategories(@RequestBody AssetCategoryRequest assetCategoryRequest) {
+    public ResponseEntity<ApiResponse<AssetCategoryResponse>> create(@Valid @RequestBody AssetCategoryRequest assetCategoryRequest) {
         return ApiResponse.created(assetCategoryService.create(assetCategoryRequest));
     }
 
-    @PutMapping("/asset-categories/{id}")
-    public ResponseEntity<ApiResponse<AssetCategoryResponse>> updateAssetCategories(@RequestBody AssetCategoryUpdateRequest assetCategoryRequest,@PathVariable Long id) {
-        return ApiResponse.success(assetCategoryService.update(assetCategoryRequest,id));
+    @GetMapping("/asset-categories")
+    public ResponseEntity<ApiResponse<PageResponse<AssetCategoryResponse>>> findAll(Pageable pageable) {
+        return ApiResponse.success(PageResponse.from(assetCategoryService.findAll(pageable)));
     }
 
-    @PatchMapping("/asset-categories/{id}/status")
-    public ResponseEntity<ApiResponse<AssetCategoryResponse>> updateAssetCategoryStatus(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
+    @GetMapping("/asset-categories/{id}")
+    public ResponseEntity<ApiResponse<AssetCategoryResponse>> findById(@PathVariable Long id) {
+        return ApiResponse.success(assetCategoryService.findById(id));
+    }
+
+    @PutMapping("/asset-categories/{id}")
+    public ResponseEntity<ApiResponse<AssetCategoryResponse>> update(@Valid @RequestBody AssetCategoryUpdateRequest assetCategoryRequest, @PathVariable Long id) {
+        return ApiResponse.success(assetCategoryService.update(assetCategoryRequest, id));
+    }
+
+    @PatchMapping("/asset-categories/{id}")
+    public ResponseEntity<ApiResponse<AssetCategoryResponse>> update(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
         return ApiResponse.success(assetCategoryService.updateRecordStatus(id, request));
     }
 
     @DeleteMapping("/asset-categories/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteAssetCategories(@PathVariable Long id) {
-        assetCategoryService.deleteById(id);
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
+        assetCategoryService.delete(id);
         return ApiResponse.delete();
     }
 }

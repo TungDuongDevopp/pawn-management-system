@@ -45,11 +45,7 @@ public class RoleService {
         return roleMapper.toResponse(role);
     }
 
-    public RoleResponse getById(Long id) {
-        return findById(id);
-    }
-
-    public RoleResponse save(RoleRequest roleRequest) {
+    public RoleResponse create(RoleRequest roleRequest) {
 
         if(roleRepository.existsByNameAndRecordStatusNot(roleRequest.getName(),RecordStatus.DELETED)){
             throw new DuplicateResourceException("Role already exists");
@@ -87,7 +83,7 @@ public class RoleService {
     }
 
     @Transactional
-    public void deleteById(Long id) {
+    public void delete(Long id) {
         Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found with id " + id));
         ensureManipulable(role);
