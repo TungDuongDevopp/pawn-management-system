@@ -56,6 +56,9 @@ public class Collateral extends BaseEntity {
     @JoinColumn(name = "staff_id")
     private Staff appraisedBy;
 
+    @OneToMany(mappedBy = "collateral")
+    private List<CollateralImage> images;
+
     private Instant appraisedAt;
 
 }
