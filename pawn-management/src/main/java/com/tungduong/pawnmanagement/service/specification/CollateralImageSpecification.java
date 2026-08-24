@@ -1,0 +1,65 @@
+package com.tungduong.pawnmanagement.service.specification;
+
+import com.tungduong.pawnmanagement.dto.request.filter.CollateralImageFilterRequest;
+import com.tungduong.pawnmanagement.model.CollateralImage;
+import com.tungduong.pawnmanagement.model.enums.RecordStatus;
+import org.springframework.data.jpa.domain.Specification;
+
+public class CollateralImageSpecification {
+    public static Specification<CollateralImage> hasCollateralId(CollateralImageFilterRequest request) {
+        return (root, query,criteriaBuilder)->{
+            if(request == null || request.getCollateralId()==null){
+                return criteriaBuilder.conjunction();
+            }
+            return criteriaBuilder.equal(root.get("customer").get("id"),request.getCollateralId());
+        };
+
+    }
+    public static Specification<CollateralImage> hasContentType(CollateralImageFilterRequest request) {
+        return (root,query,criteriaBuilder)->{
+            if(request == null || request.getContentType()==null|| request.getContentType().isEmpty()){
+                return criteriaBuilder.conjunction();
+            }
+            String contentType = "%" +request.getContentType().trim().toLowerCase() + "%";
+            return criteriaBuilder.like(criteriaBuilder.lower(root.get("contentType")),contentType);
+
+        };
+
+    }
+    public  static Specification<CollateralImage> hasExtension(CollateralImageFilterRequest request) {
+        return (root,query,criteriaBuilder)->{
+            if(request == null || request.getExtension()==null|| request.getExtension().isEmpty()){
+                return criteriaBuilder.conjunction();
+            }
+            String extension = "%" + request.getExtension().trim().toLowerCase() + "%";
+            return criteriaBuilder.like(criteriaBuilder.lower(root.get("extension")),extension);
+
+        };
+
+    }
+    public static Specification<CollateralImage> hasFileSize(CollateralImageFilterRequest request) {
+        return(root,query,criteriaBuilder)->{
+
+            if(request == null){
+                return criteriaBuilder.conjunction();
+            }
+            if(request.getMinFileSize() != null && request.getMaxFileSize() != null){
+                return criteriaBuilder.between(root.get("fileSize"),request.getMinFileSize(),request.getMaxFileSize());
+            }
+            if(request.getMinFileSize() != null){
+                return criteriaBuilder.greaterThanOrEqualTo(root.get("fileSize"),request.getMinFileSize());
+            }
+            if(request.getMaxFileSize() != null){
+                return criteriaBuilder.lessThanOrEqualTo(root.get("fileSize"),request.getMaxFileSize());
+            }
+            return criteriaBuilder.conjunction();
+        };
+    }
+  
+    public static Specification<CollateralImage> recordStatusNot(RecordStatus status) {
+        return (root, query, criteriaBuilder) -> {
+            if (status == null) return criteriaBuilder.conjunction();
+            return criteriaBuilder.notEqual(root.get("recordStatus"), status);
+        };
+    }
+}

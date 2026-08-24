@@ -1,6 +1,6 @@
 package com.tungduong.pawnmanagement.dto.request.filter;
 
-import com.tungduong.pawnmanagement.model.enums.CustomerDocumentType;
+import com.tungduong.pawnmanagement.dto.request.baseFileFilter.FileFilterRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,15 +10,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CollateralDocumentFilterRequest {
+public class CollateralDocumentFilterRequest extends FileFilterRequest {
 
     private Long collateralId;
-
-    private String contentType;
-    private String extension;
-
-    private Long minFileSize;
-    private Long maxFileSize;
-
     private Long collateralTypeId;
 }

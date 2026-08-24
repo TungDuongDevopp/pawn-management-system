@@ -1,9 +1,8 @@
 package com.tungduong.pawnmanagement.model;
 
-import com.tungduong.pawnmanagement.model.base.BaseEntity;
+import com.tungduong.pawnmanagement.model.base.BaseEntityFile;
 import com.tungduong.pawnmanagement.model.enums.CustomerDocumentType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CustomerDocument extends BaseEntity {
+public class CustomerDocument extends BaseEntityFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,21 +21,6 @@ public class CustomerDocument extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @NotNull( message = "CustomerDocumentType can not be null")
     private CustomerDocumentType customerDocumentType;
-
-    @NotBlank(message = "fileName can not be null")
-    private String fileName;
-
-    @NotBlank(message = "contentType can not be null")
-    private String contentType;
-
-    @NotBlank(message = "extension can not be null")
-    private String extension;
-
-    @NotBlank(message = "storageKey can not be null")
-    private String storageKey;
-
-    @NotNull (message = "filesize can not be null")
-    private Long fileSize;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
