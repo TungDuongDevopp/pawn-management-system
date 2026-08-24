@@ -1,5 +1,6 @@
 package com.tungduong.pawnmanagement.service;
 
+import com.tungduong.pawnmanagement.dto.request.CollateralImageOrderRequest;
 import com.tungduong.pawnmanagement.dto.request.CollateralImageRequest;
 import com.tungduong.pawnmanagement.dto.request.filter.CollateralImageFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
@@ -139,7 +140,7 @@ public class CollateralImageService {
     }
 
     @Transactional
-    public CollateralImageResponse setImageDisplayOrder(Long id, Integer displayOrder) {
+    public CollateralImageResponse setImageDisplayOrder(Long id, CollateralImageOrderRequest request) {
         CollateralImage image = collateralImageRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
@@ -148,6 +149,7 @@ public class CollateralImageService {
                 );
         ensureManipulable(image, null);
         Long collateralId = image.getCollateral().getId();
+        Integer displayOrder = request.getDisplayOrder();
         boolean exists = collateralImageRepository
                 .existsByCollateralIdAndDisplayOrderAndIdNot(
                         collateralId,

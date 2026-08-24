@@ -1,5 +1,6 @@
 package com.tungduong.pawnmanagement.controller;
 
+import com.tungduong.pawnmanagement.dto.request.CollateralImageOrderRequest;
 import com.tungduong.pawnmanagement.dto.request.CollateralImageRequest;
 import com.tungduong.pawnmanagement.dto.request.filter.CollateralImageFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
@@ -9,6 +10,7 @@ import com.tungduong.pawnmanagement.helper.PageResponse;
 import com.tungduong.pawnmanagement.service.CollateralImageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,42 +24,46 @@ import java.io.IOException;
 public class CollateralImageController {
     private final CollateralImageService collateralImageService;
 
-    @GetMapping("/collaterals/images")
+    @GetMapping("/collateral-images")
     public ResponseEntity<ApiResponse<PageResponse<CollateralImageResponse>>> findAll(Pageable pageable, CollateralImageFilterRequest request) {
         return ApiResponse.success(PageResponse.from(collateralImageService.findAll(pageable,request)));
-
     }
 
-    @GetMapping("/collaterals/images/{id}")
+    @GetMapping("/collateral-images/{id}")
     public ResponseEntity<ApiResponse<CollateralImageResponse>> findById(@PathVariable Long id) {
         return ApiResponse.success(collateralImageService.findById(id));
     }
-    @PostMapping("/collaterals/images")
+
+    @GetMapping("/collateral-images/{id}/download")
+    public ResponseEntity<ApiResponse<Resource>> download(@PathVariable Long id) {
+        return ApiResponse.success(collateralImageService.download(id));
+    }
+    @PostMapping("/collateral-images")
     public ResponseEntity<ApiResponse<CollateralImageResponse>> upload(CollateralImageRequest request) throws IOException {
         return ApiResponse.created(collateralImageService.upload(request));
     }
 
-    @DeleteMapping("/collaterals/images/{id}")
+    @DeleteMapping("/collateral-images/{id}")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
         collateralImageService.deleteById(id);
         return ApiResponse.delete();
     }
-    @PutMapping("/collaterals/images/{id}")
+    @PutMapping("/collateral-images/{id}")
     public ResponseEntity<ApiResponse<CollateralImageResponse>> replaceFile(@PathVariable Long id, MultipartFile file) throws IOException {
         return ApiResponse.success(collateralImageService.replaceFile(id, file));
     }
 
-    @PatchMapping("/collaterals/images/{id}/primary")
+    @PatchMapping("/collateral-images/{id}/primary")
     public ResponseEntity<ApiResponse<CollateralImageResponse>> setPrimary(@PathVariable Long id){
         return ApiResponse.success(collateralImageService.setImagePrimary(id));
     }
 
-    @PatchMapping("/collaterals/images/{id}/display-order")
-    public ResponseEntity<ApiResponse<CollateralImageResponse>> setDisplayOrder(@PathVariable Long id, @RequestBody Integer displayOrder) {
-        return ApiResponse.success(collateralImageService.setImageDisplayOrder(id, displayOrder));
+    @PatchMapping("/collateral-images/{id}/display-order")
+    public ResponseEntity<ApiResponse<CollateralImageResponse>> setDisplayOrder(@PathVariable Long id, @RequestBody CollateralImageOrderRequest request) {
+        return ApiResponse.success(collateralImageService.setImageDisplayOrder(id, request));
     }
 
-    @PatchMapping("/collaterals/images/{id}")
+    @PatchMapping("/collateral-images/{id}")
     public ResponseEntity<ApiResponse<CollateralImageResponse>> update(@PathVariable Long id, @Valid @RequestBody RecordStatusUpdateRequest request) {
         return ApiResponse.success(collateralImageService.updateRecordStatus(id, request));
     }
