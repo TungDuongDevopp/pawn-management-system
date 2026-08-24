@@ -11,7 +11,7 @@ public class CollateralImageSpecification {
             if(request == null || request.getCollateralId()==null){
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.equal(root.get("customer").get("id"),request.getCollateralId());
+            return criteriaBuilder.equal(root.get("collateral").get("id"),request.getCollateralId());
         };
 
     }

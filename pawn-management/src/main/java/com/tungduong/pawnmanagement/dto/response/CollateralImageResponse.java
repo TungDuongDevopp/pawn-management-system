@@ -29,8 +29,6 @@ public class CollateralImageResponse {
 
     private String contentType;
 
-
-
     private RecordStatus recordStatus;
 
 }
