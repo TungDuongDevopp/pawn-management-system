@@ -6,22 +6,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "collateral_documents")
 @Getter
 @Setter
 @NoArgsConstructor
-public class CollateralDocument extends BaseEntityFile {
+@Entity
+@Table(name ="feedback_attachment")
+public class FeedbackAttachment extends BaseEntityFile {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "collateral_type_id")
-    private CollateralDocumentType documentType;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "collateral_id")
-     private Collateral collateral;
-
+    private Feedback feedback;
 }

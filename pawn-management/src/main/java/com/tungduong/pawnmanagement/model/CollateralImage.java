@@ -3,7 +3,6 @@ package com.tungduong.pawnmanagement.model;
 import com.tungduong.pawnmanagement.model.base.BaseEntityFile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +12,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class CollateralImage extends BaseEntityFile {
 
     @Id

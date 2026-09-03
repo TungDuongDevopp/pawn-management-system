@@ -2,9 +2,10 @@ package com.tungduong.pawnmanagement.model.enums;
 
 public enum FeedBackStatus {
     NEW,
-    INPROCESS,
-    RESPONEDED,
+    IN_PROCESS,
     RESOLVED,
-    PENDINGUSER,
-    REJECTED
+    PENDING,
+    REJECTED,
+    CLOSED,
+    CANCELLED
 }

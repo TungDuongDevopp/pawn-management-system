@@ -3,7 +3,7 @@ package com.tungduong.pawnmanagement.controller;
 import com.tungduong.pawnmanagement.dto.request.CollateralAppraiseRequest;
 import com.tungduong.pawnmanagement.dto.response.CollateralResponse;
 import com.tungduong.pawnmanagement.helper.ApiResponse;
-import com.tungduong.pawnmanagement.service.CollateralStateService;
+import com.tungduong.pawnmanagement.service.state.CollateralStateService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

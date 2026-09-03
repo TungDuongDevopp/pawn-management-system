@@ -38,7 +38,7 @@ public class CollateralDocumentService {
     private final CollateralDocumentTypeRepository collateralDocumentTypeRepository;
     private final LocalFileStorageService fileStorageService;
 
-    public void ensureManipulable(CollateralDocument collateralDocument, CollateralDocumentType collateralDocumentType,Collateral collateral) {
+    private void ensureManipulable(CollateralDocument collateralDocument, CollateralDocumentType collateralDocumentType,Collateral collateral) {
         if(collateralDocument!=null &&(collateralDocument.getRecordStatus() == RecordStatus.INACTIVE
                 || collateralDocument.getRecordStatus() == RecordStatus.DELETED)){
             throw new CanNotManipulateDataException("Collateral Document  can not be manipulated in its current status");
@@ -121,7 +121,7 @@ public class CollateralDocumentService {
         String oldStorageKey =  document.getStorageKey();
         String directory = "collaterals/" + collateral.getId() + "/documents";
 
-        if(request.getFile() != null){
+        if(request.getFile() != null && !request.getFile().isEmpty()){
             MultipartFile file = request.getFile();
             String newStorageKey = fileStorageService.save(file,directory);
             try{
