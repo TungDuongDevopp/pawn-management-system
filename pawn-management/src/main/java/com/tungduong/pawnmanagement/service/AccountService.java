@@ -5,6 +5,7 @@ import com.tungduong.pawnmanagement.dto.request.AccountRequest;
 import com.tungduong.pawnmanagement.dto.request.update.AccountUpdateRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.AccountResponse;
+import com.tungduong.pawnmanagement.helper.EntityGuard;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
@@ -32,21 +33,17 @@ public class AccountService {
     private final RoleRepository roleRepository;
 
     private void ensureManipulable(Account account, Role role) {
-        if (account != null &&
-                (account.getRecordStatus() == RecordStatus.DELETED
-                        || account.getRecordStatus() == RecordStatus.INACTIVE
-                        || account.getStatus() == AccountStatus.DELETED
-                        || account.getStatus() == AccountStatus.DISABLED)) {
-            throw new CanNotManipulateDataException(
-                    "Account cannot be manipulated in its current status"
-            );
+        if (account != null) {
+            EntityGuard.requireManipulable(account, "Account");
+            if (account.getStatus() == AccountStatus.DELETED
+                    || account.getStatus() == AccountStatus.DISABLED) {
+                throw new CanNotManipulateDataException(
+                        "Account cannot be manipulated in its current status"
+                );
+            }
         }
-        if (role != null &&
-                (role.getRecordStatus() == RecordStatus.DELETED
-                        || role.getRecordStatus() == RecordStatus.INACTIVE)) {
-            throw new CanNotManipulateDataException(
-                    "Role cannot be manipulated in its current status"
-            );
+        if (role != null) {
+            EntityGuard.requireManipulable(role, "Role");
         }
     }
 
@@ -116,9 +113,7 @@ public class AccountService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Account not found with id " + id));
 
-        if (account.getRecordStatus() == RecordStatus.DELETED) {
-            throw new CanNotManipulateDataException("Account cannot be manipulated in its current status");
-        }
+        EntityGuard.requireNotDeleted(account, "Account");
 
         account.setRecordStatus(request.getRecordStatus());
         return accountMapper.toResponse(account);

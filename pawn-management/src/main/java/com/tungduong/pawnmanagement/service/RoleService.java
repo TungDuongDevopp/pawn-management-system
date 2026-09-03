@@ -4,6 +4,7 @@ import com.tungduong.pawnmanagement.dto.request.filter.RoleFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.RoleRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.RoleResponse;
+import com.tungduong.pawnmanagement.helper.EntityGuard;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
@@ -26,8 +27,8 @@ public class RoleService {
     private final RoleMapper roleMapper;
 
     private void ensureManipulable(Role role){
-        if(role.getRecordStatus() == RecordStatus.DELETED || role.getRecordStatus() == RecordStatus.INACTIVE){
-            throw new CanNotManipulateDataException("Role cannot be manipulated in its current status");
+        if (role != null) {
+            EntityGuard.requireManipulable(role, "Role");
         }
     }
 
@@ -74,9 +75,7 @@ public class RoleService {
         Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found with id " + id));
 
-        if (role.getRecordStatus() == RecordStatus.DELETED) {
-            throw new CanNotManipulateDataException("Role cannot be manipulated in its current status");
-        }
+        EntityGuard.requireNotDeleted(role, "Role");
 
         role.setRecordStatus(request.getRecordStatus());
         return roleMapper.toResponse(role);

@@ -8,19 +8,10 @@ import org.springframework.data.jpa.domain.Specification;
 public class RoleSpecification {
 
     public static Specification<Role> recordStatusNot(RecordStatus status) {
-        return (root, criteriaQuery, criteriaBuilder) -> {
-            if (status == null) return criteriaBuilder.conjunction();
-            return criteriaBuilder.notEqual(root.get("recordStatus"), status);
-        };
+        return CommonSpecification.recordStatusNot(status);
     }
 
     public static Specification<Role> hasName(RoleFilterRequest roleFilterRequest) {
-        return (root, criteriaQuery, criteriaBuilder) -> {
-
-            if(roleFilterRequest == null ||roleFilterRequest.getName() == null || roleFilterRequest.getName().isBlank()){
-                return criteriaBuilder.conjunction();
-            }
-            return criteriaBuilder.equal(criteriaBuilder.lower(root.get("name")),roleFilterRequest.getName().trim().toLowerCase());
-        };
+        return CommonSpecification.equalIgnoreCase("name", roleFilterRequest == null ? null : roleFilterRequest.getName());
     }
 }

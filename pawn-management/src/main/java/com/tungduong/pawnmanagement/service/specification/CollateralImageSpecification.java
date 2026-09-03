@@ -16,50 +16,22 @@ public class CollateralImageSpecification {
 
     }
     public static Specification<CollateralImage> hasContentType(CollateralImageFilterRequest request) {
-        return (root,query,criteriaBuilder)->{
-            if(request == null || request.getContentType()==null|| request.getContentType().isEmpty()){
-                return criteriaBuilder.conjunction();
-            }
-            String contentType = "%" +request.getContentType().trim().toLowerCase() + "%";
-            return criteriaBuilder.like(criteriaBuilder.lower(root.get("contentType")),contentType);
-
-        };
-
+        return CommonSpecification.likeIgnoreCase("contentType", request == null ? null : request.getContentType());
     }
-    public  static Specification<CollateralImage> hasExtension(CollateralImageFilterRequest request) {
-        return (root,query,criteriaBuilder)->{
-            if(request == null || request.getExtension()==null|| request.getExtension().isEmpty()){
-                return criteriaBuilder.conjunction();
-            }
-            String extension = "%" + request.getExtension().trim().toLowerCase() + "%";
-            return criteriaBuilder.like(criteriaBuilder.lower(root.get("extension")),extension);
 
-        };
-
+    public static Specification<CollateralImage> hasExtension(CollateralImageFilterRequest request) {
+        return CommonSpecification.likeIgnoreCase("extension", request == null ? null : request.getExtension());
     }
+
     public static Specification<CollateralImage> hasFileSize(CollateralImageFilterRequest request) {
-        return(root,query,criteriaBuilder)->{
-
-            if(request == null){
-                return criteriaBuilder.conjunction();
-            }
-            if(request.getMinFileSize() != null && request.getMaxFileSize() != null){
-                return criteriaBuilder.between(root.get("fileSize"),request.getMinFileSize(),request.getMaxFileSize());
-            }
-            if(request.getMinFileSize() != null){
-                return criteriaBuilder.greaterThanOrEqualTo(root.get("fileSize"),request.getMinFileSize());
-            }
-            if(request.getMaxFileSize() != null){
-                return criteriaBuilder.lessThanOrEqualTo(root.get("fileSize"),request.getMaxFileSize());
-            }
-            return criteriaBuilder.conjunction();
-        };
+        return CommonSpecification.inRange(
+                "fileSize",
+                request == null ? null : request.getMinFileSize(),
+                request == null ? null : request.getMaxFileSize()
+        );
     }
-  
+
     public static Specification<CollateralImage> recordStatusNot(RecordStatus status) {
-        return (root, query, criteriaBuilder) -> {
-            if (status == null) return criteriaBuilder.conjunction();
-            return criteriaBuilder.notEqual(root.get("recordStatus"), status);
-        };
+        return CommonSpecification.recordStatusNot(status);
     }
 }

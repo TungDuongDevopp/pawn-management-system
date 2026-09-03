@@ -5,6 +5,7 @@ import com.tungduong.pawnmanagement.dto.request.CollateralRequest;
 import com.tungduong.pawnmanagement.dto.request.update.CollateralUpdateRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CollateralResponse;
+import com.tungduong.pawnmanagement.helper.EntityGuard;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.CollateralMapper;
@@ -36,36 +37,26 @@ public class CollateralService {
             AssetType assetType,
             Customer customer
     ) {
-        if (collateral != null &&
-                (collateral.getRecordStatus() == RecordStatus.INACTIVE
-                        || collateral.getRecordStatus() == RecordStatus.DELETED
-                        || collateral.getStatus() == AssetStatus.REJECTED
-                        || collateral.getStatus() == AssetStatus.RETURNED
-                        || collateral.getStatus() == AssetStatus.LIQUIDATED
-                        || collateral.getStatus() == AssetStatus.DAMAGED_LOST
-                        || collateral.getStatus() == AssetStatus.CONFISCATED)) {
-
-            throw new CanNotManipulateDataException(
-                    "Collateral cannot be manipulated in its current status"
-            );
+        if (collateral != null) {
+            EntityGuard.requireManipulable(collateral, "Collateral");
+            if (collateral.getStatus() == AssetStatus.REJECTED
+                    || collateral.getStatus() == AssetStatus.RETURNED
+                    || collateral.getStatus() == AssetStatus.LIQUIDATED
+                    || collateral.getStatus() == AssetStatus.DAMAGED_LOST
+                    || collateral.getStatus() == AssetStatus.CONFISCATED) {
+                throw new CanNotManipulateDataException(
+                        "Collateral cannot be manipulated in its current status"
+                );
+            }
         }
 
-        if (assetType != null &&
-                (assetType.getRecordStatus() == RecordStatus.INACTIVE
-                        || assetType.getRecordStatus() == RecordStatus.DELETED)) {
-            throw new CanNotManipulateDataException(
-                    "Asset type cannot be manipulated in its current status"
-            );
+        if (assetType != null) {
+            EntityGuard.requireManipulable(assetType, "Asset type");
         }
 
-        if (customer != null &&
-                (customer.getRecordStatus() == RecordStatus.INACTIVE
-                        || customer.getRecordStatus() == RecordStatus.DELETED)) {
-            throw new CanNotManipulateDataException(
-                    "Customer cannot be manipulated in its current status"
-            );
+        if (customer != null) {
+            EntityGuard.requireManipulable(customer, "Customer");
         }
-
     }
     public Page<CollateralResponse> findAll(Pageable pageable, CollateralFilterRequest request) {
         Specification<Collateral> specification = Specification.allOf(
@@ -152,9 +143,7 @@ public class CollateralService {
         Collateral collateral = collateralRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Collateral not found with id " + id));
 
-        if (collateral.getRecordStatus() == RecordStatus.DELETED) {
-            throw new CanNotManipulateDataException("Collateral cannot be manipulated in its current status");
-        }
+        EntityGuard.requireNotDeleted(collateral, "Collateral");
 
         collateral.setRecordStatus(request.getRecordStatus());
         return collateralMapper.toResponse(collateral);

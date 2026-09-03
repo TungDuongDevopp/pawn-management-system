@@ -5,6 +5,7 @@ import com.tungduong.pawnmanagement.dto.request.CollateralImageRequest;
 import com.tungduong.pawnmanagement.dto.request.filter.CollateralImageFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CollateralImageResponse;
+import com.tungduong.pawnmanagement.helper.EntityGuard;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.FileStorageException;
@@ -37,13 +38,11 @@ public class CollateralImageService {
     private final LocalFileStorageService localFileStorageService;
 
     private void ensureManipulable(CollateralImage collateralImage,Collateral collateral) {
-        if(collateral != null && (collateral.getRecordStatus() == RecordStatus.DELETED||
-                collateral.getRecordStatus()== RecordStatus.INACTIVE)){
-            throw new CanNotManipulateDataException("Collateral can not be manipulated in its current status");
+        if (collateral != null) {
+            EntityGuard.requireManipulable(collateral, "Collateral");
         }
-        if(collateralImage != null && (collateralImage.getRecordStatus() == RecordStatus.DELETED||
-                collateralImage.getRecordStatus()== RecordStatus.INACTIVE)){
-            throw new CanNotManipulateDataException("Collateral Image can not be manipulated in its current status");
+        if (collateralImage != null) {
+            EntityGuard.requireManipulable(collateralImage, "Collateral Image");
         }
     }
 
@@ -103,7 +102,7 @@ public class CollateralImageService {
                 image.setFileName(FilenameUtils.getName(file.getOriginalFilename()));
                 image.setFileSize(file.getSize());
                 image.setContentType(file.getContentType());
-                image.setExtension(file.getOriginalFilename());
+                image.setExtension(FilenameUtils.getExtension(file.getOriginalFilename()));
                 localFileStorageService.delete(oldStorageKey);
             }
             catch(Exception e){
@@ -192,9 +191,7 @@ public class CollateralImageService {
         CollateralImage image = collateralImageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Document not found with id " + id));
 
-        if (image.getRecordStatus() == RecordStatus.DELETED) {
-            throw new CanNotManipulateDataException("Image cannot be manipulated in its current status");
-        }
+        EntityGuard.requireNotDeleted(image, "Image");
 
         image.setRecordStatus(request.getRecordStatus());
         return collateralImageMapper.toResponse(image);

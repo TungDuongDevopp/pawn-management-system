@@ -5,6 +5,7 @@ import com.tungduong.pawnmanagement.dto.request.StaffRequest;
 import com.tungduong.pawnmanagement.dto.request.update.StaffUpdateRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.StaffResponse;
+import com.tungduong.pawnmanagement.helper.EntityGuard;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
@@ -27,11 +28,8 @@ public class StaffService {
     private final StaffMapper staffMapper;
 
     private void ensureManipulable(Staff staff) {
-        if (staff.getRecordStatus() == RecordStatus.DELETED
-                || staff.getRecordStatus() == RecordStatus.INACTIVE) {
-            throw new CanNotManipulateDataException(
-                    "Staff cannot be manipulated in its current status"
-            );
+        if (staff != null) {
+            EntityGuard.requireManipulable(staff, "Staff");
         }
     }
 
@@ -115,9 +113,7 @@ public class StaffService {
         Staff staff = staffRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Staff not found with id " + id));
 
-        if (staff.getRecordStatus() == RecordStatus.DELETED) {
-            throw new CanNotManipulateDataException("Staff cannot be manipulated in its current status");
-        }
+        EntityGuard.requireNotDeleted(staff, "Staff");
 
         staff.setRecordStatus(request.getRecordStatus());
         return staffMapper.toResponse(staff);

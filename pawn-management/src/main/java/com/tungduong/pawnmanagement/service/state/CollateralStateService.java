@@ -2,6 +2,7 @@ package com.tungduong.pawnmanagement.service.state;
 
 import com.tungduong.pawnmanagement.dto.request.CollateralAppraiseRequest;
 import com.tungduong.pawnmanagement.dto.response.CollateralResponse;
+import com.tungduong.pawnmanagement.helper.EntityGuard;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.CollateralMapper;
@@ -29,27 +30,21 @@ public class CollateralStateService {
             Collateral collateral,
             Staff staff
     ) {
-        if (collateral != null &&
-                (collateral.getRecordStatus() == RecordStatus.INACTIVE
-                        || collateral.getRecordStatus() == RecordStatus.DELETED
-                        || collateral.getStatus() == AssetStatus.REJECTED
-                        || collateral.getStatus() == AssetStatus.RETURNED
-                        || collateral.getStatus() == AssetStatus.LIQUIDATED
-                        || collateral.getStatus() == AssetStatus.DAMAGED_LOST
-                        || collateral.getStatus() == AssetStatus.CONFISCATED)) {
-
-            throw new CanNotManipulateDataException(
-                    "Collateral cannot be manipulated in its current status"
-            );
+        if (collateral != null) {
+            EntityGuard.requireManipulable(collateral, "Collateral");
+            if (collateral.getStatus() == AssetStatus.REJECTED
+                    || collateral.getStatus() == AssetStatus.RETURNED
+                    || collateral.getStatus() == AssetStatus.LIQUIDATED
+                    || collateral.getStatus() == AssetStatus.DAMAGED_LOST
+                    || collateral.getStatus() == AssetStatus.CONFISCATED) {
+                throw new CanNotManipulateDataException(
+                        "Collateral cannot be manipulated in its current status"
+                );
+            }
         }
 
-        if (staff != null ){
-            if(staff.getRecordStatus() == RecordStatus.INACTIVE
-                    || staff.getRecordStatus() == RecordStatus.DELETED) {
-                throw new CanNotManipulateDataException("Staff cannot be manipulated in its current status");
-            }
-
-
+        if (staff != null) {
+            EntityGuard.requireManipulable(staff, "Staff");
         }
     }
 
