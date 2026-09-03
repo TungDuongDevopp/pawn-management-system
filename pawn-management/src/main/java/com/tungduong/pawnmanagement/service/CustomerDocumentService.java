@@ -17,7 +17,7 @@ import com.tungduong.pawnmanagement.repository.CustomerRepository;
 import com.tungduong.pawnmanagement.service.interfaces.IFileStorageService;
 import com.tungduong.pawnmanagement.service.specification.CustomerDocumentSpecification;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -29,14 +29,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CustomerDocumentService {
     private final CustomerDocumentRepository customerDocumentRepository;
     private final CustomerDocumentMapper customerDocumentMapper;
     private final IFileStorageService  fileStorageService;
     private final CustomerRepository customerRepository;
 
-    public void ensureManipulable(CustomerDocument customerDocument, Customer customer) {
+    private void ensureManipulable(CustomerDocument customerDocument, Customer customer) {
         if(customerDocument !=null &&(
                 customerDocument.getRecordStatus() == RecordStatus.INACTIVE ||
                         customerDocument.getRecordStatus()== RecordStatus.DELETED

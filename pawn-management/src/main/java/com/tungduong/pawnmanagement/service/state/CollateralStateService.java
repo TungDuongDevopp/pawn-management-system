@@ -1,4 +1,4 @@
-package com.tungduong.pawnmanagement.service;
+package com.tungduong.pawnmanagement.service.state;
 
 import com.tungduong.pawnmanagement.dto.request.CollateralAppraiseRequest;
 import com.tungduong.pawnmanagement.dto.response.CollateralResponse;

@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "feedbacks")
 @Getter
@@ -34,5 +36,8 @@ public class Feedback extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
+
+    @OneToMany(mappedBy = "feedback")
+    private List<FeedbackAttachment> attachments;
 
 }
