@@ -4,6 +4,7 @@ import com.tungduong.pawnmanagement.dto.request.FeedbackRequest;
 import com.tungduong.pawnmanagement.dto.request.filter.FeedbackFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.FeedBackResponse;
+import com.tungduong.pawnmanagement.helper.EntityGuard;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.FileStorageException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
@@ -39,19 +40,16 @@ public class FeedbackService {
     private final LocalFileStorageService localFileStorageService;
     private final FeedbackAttachmentRepository feedbackAttachmentRepository;
 
-    private void ensureManipulable(Account account,FeedbackAttachment attachment) {
-        if(account != null &&(account.getRecordStatus() == RecordStatus.INACTIVE ||
-                account.getRecordStatus() == RecordStatus.DELETED ||
-                account.getStatus() != AccountStatus.ACTIVE
-
-        )){
-            throw new CanNotManipulateDataException("Customer can not be manipulated in its current status");
+    private void ensureManipulable(Account account, FeedbackAttachment attachment) {
+        if (account != null) {
+            EntityGuard.requireManipulable(account, "Account");
+            if (account.getStatus() != AccountStatus.ACTIVE) {
+                throw new CanNotManipulateDataException("Account can not be manipulated in its current status");
+            }
         }
 
-        if(attachment != null &&(attachment.getRecordStatus() == RecordStatus.INACTIVE ||
-                attachment.getRecordStatus() == RecordStatus.DELETED
-        )){
-            throw new CanNotManipulateDataException("Customer can not be manipulated in its current status");
+        if (attachment != null) {
+            EntityGuard.requireManipulable(attachment, "Feedback attachment");
         }
     }
 
@@ -130,11 +128,9 @@ public class FeedbackService {
     @Transactional
     public FeedBackResponse updateRecordStatus(Long id, RecordStatusUpdateRequest request) {
         Feedback feedback = feedbackRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Document not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Feedback not found with id " + id));
 
-        if (feedback.getRecordStatus() == RecordStatus.DELETED) {
-            throw new CanNotManipulateDataException("Document cannot be manipulated in its current status");
-        }
+        EntityGuard.requireNotDeleted(feedback, "Feedback");
 
         feedback.setRecordStatus(request.getRecordStatus());
         return feedbackMapper.toResponse(feedback);

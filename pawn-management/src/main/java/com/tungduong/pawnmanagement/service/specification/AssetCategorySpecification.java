@@ -10,10 +10,12 @@ public class AssetCategorySpecification {
      * Excludes records whose status matches the given RecordStatus.
      * Typically used to hide DELETED records from list queries.
      */
+    public static Specification<AssetCategory> recordStatusNot(RecordStatus status) {
+        return CommonSpecification.recordStatusNot(status);
+    }
+
+    @Deprecated
     public static Specification<AssetCategory> statusNot(RecordStatus status) {
-        return (root, query, criteriaBuilder) -> {
-            if (status == null) return criteriaBuilder.conjunction();
-            return criteriaBuilder.notEqual(root.get("recordStatus"), status);
-        };
+        return recordStatusNot(status);
     }
 }

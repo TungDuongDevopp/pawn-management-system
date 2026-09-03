@@ -5,10 +5,12 @@ import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import org.springframework.data.jpa.domain.Specification;
 
 public class CollateralDocumentTypeSpecification {
+    public static Specification<CollateralDocumentType> recordStatusNot(RecordStatus status) {
+        return CommonSpecification.recordStatusNot(status);
+    }
+
+    @Deprecated
     public static Specification<CollateralDocumentType> statusNot(RecordStatus status) {
-        return (root, query, criteriaBuilder) -> {
-            if (status == null) return criteriaBuilder.conjunction();
-            return criteriaBuilder.notEqual(root.get("recordStatus"), status);
-        };
+        return recordStatusNot(status);
     }
 }

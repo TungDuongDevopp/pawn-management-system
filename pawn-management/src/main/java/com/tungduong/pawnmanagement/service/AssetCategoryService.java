@@ -4,6 +4,7 @@ import com.tungduong.pawnmanagement.dto.request.AssetCategoryRequest;
 import com.tungduong.pawnmanagement.dto.request.update.AssetCategoryUpdateRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.AssetCategoryResponse;
+import com.tungduong.pawnmanagement.helper.EntityGuard;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
@@ -27,16 +28,13 @@ public class AssetCategoryService {
 
 
     private void ensureManipulable(AssetCategory assetCategory) {
-        if (assetCategory.getRecordStatus() == RecordStatus.DELETED
-                || assetCategory.getRecordStatus() == RecordStatus.INACTIVE) {
-            throw new CanNotManipulateDataException(
-                    "Asset category cannot be manipulated in its current status"
-            );
+        if (assetCategory != null) {
+            EntityGuard.requireManipulable(assetCategory, "Asset category");
         }
     }
 
     public Page<AssetCategoryResponse> findAll(Pageable pageable) {
-        Specification<AssetCategory> spec = AssetCategorySpecification.statusNot(RecordStatus.DELETED);
+        Specification<AssetCategory> spec = AssetCategorySpecification.recordStatusNot(RecordStatus.DELETED);
         return assetCategoryRepository.findAll(spec, pageable).map(assetCategoryMapper::toResponse);
     }
 
@@ -81,9 +79,7 @@ public class AssetCategoryService {
         AssetCategory currentAssetCategory = assetCategoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Asset category not found with id " + id));
 
-        if (currentAssetCategory.getRecordStatus() == RecordStatus.DELETED) {
-            throw new CanNotManipulateDataException("Asset category cannot be manipulated in its current status");
-        }
+        EntityGuard.requireNotDeleted(currentAssetCategory, "Asset category");
 
         currentAssetCategory.setRecordStatus(request.getRecordStatus());
         return assetCategoryMapper.toResponse(currentAssetCategory);

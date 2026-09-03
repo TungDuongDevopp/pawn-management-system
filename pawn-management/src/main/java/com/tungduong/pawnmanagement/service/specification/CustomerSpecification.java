@@ -8,56 +8,23 @@ import org.springframework.data.jpa.domain.Specification;
 public class CustomerSpecification {
 
     public static Specification<Customer> recordStatusNot(RecordStatus status) {
-        return (root, query, criteriaBuilder) -> {
-            if (status == null) return criteriaBuilder.conjunction();
-            return criteriaBuilder.notEqual(root.get("recordStatus"), status);
-        };
+        return CommonSpecification.recordStatusNot(status);
     }
 
     public static Specification<Customer> hasName(CustomerFilterRequest request) {
-        return (root, query, criteriaBuilder) -> {
-
-            if (request == null || request.getFullname() == null || request.getFullname().isBlank()) {
-                return criteriaBuilder.conjunction();
-            }
-
-            String fullname = "%" + request.getFullname().trim().toLowerCase() + "%";
-
-            return criteriaBuilder.like(
-                    criteriaBuilder.lower(root.get("fullname")),
-                    fullname
-            );
-        };
+        return CommonSpecification.likeIgnoreCase("fullname", request == null ? null : request.getFullname());
     }
 
     public static Specification<Customer> hasEmail(CustomerFilterRequest request) {
-
-        return (root, query, criteriaBuilder) -> {
-            if (request == null || request.getEmail() == null || request.getEmail().isBlank())
-                return criteriaBuilder.conjunction();
-
-            return criteriaBuilder.equal(criteriaBuilder.lower(root.get("email")), request.getEmail().trim().toLowerCase());
-        };
+        return CommonSpecification.equalIgnoreCase("email", request == null ? null : request.getEmail());
     }
 
     public static Specification<Customer> hasAddress(CustomerFilterRequest request) {
-
-        return (root, query, criteriaBuilder) -> {
-            if (request == null || request.getAddress() == null || request.getAddress().isBlank())
-                return criteriaBuilder.conjunction();
-
-            return criteriaBuilder.equal(criteriaBuilder.lower(root.get("address")), request.getAddress().trim().toLowerCase());
-        };
+        return CommonSpecification.equalIgnoreCase("address", request == null ? null : request.getAddress());
     }
 
     public static Specification<Customer> hasPhone(CustomerFilterRequest request) {
-
-        return (root, query, criteriaBuilder) -> {
-            if (request == null || request.getPhone() == null || request.getPhone().isBlank())
-                return criteriaBuilder.conjunction();
-
-            return criteriaBuilder.equal(criteriaBuilder.lower(root.get("phone")), request.getPhone().trim().toLowerCase());
-        };
+        return CommonSpecification.equalIgnoreCase("phone", request == null ? null : request.getPhone());
     }
 }
 

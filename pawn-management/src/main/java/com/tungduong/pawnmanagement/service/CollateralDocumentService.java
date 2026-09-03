@@ -5,6 +5,7 @@ import com.tungduong.pawnmanagement.dto.request.filter.CollateralDocumentFilterR
 import com.tungduong.pawnmanagement.dto.request.update.CollateralDocumentUpdateRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CollateralDocumentResponse;
+import com.tungduong.pawnmanagement.helper.EntityGuard;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.FileStorageException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
@@ -38,20 +39,17 @@ public class CollateralDocumentService {
     private final CollateralDocumentTypeRepository collateralDocumentTypeRepository;
     private final LocalFileStorageService fileStorageService;
 
-    private void ensureManipulable(CollateralDocument collateralDocument, CollateralDocumentType collateralDocumentType,Collateral collateral) {
-        if(collateralDocument!=null &&(collateralDocument.getRecordStatus() == RecordStatus.INACTIVE
-                || collateralDocument.getRecordStatus() == RecordStatus.DELETED)){
-            throw new CanNotManipulateDataException("Collateral Document  can not be manipulated in its current status");
+    private void ensureManipulable(CollateralDocument collateralDocument, CollateralDocumentType collateralDocumentType, Collateral collateral) {
+        if (collateralDocument != null) {
+            EntityGuard.requireManipulable(collateralDocument, "Collateral Document");
         }
 
-        if(collateralDocumentType!=null&& (collateralDocumentType.getRecordStatus() == RecordStatus.INACTIVE
-               || collateralDocumentType.getRecordStatus() == RecordStatus.DELETED)){
-            throw new CanNotManipulateDataException("Collateral Document Type can not be manipulated in its current status");
+        if (collateralDocumentType != null) {
+            EntityGuard.requireManipulable(collateralDocumentType, "Collateral Document Type");
         }
 
-        if(collateral!=null&& (collateral.getRecordStatus() == RecordStatus.INACTIVE
-                || collateral.getRecordStatus() == RecordStatus.DELETED)){
-            throw new CanNotManipulateDataException("Collateral can not be manipulated in its current status");
+        if (collateral != null) {
+            EntityGuard.requireManipulable(collateral, "Collateral");
         }
     }
 
@@ -146,9 +144,7 @@ public class CollateralDocumentService {
         CollateralDocument document = collateralDocumentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Document not found with id " + id));
 
-        if (document.getRecordStatus() == RecordStatus.DELETED) {
-            throw new CanNotManipulateDataException("Document cannot be manipulated in its current status");
-        }
+        EntityGuard.requireNotDeleted(document, "Document");
 
         document.setRecordStatus(request.getRecordStatus());
         return collateralDocumentMapper.toResponse(document);

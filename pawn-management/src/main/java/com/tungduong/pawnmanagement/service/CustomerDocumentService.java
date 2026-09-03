@@ -5,6 +5,7 @@ import com.tungduong.pawnmanagement.dto.request.filter.CustomerDocumentFilterReq
 import com.tungduong.pawnmanagement.dto.request.update.CustomerDocumentUpdateRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CustomerDocumentResponse;
+import com.tungduong.pawnmanagement.helper.EntityGuard;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.FileStorageException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
@@ -37,16 +38,11 @@ public class CustomerDocumentService {
     private final CustomerRepository customerRepository;
 
     private void ensureManipulable(CustomerDocument customerDocument, Customer customer) {
-        if(customerDocument !=null &&(
-                customerDocument.getRecordStatus() == RecordStatus.INACTIVE ||
-                        customerDocument.getRecordStatus()== RecordStatus.DELETED
-                )){
-            throw new CanNotManipulateDataException("Customer Document can not be manipulated in its current status");
-
+        if (customerDocument != null) {
+            EntityGuard.requireManipulable(customerDocument, "Customer Document");
         }
-        if(customer != null &&(customer.getRecordStatus() == RecordStatus.INACTIVE ||
-                customer.getRecordStatus() == RecordStatus.DELETED)){
-            throw new CanNotManipulateDataException("Customer can not be manipulated in its current status");
+        if (customer != null) {
+            EntityGuard.requireManipulable(customer, "Customer");
         }
     }
 
@@ -154,9 +150,7 @@ public class CustomerDocumentService {
         CustomerDocument document = customerDocumentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Document not found with id " + id));
 
-        if (document.getRecordStatus() == RecordStatus.DELETED) {
-            throw new CanNotManipulateDataException("Document cannot be manipulated in its current status");
-        }
+        EntityGuard.requireNotDeleted(document, "Document");
 
         document.setRecordStatus(request.getRecordStatus());
         return customerDocumentMapper.toResponse(document);

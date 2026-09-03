@@ -4,6 +4,7 @@ import com.tungduong.pawnmanagement.dto.request.CollateralDocumentTypeRequest;
 import com.tungduong.pawnmanagement.dto.request.update.CollateralDocumentTypeUpdateRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CollateralDocumentTypeResponse;
+import com.tungduong.pawnmanagement.helper.EntityGuard;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
@@ -26,16 +27,13 @@ public class CollateralDocumentTypeService {
     private final CollateralDocumentTypeMapper collateralDocumentTypeMapper;
 
     private void ensureManipulable(CollateralDocumentType collateralDocumentType) {
-        if (collateralDocumentType.getRecordStatus() == RecordStatus.DELETED
-                || collateralDocumentType.getRecordStatus() == RecordStatus.INACTIVE) {
-            throw new CanNotManipulateDataException(
-                    "Collateral document type cannot be manipulated in its current status"
-            );
+        if (collateralDocumentType != null) {
+            EntityGuard.requireManipulable(collateralDocumentType, "Collateral document type");
         }
     }
 
     public Page<CollateralDocumentTypeResponse> findAll(Pageable pageable) {
-        Specification<CollateralDocumentType> spec = CollateralDocumentTypeSpecification.statusNot(RecordStatus.DELETED);
+        Specification<CollateralDocumentType> spec = CollateralDocumentTypeSpecification.recordStatusNot(RecordStatus.DELETED);
         return collateralDocumentTypeRepository.findAll(spec, pageable).map(collateralDocumentTypeMapper::toResponse);
     }
 
@@ -80,9 +78,7 @@ public class CollateralDocumentTypeService {
         CollateralDocumentType currentCollateralDocumentType = collateralDocumentTypeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Collateral document type not found with id " + id));
 
-        if (currentCollateralDocumentType.getRecordStatus() == RecordStatus.DELETED) {
-            throw new CanNotManipulateDataException("Collateral document type cannot be manipulated in its current status");
-        }
+        EntityGuard.requireNotDeleted(currentCollateralDocumentType, "Collateral document type");
 
         currentCollateralDocumentType.setRecordStatus(request.getRecordStatus());
         return collateralDocumentTypeMapper.toResponse(currentCollateralDocumentType);

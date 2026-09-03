@@ -1,5 +1,7 @@
 package com.tungduong.pawnmanagement.dto.request.filter;
 
+import com.tungduong.pawnmanagement.model.enums.Department;
+import com.tungduong.pawnmanagement.model.enums.Position;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +25,7 @@ public class StaffFilterRequest {
     private BigDecimal minSalary;
     private BigDecimal maxSalary;
 
-    private String department;
+    private Department department;
 
-    private String position;
+    private Position position;
 }

@@ -4,6 +4,7 @@ import com.tungduong.pawnmanagement.dto.request.AssetTypeRequest;
 import com.tungduong.pawnmanagement.dto.request.update.AssetTypeUpdateRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.AssetTypeResponse;
+import com.tungduong.pawnmanagement.helper.EntityGuard;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
@@ -29,24 +30,16 @@ public class AssetTypeService {
     private final AssetTypeMapper assetTypeMapper;
 
     private void ensureManipulable(AssetType assetType, AssetCategory assetCategory) {
-        if (assetType != null &&
-                (assetType.getRecordStatus() == RecordStatus.DELETED
-                || assetType.getRecordStatus() == RecordStatus.INACTIVE)) {
-            throw new CanNotManipulateDataException(
-                    "Asset type cannot be manipulated in its current status"
-            );
+        if (assetType != null) {
+            EntityGuard.requireManipulable(assetType, "Asset type");
         }
-
-        if (assetCategory != null && (assetCategory.getRecordStatus() == RecordStatus.DELETED
-                || assetCategory.getRecordStatus() == RecordStatus.INACTIVE)) {
-            throw new CanNotManipulateDataException(
-                    "Asset category cannot be manipulated in its current status"
-            );
+        if (assetCategory != null) {
+            EntityGuard.requireManipulable(assetCategory, "Asset category");
         }
     }
 
     public Page<AssetTypeResponse> findAll(Pageable pageable) {
-        Specification<AssetType> spec = AssetTypeSpecification.statusNot(RecordStatus.DELETED);
+        Specification<AssetType> spec = AssetTypeSpecification.recordStatusNot(RecordStatus.DELETED);
         return assetTypeRepository.findAll(spec, pageable).map(assetTypeMapper::toResponse);
     }
 
@@ -107,9 +100,7 @@ public class AssetTypeService {
         AssetType currentAssetType = assetTypeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Asset type not found with id " + id));
 
-        if (currentAssetType.getRecordStatus() == RecordStatus.DELETED) {
-            throw new CanNotManipulateDataException("Asset type cannot be manipulated in its current status");
-        }
+        EntityGuard.requireNotDeleted(currentAssetType, "Asset type");
 
         currentAssetType.setRecordStatus(request.getRecordStatus());
         return assetTypeMapper.toResponse(currentAssetType);

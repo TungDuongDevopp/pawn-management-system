@@ -8,87 +8,27 @@ import org.springframework.data.jpa.domain.Specification;
 public class CollateralSpecification {
 
     public static Specification<Collateral> recordStatusNot(RecordStatus status) {
-        return (root, query, criteriaBuilder) -> {
-            if (status == null) return criteriaBuilder.conjunction();
-            return criteriaBuilder.notEqual(root.get("recordStatus"), status);
-        };
+        return CommonSpecification.recordStatusNot(status);
     }
 
     public static Specification<Collateral> hasName(CollateralFilterRequest request) {
-        return (root, query, criteriaBuilder) -> {
-            if (request == null || request.getName() == null || request.getName().isBlank()) {
-                return criteriaBuilder.conjunction();
-            }
-            String name = "%" + request.getName().trim().toLowerCase() + "%";
-            return criteriaBuilder.like(
-                    criteriaBuilder.lower(root.get("name")),
-                    name
-            );
-        };
+        return CommonSpecification.likeIgnoreCase("name", request == null ? null : request.getName());
     }
 
     public static Specification<Collateral> hasDeclaredValue(CollateralFilterRequest request) {
-        return (root, query, criteriaBuilder) -> {
-            if (request == null) {
-                return criteriaBuilder.conjunction();
-            }
-
-            if (request.getMinDeclaredValue() != null && request.getMaxDeclaredValue() != null) {
-                return criteriaBuilder.between(
-                        root.get("declaredValue"),
-                        request.getMinDeclaredValue(),
-                        request.getMaxDeclaredValue()
-                );
-            }
-
-            if (request.getMinDeclaredValue() != null) {
-                return criteriaBuilder.greaterThanOrEqualTo(
-                        root.get("declaredValue"),
-                        request.getMinDeclaredValue()
-                );
-            }
-
-            if (request.getMaxDeclaredValue() != null) {
-                return criteriaBuilder.lessThanOrEqualTo(
-                        root.get("declaredValue"),
-                        request.getMaxDeclaredValue()
-                );
-            }
-
-            return criteriaBuilder.conjunction();
-        };
+        return CommonSpecification.inRange(
+                "declaredValue",
+                request == null ? null : request.getMinDeclaredValue(),
+                request == null ? null : request.getMaxDeclaredValue()
+        );
     }
 
     public static Specification<Collateral> hasAppraisedValue(CollateralFilterRequest request) {
-        return (root, query, criteriaBuilder) -> {
-            if (request == null) {
-                return criteriaBuilder.conjunction();
-            }
-
-            if (request.getMinAppraisedValue() != null && request.getMaxAppraisedValue() != null) {
-                return criteriaBuilder.between(
-                        root.get("appraisedValue"),
-                        request.getMinAppraisedValue(),
-                        request.getMaxAppraisedValue()
-                );
-            }
-
-            if (request.getMinAppraisedValue() != null) {
-                return criteriaBuilder.greaterThanOrEqualTo(
-                        root.get("appraisedValue"),
-                        request.getMinAppraisedValue()
-                );
-            }
-
-            if (request.getMaxAppraisedValue() != null) {
-                return criteriaBuilder.lessThanOrEqualTo(
-                        root.get("appraisedValue"),
-                        request.getMaxAppraisedValue()
-                );
-            }
-
-            return criteriaBuilder.conjunction();
-        };
+        return CommonSpecification.inRange(
+                "appraisedValue",
+                request == null ? null : request.getMinAppraisedValue(),
+                request == null ? null : request.getMaxAppraisedValue()
+        );
     }
 
     public static Specification<Collateral> hasCustomerId(CollateralFilterRequest request) {
@@ -128,34 +68,10 @@ public class CollateralSpecification {
     }
 
     public static Specification<Collateral> hasAppraisedAt(CollateralFilterRequest request) {
-        return (root, query, criteriaBuilder) -> {
-            if (request == null) {
-                return criteriaBuilder.conjunction();
-            }
-
-            if (request.getAppraisedAtFrom() != null && request.getAppraisedAtTo() != null) {
-                return criteriaBuilder.between(
-                        root.get("appraisedAt"),
-                        request.getAppraisedAtFrom(),
-                        request.getAppraisedAtTo()
-                );
-            }
-
-            if (request.getAppraisedAtFrom() != null) {
-                return criteriaBuilder.greaterThanOrEqualTo(
-                        root.get("appraisedAt"),
-                        request.getAppraisedAtFrom()
-                );
-            }
-
-            if (request.getAppraisedAtTo() != null) {
-                return criteriaBuilder.lessThanOrEqualTo(
-                        root.get("appraisedAt"),
-                        request.getAppraisedAtTo()
-                );
-            }
-
-            return criteriaBuilder.conjunction();
-        };
+        return CommonSpecification.inRange(
+                "appraisedAt",
+                request == null ? null : request.getAppraisedAtFrom(),
+                request == null ? null : request.getAppraisedAtTo()
+        );
     }
 }

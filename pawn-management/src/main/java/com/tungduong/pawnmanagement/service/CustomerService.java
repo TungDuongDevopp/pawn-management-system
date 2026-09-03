@@ -5,6 +5,7 @@ import com.tungduong.pawnmanagement.dto.request.CustomerRequest;
 import com.tungduong.pawnmanagement.dto.request.update.CustomerUpdateRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CustomerResponse;
+import com.tungduong.pawnmanagement.helper.EntityGuard;
 import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
@@ -27,11 +28,8 @@ public class CustomerService {
     private final CustomerMapper customerMapper;
 
     private void ensureManipulable(Customer customer) {
-        if (customer.getRecordStatus() == RecordStatus.DELETED
-                || customer.getRecordStatus() == RecordStatus.INACTIVE) {
-            throw new CanNotManipulateDataException(
-                    "Customer cannot be manipulated in its current status"
-            );
+        if (customer != null) {
+            EntityGuard.requireManipulable(customer, "Customer");
         }
     }
 
@@ -101,9 +99,7 @@ public class CustomerService {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id " + id));
 
-        if (customer.getRecordStatus() == RecordStatus.DELETED) {
-            throw new CanNotManipulateDataException("Customer cannot be manipulated in its current status");
-        }
+        EntityGuard.requireNotDeleted(customer, "Customer");
 
         customer.setRecordStatus(request.getRecordStatus());
         return customerMapper.toResponse(customer);
