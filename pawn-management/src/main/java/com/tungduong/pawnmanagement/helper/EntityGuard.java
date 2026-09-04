@@ -49,4 +49,21 @@ public final class EntityGuard {
             );
         }
     }
+
+    /**
+     * Throws {@link CanNotManipulateDataException} when the entity's
+     * {@code recordStatus} is not {@code ACTIVE} (i.e. is {@code INACTIVE} or {@code DELETED}).
+     *
+     * <p>Used when assigning reference/master data to ensure only active reference data can be assigned.</p>
+     *
+     * @param entity     the reference entity to check (must not be null)
+     * @param entityName human-readable entity name used in the exception message
+     */
+    public static void requireAssignable(BaseEntity entity, String entityName) {
+        if (entity.getRecordStatus() != RecordStatus.ACTIVE) {
+            throw new CanNotManipulateDataException(
+                    entityName + " is not active and cannot be assigned"
+            );
+        }
+    }
 }

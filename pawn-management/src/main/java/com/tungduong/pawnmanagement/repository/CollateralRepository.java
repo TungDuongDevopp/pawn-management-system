@@ -11,4 +11,6 @@ public interface CollateralRepository  extends JpaRepository<Collateral,Long>, J
 
     Optional<Collateral> findByIdAndRecordStatusNot(Long id, RecordStatus status);
 
+    boolean existsByTypeId(Long typeId);
+
 }

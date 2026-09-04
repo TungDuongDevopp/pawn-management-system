@@ -9,4 +9,6 @@ import java.util.Optional;
 
 public interface CollateralDocumentRepository  extends JpaRepository<CollateralDocument,Long>, JpaSpecificationExecutor<CollateralDocument> {
     Optional<CollateralDocument>findByIdAndRecordStatusNot(Long id, RecordStatus status);
+
+    boolean existsByDocumentTypeId(Long documentTypeId);
 }

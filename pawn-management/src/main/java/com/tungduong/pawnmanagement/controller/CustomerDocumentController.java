@@ -10,6 +10,7 @@ import com.tungduong.pawnmanagement.helper.PageResponse;
 import com.tungduong.pawnmanagement.service.CustomerDocumentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 
@@ -35,6 +37,7 @@ public class CustomerDocumentController {
 
     @PostMapping("/customer-documents")
     public ResponseEntity<ApiResponse<CustomerDocumentResponse>> upload(CustomerDocumentRequest request) throws IOException {
+        log.info("controller contentType={}", request.getFile().getContentType());
         return ApiResponse.created(customerDocumentService.upload(request));
     }
 

@@ -38,7 +38,7 @@ public class CollateralStateService {
                     || collateral.getStatus() == AssetStatus.DAMAGED_LOST
                     || collateral.getStatus() == AssetStatus.CONFISCATED) {
                 throw new CanNotManipulateDataException(
-                        "Collateral cannot be manipulated in its current status"
+                        "Only collateral under review can be appraised"
                 );
             }
         }
@@ -52,12 +52,19 @@ public class CollateralStateService {
     public CollateralResponse appraised(Long id, CollateralAppraiseRequest request) {
         Collateral currentCollateral = collateralRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Collateral not found with id " + id));
+
+        if(currentCollateral.getStatus() != AssetStatus.UNDER_REVIEW){
+           throw new CanNotManipulateDataException("Collateral cannot be appraised in its current status");
+        }
+
         Staff currentStaff = staffRepository.findById(request.getAppraisedBy())
                 .orElseThrow(() -> new ResourceNotFoundException("Staff not found with id " + request.getAppraisedBy()));
         ensureManipulable(currentCollateral, currentStaff);
+       
         if (currentStaff.getDepartment() != Department.APPRAISER) {
             throw new CanNotManipulateDataException("Staff does not have permission to appraise collateral");
         }
+
         currentCollateral.setAppraisedAt(Instant.now());
         currentCollateral.setStatus(AssetStatus.APPROVED);
         currentCollateral.setAppraisedBy(currentStaff);

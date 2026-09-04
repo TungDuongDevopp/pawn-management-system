@@ -19,16 +19,20 @@ import com.tungduong.pawnmanagement.repository.CollateralRepository;
 import com.tungduong.pawnmanagement.service.specification.CollateralImageSpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CollateralImageService {
@@ -88,30 +92,68 @@ public class CollateralImageService {
 
     }
 
-    @Transactional
-    public CollateralImageResponse replaceFile(Long id, MultipartFile file) throws IOException {
-        CollateralImage image = collateralImageRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Collateral Image not found with id:" + id));
-        Collateral collateral = image.getCollateral();
-        ensureManipulable(image,collateral);
-        String oldStorageKey = image.getStorageKey();
-        String directory = "collaterals/" + collateral.getId() + "/images";
-        if(file != null){
-            String newStorageKey = localFileStorageService.save(file,directory);
-            try{
-                image.setStorageKey(newStorageKey);
-                image.setFileName(FilenameUtils.getName(file.getOriginalFilename()));
-                image.setFileSize(file.getSize());
-                image.setContentType(file.getContentType());
-                image.setExtension(FilenameUtils.getExtension(file.getOriginalFilename()));
-                localFileStorageService.delete(oldStorageKey);
-            }
-            catch(Exception e){
-                localFileStorageService.delete(newStorageKey);
-                throw new FileStorageException("Can not replace file");
-            }
-        }
+   @Transactional
+public CollateralImageResponse replaceFile(Long id, MultipartFile file)
+        throws IOException {
+
+    CollateralImage image = collateralImageRepository.findById(id)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException(
+                            "Collateral Image not found with id:" + id));
+
+    Collateral collateral = image.getCollateral();
+    ensureManipulable(image, collateral);
+
+    if (file == null) {
         return collateralImageMapper.toResponse(image);
     }
+
+    String oldStorageKey = image.getStorageKey();
+    String directory =
+            "collaterals/" + collateral.getId() + "/images";
+
+    String newStorageKey =
+            localFileStorageService.save(file, directory);
+
+    try {
+        image.setStorageKey(newStorageKey);
+        image.setFileName(FilenameUtils.getName(file.getOriginalFilename()));
+        image.setFileSize(file.getSize());
+        image.setContentType(file.getContentType());
+        image.setExtension(FilenameUtils.getExtension(file.getOriginalFilename()));
+
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
+
+                    @Override
+                    public void afterCommit() {
+                        try {
+                            localFileStorageService.delete(oldStorageKey);
+                        } catch (Exception e) {
+                             log.error("Failed to cleanup old file: {}", oldStorageKey, e);
+                        }
+                    }
+
+                    @Override
+                    public void afterCompletion(int status) {
+                        if (status != STATUS_COMMITTED) {
+                            try {
+                                localFileStorageService.delete(newStorageKey);
+                            } catch (Exception e) {
+                                 log.error("Failed to rollback new file: {}", newStorageKey, e);
+                            }
+                        }
+                    }
+                }
+        );
+
+        return collateralImageMapper.toResponse(image);
+
+    } catch (Exception e) {
+        localFileStorageService.delete(newStorageKey);
+        throw new FileStorageException("Can not replace file");
+    }
+}
 
     @Transactional
     public CollateralImageResponse setImagePrimary(Long id) {
@@ -122,17 +164,15 @@ public class CollateralImageService {
                                 "Collateral Image not found with id: " + id
                         )
                 );
-
-        ensureManipulable(image, null);
-
-        Long collateralId = image.getCollateral().getId();
-            collateralImageRepository
-                    .findByCollateralIdAndPrimaryImageTrue(collateralId)
-                    .ifPresent(currentPrimary -> {
-                        if (!currentPrimary.getId().equals(image.getId())) {
-                            currentPrimary.setPrimaryImage(false);
-                        }
-                    });
+        Collateral collateral = image.getCollateral();
+        ensureManipulable(image, collateral);
+        collateralImageRepository
+                .findByCollateralIdAndPrimaryImageTrueAndRecordStatusNot(collateral.getId(),RecordStatus.DELETED)
+                .ifPresent(currentPrimary -> {
+                    if (!currentPrimary.getId().equals(image.getId())) {
+                        currentPrimary.setPrimaryImage(false);
+                    }
+                });
             image.setPrimaryImage(true);
 
         return collateralImageMapper.toResponse(image);
@@ -146,14 +186,15 @@ public class CollateralImageService {
                                 "Collateral Image not found with id: " + id
                         )
                 );
-        ensureManipulable(image, null);
-        Long collateralId = image.getCollateral().getId();
+        Collateral collateral = image.getCollateral();
+        ensureManipulable(image, collateral);       
         Integer displayOrder = request.getDisplayOrder();
         boolean exists = collateralImageRepository
-                .existsByCollateralIdAndDisplayOrderAndIdNot(
-                        collateralId,
+                .existsByCollateralIdAndDisplayOrderAndIdNotAndRecordStatusNot(
+                        collateral.getId(),
                         displayOrder,
-                        image.getId()
+                        image.getId(),
+                        RecordStatus.DELETED
                 );
         if (exists) {
             throw new DuplicateResourceException(
@@ -168,22 +209,17 @@ public class CollateralImageService {
 
     public Resource download(Long id) {
         CollateralImage image = collateralImageRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Collateral Image not found with id:" + id));
-        ensureManipulable(image,null);
-       return localFileStorageService.get(image.getStorageKey());
+        EntityGuard.requireNotDeleted(image, "Image");
+        return localFileStorageService.get(image.getStorageKey());
     }
 
     @Transactional
     public void deleteById(Long id) {
         CollateralImage image = collateralImageRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Collateral Image not found with id:" + id));
-        ensureManipulable(image,null);
+        Collateral collateral = image.getCollateral();
+        ensureManipulable(image,collateral);
         image.setRecordStatus(RecordStatus.DELETED);
-        try{
-            localFileStorageService.delete(image.getStorageKey());
-        }
-        catch (Exception e){
-            throw new FileStorageException("Can not delete file");
-        }
-
+    
     }
 
     @Transactional

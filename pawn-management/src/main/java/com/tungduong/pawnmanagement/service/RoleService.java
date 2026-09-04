@@ -11,6 +11,7 @@ import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.RoleMapper;
 import com.tungduong.pawnmanagement.model.Role;
 import com.tungduong.pawnmanagement.model.enums.RecordStatus;
+import com.tungduong.pawnmanagement.repository.AccountRepository;
 import com.tungduong.pawnmanagement.repository.RoleRepository;
 import com.tungduong.pawnmanagement.service.specification.RoleSpecification;
 import jakarta.transaction.Transactional;
@@ -25,6 +26,7 @@ import java.util.List;
 public class RoleService {
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
+    private final AccountRepository accountRepository;
 
     private void ensureManipulable(Role role){
         if (role != null) {
@@ -46,6 +48,7 @@ public class RoleService {
         return roleMapper.toResponse(role);
     }
 
+    @Transactional
     public RoleResponse create(RoleRequest roleRequest) {
 
         if(roleRepository.existsByNameAndRecordStatusNot(roleRequest.getName(),RecordStatus.DELETED)){
@@ -77,6 +80,12 @@ public class RoleService {
 
         EntityGuard.requireNotDeleted(role, "Role");
 
+        if (request.getRecordStatus() == RecordStatus.DELETED) {
+            if (accountRepository.existsByRoleId(id)) {
+                throw new CanNotManipulateDataException("Role is in use and cannot be deleted");
+            }
+        }
+
         role.setRecordStatus(request.getRecordStatus());
         return roleMapper.toResponse(role);
     }
@@ -86,6 +95,9 @@ public class RoleService {
         Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found with id " + id));
         ensureManipulable(role);
+        if (accountRepository.existsByRoleId(id)) {
+            throw new CanNotManipulateDataException("Role is in use and cannot be deleted");
+        }
         role.setRecordStatus(RecordStatus.DELETED);
     }
 }

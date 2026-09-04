@@ -20,7 +20,5 @@ public class CollateralUpdateRequest {
 
     private BigDecimal declaredValue;
 
-    private Long customerId;
-
     private Long assetTypeId;
 }

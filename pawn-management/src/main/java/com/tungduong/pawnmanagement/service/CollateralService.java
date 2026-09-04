@@ -34,7 +34,6 @@ public class CollateralService {
     private final AssetTypeRepository assetTypeRepository;
     private void ensureManipulable(
             Collateral collateral,
-            AssetType assetType,
             Customer customer
     ) {
         if (collateral != null) {
@@ -48,10 +47,6 @@ public class CollateralService {
                         "Collateral cannot be manipulated in its current status"
                 );
             }
-        }
-
-        if (assetType != null) {
-            EntityGuard.requireManipulable(assetType, "Asset type");
         }
 
         if (customer != null) {
@@ -79,13 +74,15 @@ public class CollateralService {
         return collateralMapper.toResponse(collateral);
     }
 
+    @Transactional
     public CollateralResponse create(CollateralRequest request) {
         Customer customer = customerRepository.findById(request.getCustomerId())
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id " + request.getCustomerId()));
         AssetType assetType = assetTypeRepository.findById(request.getAssetTypeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Asset type not found with id " + request.getAssetTypeId()));
 
-        ensureManipulable(null, assetType, customer);
+        EntityGuard.requireAssignable(assetType, "Asset type");
+        ensureManipulable(null, customer);
         Collateral collateral = collateralMapper.toEntity(request);
         collateral.setCustomer(customer);
         collateral.setType(assetType);
@@ -98,20 +95,21 @@ public class CollateralService {
         Collateral currentCollateral = collateralRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Collateral not found with id " + id));
 
-        Customer customer = null;
-        AssetType assetType = null;
-
-        if (request.getCustomerId() != null) {
-            customer = customerRepository.findById(request.getCustomerId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id " + request.getCustomerId()));
+        if(currentCollateral.getStatus() != AssetStatus.UNDER_REVIEW){
+           throw new CanNotManipulateDataException("Collateral cannot be updated in its current status");
         }
+
+        Customer customer = currentCollateral.getCustomer();
+
+        AssetType assetType = null;
 
         if (request.getAssetTypeId() != null) {
             assetType = assetTypeRepository.findById(request.getAssetTypeId())
                     .orElseThrow(() -> new ResourceNotFoundException("Asset type not found with id " + request.getAssetTypeId()));
+            EntityGuard.requireAssignable(assetType, "Asset type");
         }
 
-        ensureManipulable(currentCollateral, assetType, customer);
+        ensureManipulable(currentCollateral, customer);
 
         if (request.getName() != null && !request.getName().isBlank()) {
             currentCollateral.setName(request.getName());
@@ -125,9 +123,6 @@ public class CollateralService {
             currentCollateral.setDeclaredValue(request.getDeclaredValue());
         }
 
-        if (customer != null) {
-            currentCollateral.setCustomer(customer);
-        }
 
         if (assetType != null) {
             currentCollateral.setType(assetType);
@@ -153,7 +148,7 @@ public class CollateralService {
     public void delete(Long id) {
         Collateral collateral = collateralRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Collateral not found with id " + id));
-        ensureManipulable(collateral, null, null);
+        ensureManipulable(collateral, null);
         collateral.setRecordStatus(RecordStatus.DELETED);
     }
 

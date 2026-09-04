@@ -14,6 +14,8 @@ public interface AssetTypeRepository extends JpaRepository<AssetType, Long>, Jpa
     boolean existsByNameAndIdNotAndRecordStatusNot(String name, Long id, RecordStatus status);
 
     Optional<AssetType>findByIdAndRecordStatusNot(Long id, RecordStatus status);
+
+    boolean existsByCategoryId(Long categoryId);
 }
 
 

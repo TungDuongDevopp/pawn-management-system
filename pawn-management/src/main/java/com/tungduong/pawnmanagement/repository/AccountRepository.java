@@ -18,4 +18,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> , JpaSpe
     Optional<Account> findByIdAndStatusNot(Long id, AccountStatus status);
 
     Optional<Account> findByIdAndRecordStatusNotAndStatusNot(Long id, RecordStatus recordStatus, AccountStatus status);
+
+    boolean existsByRoleId(Long roleId);
 }

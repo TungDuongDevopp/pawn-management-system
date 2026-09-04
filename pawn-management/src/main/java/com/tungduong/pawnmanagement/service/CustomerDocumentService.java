@@ -6,7 +6,6 @@ import com.tungduong.pawnmanagement.dto.request.update.CustomerDocumentUpdateReq
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CustomerDocumentResponse;
 import com.tungduong.pawnmanagement.helper.EntityGuard;
-import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.FileStorageException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.CustomerDocumentMapper;
@@ -19,16 +18,20 @@ import com.tungduong.pawnmanagement.service.interfaces.IFileStorageService;
 import com.tungduong.pawnmanagement.service.specification.CustomerDocumentSpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomerDocumentService {
@@ -72,6 +75,7 @@ public class CustomerDocumentService {
         MultipartFile file = customerDocumentRequest.getFile();
 
         String directory = "customers/" + customerId + "/documents";
+
         String storageKey = fileStorageService.save(file,directory);
 
         try{
@@ -94,21 +98,16 @@ public class CustomerDocumentService {
 
     public Resource download(Long id){
         CustomerDocument document = customerDocumentRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Document not found with id "+id));
-        ensureManipulable(document, null);
+        EntityGuard.requireNotDeleted(document, "Document");
         return fileStorageService.get(document.getStorageKey());
     }
 
     @Transactional
     public void delete(Long id){
         CustomerDocument document = customerDocumentRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Document not found with id "+id));
-        ensureManipulable(document, null);
+        Customer customer = document.getCustomer();
+        ensureManipulable(document, customer);
         document.setRecordStatus(RecordStatus.DELETED);
-        try{
-            fileStorageService.delete(document.getStorageKey());
-        }
-        catch (Exception e){
-            throw new FileStorageException("Can not delete file");
-        }
     }
 
     @Transactional
@@ -135,7 +134,30 @@ public class CustomerDocumentService {
                 document.setFileSize(file.getSize());
                 document.setExtension(FilenameUtils.getExtension(file.getOriginalFilename()));
                 document.setContentType(file.getContentType());
-                fileStorageService.delete(oldStorageKey);
+                TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
+
+                    @Override
+                    public void afterCommit() {
+                        try {
+                            fileStorageService.delete(oldStorageKey);
+                        } catch (Exception e) {
+                             log.error("Failed to cleanup old file: {}", oldStorageKey, e);
+                        }
+                    }
+
+                    @Override
+                    public void afterCompletion(int status) {
+                        if (status != STATUS_COMMITTED) {
+                            try {
+                                fileStorageService.delete(newStorageKey);
+                            } catch (Exception e) {
+                                 log.error("Failed to rollback new file: {}", newStorageKey, e);
+                            }
+                        }
+                    }
+                }
+        );
             }
             catch (Exception e){
                 fileStorageService.delete(newStorageKey);
