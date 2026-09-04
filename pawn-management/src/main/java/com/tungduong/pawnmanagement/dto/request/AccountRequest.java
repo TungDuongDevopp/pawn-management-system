@@ -22,7 +22,7 @@ public class AccountRequest {
     @NotBlank(message = "password can not be null")
     private String password;
 
-    @NotNull(message = "role can not be null")
-    private RoleRequest role;
+    @NotNull(message = "roleId can not be null")
+    private Long roleId;
 
 }

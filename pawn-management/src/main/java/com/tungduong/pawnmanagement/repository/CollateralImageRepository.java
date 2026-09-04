@@ -9,11 +9,12 @@
     public interface CollateralImageRepository  extends JpaRepository<CollateralImage, Long>, JpaSpecificationExecutor<CollateralImage> {
         Optional<CollateralImage> findByIdAndRecordStatusNot(Long id, RecordStatus status);
 
-        Optional<CollateralImage> findByCollateralIdAndPrimaryImageTrue(Long collateralId);
+        Optional<CollateralImage> findByCollateralIdAndPrimaryImageTrueAndRecordStatusNot(Long collateralId, RecordStatus status);
 
-        boolean existsByCollateralIdAndDisplayOrderAndIdNot(
+        boolean existsByCollateralIdAndDisplayOrderAndIdNotAndRecordStatusNot(
                 Long collateralId,
                 Integer displayOrder,
-                Long id
+                Long id,
+                RecordStatus recordStatus
         );
     }

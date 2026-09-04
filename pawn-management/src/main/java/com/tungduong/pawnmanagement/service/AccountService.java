@@ -32,7 +32,7 @@ public class AccountService {
     private final AccountMapper accountMapper;
     private final RoleRepository roleRepository;
 
-    private void ensureManipulable(Account account, Role role) {
+    private void ensureManipulable(Account account) {
         if (account != null) {
             EntityGuard.requireManipulable(account, "Account");
             if (account.getStatus() == AccountStatus.DELETED
@@ -42,14 +42,12 @@ public class AccountService {
                 );
             }
         }
-        if (role != null) {
-            EntityGuard.requireManipulable(role, "Role");
-        }
     }
 
     public Page<AccountResponse> findAll(Pageable pageable, AccountFilterRequest filterRequest) {
         Specification<Account> specification = Specification.allOf(
                 AccountSpecification.statusNot(AccountStatus.DELETED),
+                AccountSpecification.recordStatusNot(RecordStatus.DELETED),
                 AccountSpecification.hasRole(filterRequest),
                 AccountSpecification.hasStatus(filterRequest),
                 AccountSpecification.hasUsername(filterRequest)
@@ -65,7 +63,7 @@ public class AccountService {
         return accountMapper.toResponse(account);
     }
 
-
+    @Transactional
     public AccountResponse create(AccountRequest accountRequest) {
         if (accountRepository.existsByUsernameAndStatusNot(
                 accountRequest.getUsername(),
@@ -73,12 +71,10 @@ public class AccountService {
         )) {
             throw new DuplicateResourceException("Account already exists");
         }
-        Long id = accountRequest.getRole().getId();
-        String roleName = accountRequest.getRole().getName();
-        Role role = roleRepository.findByIdOrName(id, roleName)
+        Role role = roleRepository.findByIdAndRecordStatusNot(accountRequest.getRoleId(), RecordStatus.DELETED)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Role not found with id " + id));
-        ensureManipulable(null, role);
+                        new ResourceNotFoundException("Role not found with id " + accountRequest.getRoleId()));
+        EntityGuard.requireAssignable(role, "Role");
         Account account = accountMapper.toEntity(accountRequest);
         account.setStatus(AccountStatus.ACTIVE);
         account.setRole(role);
@@ -96,12 +92,16 @@ public class AccountService {
             role = roleRepository.findById(request.getRole().getId())
                     .orElseThrow(() ->
                             new ResourceNotFoundException("Role not found with id " + request.getRole().getId()));
+            EntityGuard.requireAssignable(role, "Role");
         }
-        ensureManipulable(currentAccount, role);
+        ensureManipulable(currentAccount);
         if (role != null) {
             currentAccount.setRole(role);
         }
         if (request.getStatus() != null) {
+            if(request.getStatus() == AccountStatus.DELETED){
+                throw new CanNotManipulateDataException("Account cannot be deleted via status. Use delete API instead");
+            }
             currentAccount.setStatus(request.getStatus());
         }
         return accountMapper.toResponse(currentAccount);
@@ -115,6 +115,9 @@ public class AccountService {
 
         EntityGuard.requireNotDeleted(account, "Account");
 
+        if (request.getRecordStatus() == RecordStatus.DELETED) {
+            account.setStatus(AccountStatus.DELETED);
+        }
         account.setRecordStatus(request.getRecordStatus());
         return accountMapper.toResponse(account);
     }
@@ -124,7 +127,7 @@ public class AccountService {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Account not found with id " + id));
-        ensureManipulable(account, null);
+        ensureManipulable(account);
         account.setStatus(AccountStatus.DELETED);
         account.setRecordStatus(RecordStatus.DELETED);
     }

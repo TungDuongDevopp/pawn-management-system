@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -58,13 +59,14 @@ public class FeedbackService {
         Specification<Feedback> spec = Specification.allOf(
                 FeedbackSpecification.feedbackStatusNot(FeedBackStatus.CANCELLED),
                 FeedbackSpecification.feedbackStatus(request),
-                FeedbackSpecification.hasAccountId(request)
+                FeedbackSpecification.hasAccountId(request),
+                FeedbackSpecification.recordStatusNot(RecordStatus.DELETED)
         );
         return feedbackRepository.findAll(spec,pageable).map(feedbackMapper::toResponse);
     }
 
     public FeedBackResponse findById(Long id) {
-        return feedbackMapper.toResponse(feedbackRepository.findByIdAndRecordStatusNot(id,RecordStatus.DELETED)
+        return feedbackMapper.toResponse(feedbackRepository.findByIdAndRecordStatusNotAndStatusNot(id,RecordStatus.DELETED,FeedBackStatus.CANCELLED)
                 .orElseThrow(()-> new ResourceNotFoundException("Feedback not found with id:" + id)));
     }
 
@@ -108,6 +110,11 @@ public class FeedbackService {
                 attachment.setStorageKey(storageKey);
 
                 feedbackAttachmentRepository.save(attachment);
+
+                if(feedback.getAttachments() == null){
+                    feedback.setAttachments(new ArrayList<>());
+                }
+                
                 feedback.getAttachments().add(attachment);
             } catch (Exception e) {
                 localFileStorageService.delete(storageKey);
@@ -121,8 +128,8 @@ public class FeedbackService {
 
     public Resource download(Long id){
         FeedbackAttachment attachment = feedbackAttachmentRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Attachment not found with id "+id));
-        ensureManipulable(null,attachment);
-       return localFileStorageService.get(attachment.getStorageKey());
+        EntityGuard.requireNotDeleted(attachment, "Attachment");
+        return localFileStorageService.get(attachment.getStorageKey());
     }
 
     @Transactional

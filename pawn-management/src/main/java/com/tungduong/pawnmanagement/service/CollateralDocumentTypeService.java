@@ -11,6 +11,7 @@ import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.CollateralDocumentTypeMapper;
 import com.tungduong.pawnmanagement.model.CollateralDocumentType;
 import com.tungduong.pawnmanagement.model.enums.RecordStatus;
+import com.tungduong.pawnmanagement.repository.CollateralDocumentRepository;
 import com.tungduong.pawnmanagement.repository.CollateralDocumentTypeRepository;
 import com.tungduong.pawnmanagement.service.specification.CollateralDocumentTypeSpecification;
 import jakarta.transaction.Transactional;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 public class CollateralDocumentTypeService {
     private final CollateralDocumentTypeRepository collateralDocumentTypeRepository;
     private final CollateralDocumentTypeMapper collateralDocumentTypeMapper;
+    private final CollateralDocumentRepository collateralDocumentRepository;
 
     private void ensureManipulable(CollateralDocumentType collateralDocumentType) {
         if (collateralDocumentType != null) {
@@ -43,6 +45,7 @@ public class CollateralDocumentTypeService {
         return collateralDocumentTypeMapper.toResponse(collateralDocumentType);
     }
 
+    @Transactional
     public CollateralDocumentTypeResponse create(CollateralDocumentTypeRequest request) {
         if (collateralDocumentTypeRepository.existsByNameAndRecordStatusNot(request.getName(), RecordStatus.DELETED)) {
             throw new DuplicateResourceException("Collateral Document Type Name Already Exists");
@@ -80,6 +83,12 @@ public class CollateralDocumentTypeService {
 
         EntityGuard.requireNotDeleted(currentCollateralDocumentType, "Collateral document type");
 
+        if (request.getRecordStatus() == RecordStatus.DELETED) {
+            if (collateralDocumentRepository.existsByDocumentTypeId(id)) {
+                throw new CanNotManipulateDataException("Collateral document type is in use and cannot be deleted");
+            }
+        }
+
         currentCollateralDocumentType.setRecordStatus(request.getRecordStatus());
         return collateralDocumentTypeMapper.toResponse(currentCollateralDocumentType);
     }
@@ -90,6 +99,10 @@ public class CollateralDocumentTypeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Collateral document type not found with id " + id));
 
         ensureManipulable(collateralDocumentType);
+
+        if (collateralDocumentRepository.existsByDocumentTypeId(id)) {
+            throw new CanNotManipulateDataException("Collateral document type is in use and cannot be deleted");
+        }
 
         collateralDocumentType.setRecordStatus(RecordStatus.DELETED);
     }

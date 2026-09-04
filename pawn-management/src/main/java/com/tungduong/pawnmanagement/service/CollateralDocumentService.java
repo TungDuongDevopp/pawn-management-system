@@ -20,16 +20,20 @@ import com.tungduong.pawnmanagement.repository.CollateralRepository;
 import com.tungduong.pawnmanagement.service.specification.CollateralDocumentSpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CollateralDocumentService {
@@ -39,13 +43,9 @@ public class CollateralDocumentService {
     private final CollateralDocumentTypeRepository collateralDocumentTypeRepository;
     private final LocalFileStorageService fileStorageService;
 
-    private void ensureManipulable(CollateralDocument collateralDocument, CollateralDocumentType collateralDocumentType, Collateral collateral) {
+    private void ensureManipulable(CollateralDocument collateralDocument, Collateral collateral) {
         if (collateralDocument != null) {
             EntityGuard.requireManipulable(collateralDocument, "Collateral Document");
-        }
-
-        if (collateralDocumentType != null) {
-            EntityGuard.requireManipulable(collateralDocumentType, "Collateral Document Type");
         }
 
         if (collateral != null) {
@@ -76,7 +76,9 @@ public class CollateralDocumentService {
                                                     .orElseThrow(()->new ResourceNotFoundException("Collateral Document not found with id:"+request.getCollateralId()));
         CollateralDocumentType type = collateralDocumentTypeRepository.findById(request.getCollateralTypeId())
                                                                       .orElseThrow(()-> new ResourceNotFoundException("Collateral Document Type not found with id:"+request.getCollateralTypeId()));
-        ensureManipulable(null, type, collateral);
+        
+        EntityGuard.requireAssignable(type, "Collateral Document Type");
+        ensureManipulable(null, collateral);
         MultipartFile file = request.getFile();
         String directory = "collaterals/" + request.getCollateralId() + "/documents";
         String storageKey = fileStorageService.save(file,directory);
@@ -99,7 +101,7 @@ public class CollateralDocumentService {
 
     public Resource download(Long id){
         CollateralDocument document = collateralDocumentRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Document not found with id "+id));
-       ensureManipulable(document,null,null);
+        EntityGuard.requireNotDeleted(document, "Collateral Document");
         return fileStorageService.get(document.getStorageKey());
     }
 
@@ -109,13 +111,13 @@ public class CollateralDocumentService {
         CollateralDocument document = collateralDocumentRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("Document not found with id "+id));
         Collateral collateral = document.getCollateral();
-        CollateralDocumentType type = document.getDocumentType();
 
         if(request.getCollateralTypeId()!=null){
-            type = collateralDocumentTypeRepository.findById(request.getCollateralTypeId()).orElseThrow(()->new ResourceNotFoundException("Collateral Document Type not found with id:"+request.getCollateralTypeId()));
+            CollateralDocumentType type = collateralDocumentTypeRepository.findById(request.getCollateralTypeId()).orElseThrow(()->new ResourceNotFoundException("Collateral Document Type not found with id:"+request.getCollateralTypeId()));
+            EntityGuard.requireAssignable(type, "Collateral Document Type");
             document.setDocumentType(type);
         }
-        ensureManipulable(document,type,collateral);
+        ensureManipulable(document,collateral);
         String oldStorageKey =  document.getStorageKey();
         String directory = "collaterals/" + collateral.getId() + "/documents";
 
@@ -128,7 +130,30 @@ public class CollateralDocumentService {
                 document.setFileSize(file.getSize());
                 document.setExtension(FilenameUtils.getExtension(file.getOriginalFilename()));
                 document.setContentType(file.getContentType());
-                fileStorageService.delete(oldStorageKey);
+                TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
+
+                    @Override
+                    public void afterCommit() {
+                        try {
+                            fileStorageService.delete(oldStorageKey);
+                        } catch (Exception e) {
+                             log.error("Failed to cleanup old file: {}", oldStorageKey, e);
+                        }
+                    }
+
+                    @Override
+                    public void afterCompletion(int status) {
+                        if (status != STATUS_COMMITTED) {
+                            try {
+                                fileStorageService.delete(newStorageKey);
+                            } catch (Exception e) {
+                                 log.error("Failed to rollback new file: {}", newStorageKey, e);
+                            }
+                        }
+                    }
+                }
+        );
             }
             catch (Exception e){
                 fileStorageService.delete(newStorageKey);
@@ -149,18 +174,13 @@ public class CollateralDocumentService {
         document.setRecordStatus(request.getRecordStatus());
         return collateralDocumentMapper.toResponse(document);
     }
-
     @Transactional
     public void delete(Long id){
         CollateralDocument document = collateralDocumentRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Document not found with id "+id));
-        ensureManipulable(document,null,null);
+        Collateral collateral = document.getCollateral();
+        ensureManipulable(document,collateral);
         document.setRecordStatus(RecordStatus.DELETED);
-        try{
-            fileStorageService.delete(document.getStorageKey());
-        }
-        catch (Exception e){
-            throw new FileStorageException("Can not delete file");
-        }
+    
     }
 
 }

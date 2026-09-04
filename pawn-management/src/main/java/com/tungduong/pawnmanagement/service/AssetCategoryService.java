@@ -12,6 +12,7 @@ import com.tungduong.pawnmanagement.mapper.AssetCategoryMapper;
 import com.tungduong.pawnmanagement.model.AssetCategory;
 import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import com.tungduong.pawnmanagement.repository.AssetCategoryRepository;
+import com.tungduong.pawnmanagement.repository.AssetTypeRepository;
 import com.tungduong.pawnmanagement.service.specification.AssetCategorySpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 public class AssetCategoryService {
     private final AssetCategoryRepository assetCategoryRepository;
     private final AssetCategoryMapper assetCategoryMapper;
+    private final AssetTypeRepository assetTypeRepository;
 
 
     private void ensureManipulable(AssetCategory assetCategory) {
@@ -43,7 +45,8 @@ public class AssetCategoryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Asset category not found with id " + id));
         return assetCategoryMapper.toResponse(assetCategory);
     }
-
+    
+    @Transactional
     public AssetCategoryResponse create(AssetCategoryRequest request) {
         if (assetCategoryRepository.existsByNameAndRecordStatusNot(request.getName(), RecordStatus.DELETED)) {
             throw new DuplicateResourceException("Asset Category Name Already Exists");
@@ -81,6 +84,12 @@ public class AssetCategoryService {
 
         EntityGuard.requireNotDeleted(currentAssetCategory, "Asset category");
 
+        if (request.getRecordStatus() == RecordStatus.DELETED) {
+            if (assetTypeRepository.existsByCategoryId(id)) {
+                throw new CanNotManipulateDataException("Asset category is in use and cannot be deleted");
+            }
+        }
+
         currentAssetCategory.setRecordStatus(request.getRecordStatus());
         return assetCategoryMapper.toResponse(currentAssetCategory);
     }
@@ -91,6 +100,10 @@ public class AssetCategoryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Asset category not found with id " + id));
 
         ensureManipulable(assetCategory);
+
+        if (assetTypeRepository.existsByCategoryId(id)) {
+            throw new CanNotManipulateDataException("Asset category is in use and cannot be deleted");
+        }
 
         assetCategory.setRecordStatus(RecordStatus.DELETED);
     }

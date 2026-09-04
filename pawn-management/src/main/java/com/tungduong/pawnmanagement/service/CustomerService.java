@@ -50,6 +50,7 @@ public class CustomerService {
         return customerMapper.toResponse(customer);
     }
 
+    @Transactional
     public CustomerResponse create(CustomerRequest customerRequest) {
         if (customerRepository.existsByPhoneAndRecordStatusNot(customerRequest.getPhone(), RecordStatus.DELETED)) {
             throw new DuplicateResourceException("Phone number already exists");

@@ -14,6 +14,7 @@ import com.tungduong.pawnmanagement.model.AssetType;
 import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import com.tungduong.pawnmanagement.repository.AssetCategoryRepository;
 import com.tungduong.pawnmanagement.repository.AssetTypeRepository;
+import com.tungduong.pawnmanagement.repository.CollateralRepository;
 import com.tungduong.pawnmanagement.service.specification.AssetTypeSpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +29,11 @@ public class AssetTypeService {
     private final AssetTypeRepository assetTypeRepository;
     private final AssetCategoryRepository assetCategoryRepository;
     private final AssetTypeMapper assetTypeMapper;
+    private final CollateralRepository collateralRepository;
 
-    private void ensureManipulable(AssetType assetType, AssetCategory assetCategory) {
+    private void ensureManipulable(AssetType assetType) {
         if (assetType != null) {
             EntityGuard.requireManipulable(assetType, "Asset type");
-        }
-        if (assetCategory != null) {
-            EntityGuard.requireManipulable(assetCategory, "Asset category");
         }
     }
 
@@ -49,6 +48,7 @@ public class AssetTypeService {
         return assetTypeMapper.toResponse(assetType);
     }
 
+    @Transactional
     public AssetTypeResponse create(AssetTypeRequest request) {
         if (assetTypeRepository.existsByNameAndRecordStatusNot(request.getName(), RecordStatus.DELETED)) {
             throw new DuplicateResourceException("Asset Type Name Already Exists");
@@ -56,7 +56,7 @@ public class AssetTypeService {
         AssetCategory assetCategory = assetCategoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Asset category not found with id " + request.getCategoryId()));
 
-        ensureManipulable(null, assetCategory);
+        EntityGuard.requireAssignable(assetCategory, "Asset category");
 
         AssetType assetType = assetTypeMapper.toEntity(request);
         assetType.setCategory(assetCategory);
@@ -69,13 +69,14 @@ public class AssetTypeService {
         AssetType currentAssetType = assetTypeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Asset type not found with id " + id));
 
+        ensureManipulable(currentAssetType);
+
         AssetCategory assetCategory = null;
         if (request.getCategoryId() != null) {
             assetCategory = assetCategoryRepository.findById(request.getCategoryId())
                     .orElseThrow(() -> new ResourceNotFoundException("Asset category not found with id " + request.getCategoryId()));
+            EntityGuard.requireAssignable(assetCategory, "Asset category");
         }
-
-        ensureManipulable(currentAssetType, assetCategory);
 
         if (request.getName() != null && !request.getName().isBlank()) {
             if (assetTypeRepository.existsByNameAndIdNotAndRecordStatusNot(request.getName(), id, RecordStatus.DELETED)) {
@@ -102,6 +103,12 @@ public class AssetTypeService {
 
         EntityGuard.requireNotDeleted(currentAssetType, "Asset type");
 
+        if (request.getRecordStatus() == RecordStatus.DELETED) {
+            if (collateralRepository.existsByTypeId(id)) {
+                throw new CanNotManipulateDataException("Asset type is in use and cannot be deleted");
+            }
+        }
+
         currentAssetType.setRecordStatus(request.getRecordStatus());
         return assetTypeMapper.toResponse(currentAssetType);
     }
@@ -111,7 +118,12 @@ public class AssetTypeService {
         AssetType assetType = assetTypeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Asset type not found with id " + id));
 
-        ensureManipulable(assetType, null);
+        ensureManipulable(assetType);
+
+        if (collateralRepository.existsByTypeId(id)) {
+            throw new CanNotManipulateDataException("Asset type is in use and cannot be deleted");
+        }
+
         assetType.setRecordStatus(RecordStatus.DELETED);
     }
 }

@@ -3,6 +3,7 @@ package com.tungduong.pawnmanagement.service.specification;
 import com.tungduong.pawnmanagement.dto.request.filter.AccountFilterRequest;
 import com.tungduong.pawnmanagement.model.Account;
 import com.tungduong.pawnmanagement.model.enums.AccountStatus;
+import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import org.springframework.data.jpa.domain.Specification;
 
 public class AccountSpecification {
@@ -11,6 +12,13 @@ public class AccountSpecification {
         return (root, criteriaQuery, criteriaBuilder) -> {
             if (status == null) return criteriaBuilder.conjunction();
             return criteriaBuilder.notEqual(root.get("status"), status);
+        };
+    }
+
+    public static Specification<Account> recordStatusNot(RecordStatus recordStatus){
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            if (recordStatus == null) return criteriaBuilder.conjunction();
+            return criteriaBuilder.notEqual(root.get("recordStatus"), recordStatus);
         };
     }
 

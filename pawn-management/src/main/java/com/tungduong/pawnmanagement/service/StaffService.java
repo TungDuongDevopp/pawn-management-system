@@ -53,6 +53,7 @@ public class StaffService {
         return staffMapper.toResponse(staff);
     }
 
+    @Transactional
     public StaffResponse create(StaffRequest staffRequest) {
         if (staffRepository.existsByPhoneAndRecordStatusNot(staffRequest.getPhone(), RecordStatus.DELETED)) {
             throw new DuplicateResourceException("Phone number already exists");
