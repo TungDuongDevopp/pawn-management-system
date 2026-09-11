@@ -5,7 +5,7 @@ import com.tungduong.pawnmanagement.dto.request.update.CollateralDocumentTypeUpd
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CollateralDocumentTypeResponse;
 import com.tungduong.pawnmanagement.helper.EntityGuard;
-import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
+import com.tungduong.pawnmanagement.helper.exception.CannotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.CollateralDocumentTypeMapper;
@@ -85,7 +85,7 @@ public class CollateralDocumentTypeService {
 
         if (request.getRecordStatus() == RecordStatus.DELETED) {
             if (collateralDocumentRepository.existsByDocumentTypeId(id)) {
-                throw new CanNotManipulateDataException("Collateral document type is in use and cannot be deleted");
+                throw new CannotManipulateDataException("Collateral document type is in use and cannot be deleted");
             }
         }
 
@@ -101,7 +101,7 @@ public class CollateralDocumentTypeService {
         ensureManipulable(collateralDocumentType);
 
         if (collateralDocumentRepository.existsByDocumentTypeId(id)) {
-            throw new CanNotManipulateDataException("Collateral document type is in use and cannot be deleted");
+            throw new CannotManipulateDataException("Collateral document type is in use and cannot be deleted");
         }
 
         collateralDocumentType.setRecordStatus(RecordStatus.DELETED);

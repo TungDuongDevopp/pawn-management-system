@@ -3,14 +3,13 @@ package com.tungduong.pawnmanagement.service.state;
 import com.tungduong.pawnmanagement.dto.request.CollateralAppraiseRequest;
 import com.tungduong.pawnmanagement.dto.response.CollateralResponse;
 import com.tungduong.pawnmanagement.helper.EntityGuard;
-import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
+import com.tungduong.pawnmanagement.helper.exception.CannotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.CollateralMapper;
 import com.tungduong.pawnmanagement.model.Collateral;
 import com.tungduong.pawnmanagement.model.Staff;
 import com.tungduong.pawnmanagement.model.enums.AssetStatus;
 import com.tungduong.pawnmanagement.model.enums.Department;
-import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 import com.tungduong.pawnmanagement.repository.CollateralRepository;
 import com.tungduong.pawnmanagement.repository.StaffRepository;
 import jakarta.transaction.Transactional;
@@ -37,7 +36,7 @@ public class CollateralStateService {
                     || collateral.getStatus() == AssetStatus.LIQUIDATED
                     || collateral.getStatus() == AssetStatus.DAMAGED_LOST
                     || collateral.getStatus() == AssetStatus.CONFISCATED) {
-                throw new CanNotManipulateDataException(
+                throw new CannotManipulateDataException(
                         "Only collateral under review can be appraised"
                 );
             }
@@ -54,7 +53,7 @@ public class CollateralStateService {
                 .orElseThrow(() -> new ResourceNotFoundException("Collateral not found with id " + id));
 
         if(currentCollateral.getStatus() != AssetStatus.UNDER_REVIEW){
-           throw new CanNotManipulateDataException("Collateral cannot be appraised in its current status");
+           throw new CannotManipulateDataException("Collateral cannot be appraised in its current status");
         }
 
         Staff currentStaff = staffRepository.findById(request.getAppraisedBy())
@@ -62,7 +61,7 @@ public class CollateralStateService {
         ensureManipulable(currentCollateral, currentStaff);
        
         if (currentStaff.getDepartment() != Department.APPRAISER) {
-            throw new CanNotManipulateDataException("Staff does not have permission to appraise collateral");
+            throw new CannotManipulateDataException("Staff does not have permission to appraise collateral");
         }
 
         currentCollateral.setAppraisedAt(Instant.now());

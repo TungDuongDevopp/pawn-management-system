@@ -6,7 +6,7 @@ import com.tungduong.pawnmanagement.dto.request.update.AccountUpdateRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.AccountResponse;
 import com.tungduong.pawnmanagement.helper.EntityGuard;
-import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
+import com.tungduong.pawnmanagement.helper.exception.CannotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.AccountMapper;
@@ -37,7 +37,7 @@ public class AccountService {
             EntityGuard.requireManipulable(account, "Account");
             if (account.getStatus() == AccountStatus.DELETED
                     || account.getStatus() == AccountStatus.DISABLED) {
-                throw new CanNotManipulateDataException(
+                throw new CannotManipulateDataException(
                         "Account cannot be manipulated in its current status"
                 );
             }
@@ -100,7 +100,7 @@ public class AccountService {
         }
         if (request.getStatus() != null) {
             if(request.getStatus() == AccountStatus.DELETED){
-                throw new CanNotManipulateDataException("Account cannot be deleted via status. Use delete API instead");
+                throw new CannotManipulateDataException("Account cannot be deleted via status. Use delete API instead");
             }
             currentAccount.setStatus(request.getStatus());
         }

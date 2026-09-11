@@ -6,7 +6,7 @@ import com.tungduong.pawnmanagement.dto.request.update.CollateralUpdateRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CollateralResponse;
 import com.tungduong.pawnmanagement.helper.EntityGuard;
-import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
+import com.tungduong.pawnmanagement.helper.exception.CannotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.CollateralMapper;
 import com.tungduong.pawnmanagement.model.AssetType;
@@ -43,7 +43,7 @@ public class CollateralService {
                     || collateral.getStatus() == AssetStatus.LIQUIDATED
                     || collateral.getStatus() == AssetStatus.DAMAGED_LOST
                     || collateral.getStatus() == AssetStatus.CONFISCATED) {
-                throw new CanNotManipulateDataException(
+                throw new CannotManipulateDataException(
                         "Collateral cannot be manipulated in its current status"
                 );
             }
@@ -96,7 +96,7 @@ public class CollateralService {
                 .orElseThrow(() -> new ResourceNotFoundException("Collateral not found with id " + id));
 
         if(currentCollateral.getStatus() != AssetStatus.UNDER_REVIEW){
-           throw new CanNotManipulateDataException("Collateral cannot be updated in its current status");
+           throw new CannotManipulateDataException("Collateral cannot be updated in its current status");
         }
 
         Customer customer = currentCollateral.getCustomer();

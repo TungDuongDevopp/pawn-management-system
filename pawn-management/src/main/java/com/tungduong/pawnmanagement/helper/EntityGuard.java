@@ -1,6 +1,6 @@
 package com.tungduong.pawnmanagement.helper;
 
-import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
+import com.tungduong.pawnmanagement.helper.exception.CannotManipulateDataException;
 import com.tungduong.pawnmanagement.model.base.BaseEntity;
 import com.tungduong.pawnmanagement.model.enums.RecordStatus;
 
@@ -17,7 +17,7 @@ public final class EntityGuard {
     }
 
     /**
-     * Throws {@link CanNotManipulateDataException} when the entity's
+     * Throws {@link CannotManipulateDataException} when the entity's
      * {@code recordStatus} is either {@code DELETED} or {@code INACTIVE}.
      *
      * @param entity     the entity to check (must not be null)
@@ -26,14 +26,14 @@ public final class EntityGuard {
     public static void requireManipulable(BaseEntity entity, String entityName) {
         if (entity.getRecordStatus() == RecordStatus.DELETED
                 || entity.getRecordStatus() == RecordStatus.INACTIVE) {
-            throw new CanNotManipulateDataException(
+            throw new CannotManipulateDataException(
                     entityName + " cannot be manipulated in its current status"
             );
         }
     }
 
     /**
-     * Throws {@link CanNotManipulateDataException} when the entity's
+     * Throws {@link CannotManipulateDataException} when the entity's
      * {@code recordStatus} is {@code DELETED}.
      *
      * <p>Typically used in {@code updateRecordStatus()} methods where
@@ -44,14 +44,14 @@ public final class EntityGuard {
      */
     public static void requireNotDeleted(BaseEntity entity, String entityName) {
         if (entity.getRecordStatus() == RecordStatus.DELETED) {
-            throw new CanNotManipulateDataException(
+            throw new CannotManipulateDataException(
                     entityName + " cannot be manipulated in its current status"
             );
         }
     }
 
     /**
-     * Throws {@link CanNotManipulateDataException} when the entity's
+     * Throws {@link CannotManipulateDataException} when the entity's
      * {@code recordStatus} is not {@code ACTIVE} (i.e. is {@code INACTIVE} or {@code DELETED}).
      *
      * <p>Used when assigning reference/master data to ensure only active reference data can be assigned.</p>
@@ -61,7 +61,7 @@ public final class EntityGuard {
      */
     public static void requireAssignable(BaseEntity entity, String entityName) {
         if (entity.getRecordStatus() != RecordStatus.ACTIVE) {
-            throw new CanNotManipulateDataException(
+            throw new CannotManipulateDataException(
                     entityName + " is not active and cannot be assigned"
             );
         }

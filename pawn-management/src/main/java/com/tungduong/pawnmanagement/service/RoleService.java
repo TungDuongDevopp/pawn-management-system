@@ -5,7 +5,7 @@ import com.tungduong.pawnmanagement.dto.request.RoleRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.RoleResponse;
 import com.tungduong.pawnmanagement.helper.EntityGuard;
-import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
+import com.tungduong.pawnmanagement.helper.exception.CannotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.RoleMapper;
@@ -82,7 +82,7 @@ public class RoleService {
 
         if (request.getRecordStatus() == RecordStatus.DELETED) {
             if (accountRepository.existsByRoleId(id)) {
-                throw new CanNotManipulateDataException("Role is in use and cannot be deleted");
+                throw new CannotManipulateDataException("Role is in use and cannot be deleted");
             }
         }
 
@@ -96,7 +96,7 @@ public class RoleService {
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found with id " + id));
         ensureManipulable(role);
         if (accountRepository.existsByRoleId(id)) {
-            throw new CanNotManipulateDataException("Role is in use and cannot be deleted");
+            throw new CannotManipulateDataException("Role is in use and cannot be deleted");
         }
         role.setRecordStatus(RecordStatus.DELETED);
     }

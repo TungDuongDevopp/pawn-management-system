@@ -24,8 +24,8 @@ public class GlobalHandlerException {
 
 
 
-    @ExceptionHandler(CanNotManipulateDataException.class)
-    public ResponseEntity<?> handleCanNotManipulateDataException(CanNotManipulateDataException ex) {
+    @ExceptionHandler(CannotManipulateDataException.class)
+    public ResponseEntity<?> handleCanNotManipulateDataException(CannotManipulateDataException ex) {
         return ApiResponse.error(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
     @ExceptionHandler(FileTooLargeException.class)
