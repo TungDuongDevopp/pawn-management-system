@@ -5,7 +5,7 @@ import com.tungduong.pawnmanagement.dto.request.update.AssetCategoryUpdateReques
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.AssetCategoryResponse;
 import com.tungduong.pawnmanagement.helper.EntityGuard;
-import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
+import com.tungduong.pawnmanagement.helper.exception.CannotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.AssetCategoryMapper;
@@ -86,7 +86,7 @@ public class AssetCategoryService {
 
         if (request.getRecordStatus() == RecordStatus.DELETED) {
             if (assetTypeRepository.existsByCategoryId(id)) {
-                throw new CanNotManipulateDataException("Asset category is in use and cannot be deleted");
+                throw new CannotManipulateDataException("Asset category is in use and cannot be deleted");
             }
         }
 
@@ -102,7 +102,7 @@ public class AssetCategoryService {
         ensureManipulable(assetCategory);
 
         if (assetTypeRepository.existsByCategoryId(id)) {
-            throw new CanNotManipulateDataException("Asset category is in use and cannot be deleted");
+            throw new CannotManipulateDataException("Asset category is in use and cannot be deleted");
         }
 
         assetCategory.setRecordStatus(RecordStatus.DELETED);

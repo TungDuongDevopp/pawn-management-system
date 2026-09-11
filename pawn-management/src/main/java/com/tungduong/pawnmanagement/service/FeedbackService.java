@@ -5,7 +5,7 @@ import com.tungduong.pawnmanagement.dto.request.filter.FeedbackFilterRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.FeedBackResponse;
 import com.tungduong.pawnmanagement.helper.EntityGuard;
-import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
+import com.tungduong.pawnmanagement.helper.exception.CannotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.FileStorageException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.FeedbackMapper;
@@ -45,7 +45,7 @@ public class FeedbackService {
         if (account != null) {
             EntityGuard.requireManipulable(account, "Account");
             if (account.getStatus() != AccountStatus.ACTIVE) {
-                throw new CanNotManipulateDataException("Account can not be manipulated in its current status");
+                throw new CannotManipulateDataException("Account can not be manipulated in its current status");
             }
         }
 

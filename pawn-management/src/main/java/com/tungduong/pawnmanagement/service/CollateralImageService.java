@@ -6,7 +6,6 @@ import com.tungduong.pawnmanagement.dto.request.filter.CollateralImageFilterRequ
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CollateralImageResponse;
 import com.tungduong.pawnmanagement.helper.EntityGuard;
-import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.FileStorageException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;

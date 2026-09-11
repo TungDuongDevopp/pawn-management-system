@@ -6,7 +6,6 @@ import com.tungduong.pawnmanagement.dto.request.update.CollateralDocumentUpdateR
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.CollateralDocumentResponse;
 import com.tungduong.pawnmanagement.helper.EntityGuard;
-import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.FileStorageException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.CollateralDocumentMapper;

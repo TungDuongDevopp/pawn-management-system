@@ -5,7 +5,7 @@ import com.tungduong.pawnmanagement.dto.request.update.AssetTypeUpdateRequest;
 import com.tungduong.pawnmanagement.dto.request.update.RecordStatusUpdateRequest;
 import com.tungduong.pawnmanagement.dto.response.AssetTypeResponse;
 import com.tungduong.pawnmanagement.helper.EntityGuard;
-import com.tungduong.pawnmanagement.helper.exception.CanNotManipulateDataException;
+import com.tungduong.pawnmanagement.helper.exception.CannotManipulateDataException;
 import com.tungduong.pawnmanagement.helper.exception.DuplicateResourceException;
 import com.tungduong.pawnmanagement.helper.exception.ResourceNotFoundException;
 import com.tungduong.pawnmanagement.mapper.AssetTypeMapper;
@@ -105,7 +105,7 @@ public class AssetTypeService {
 
         if (request.getRecordStatus() == RecordStatus.DELETED) {
             if (collateralRepository.existsByTypeId(id)) {
-                throw new CanNotManipulateDataException("Asset type is in use and cannot be deleted");
+                throw new CannotManipulateDataException("Asset type is in use and cannot be deleted");
             }
         }
 
@@ -121,7 +121,7 @@ public class AssetTypeService {
         ensureManipulable(assetType);
 
         if (collateralRepository.existsByTypeId(id)) {
-            throw new CanNotManipulateDataException("Asset type is in use and cannot be deleted");
+            throw new CannotManipulateDataException("Asset type is in use and cannot be deleted");
         }
 
         assetType.setRecordStatus(RecordStatus.DELETED);
